@@ -2,6 +2,8 @@ package com.company;
 
 import com.heqin.Ghsjzx;
 import com.heqin.GhsjzxService_Service;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 
 public class Main {
@@ -16,19 +18,35 @@ public class Main {
 
         //码头作业信息
         String s = ghsjzxPort.ghsjzxService("HH_ZHGS", "HH_ZHGS",
-                80821, 1, "V_WH_WHZYSBD", "0");
+                2, 1, "V_WH_WHZYSBD", "0");
+
         //港口企业数据
         /*String ss = ghsjzxPort.ghsjzxService("HH_ZHGS", "HH_ZHGS",
                 1, 10, "V_WH_SBQYXX", "0");*/
-
-        System.out.println(s);
+        //System.out.println(s);
         //log.info(ss);
-        //JSONObject.fromObjec
-        /*for (int i = 0; i < s.length(); i++) {
-            System.out.println(s);
 
-        }*/
-
-
+        JSONObject responseJson = JSONObject.fromObject(s);
+        //System.out.println(responseJson);
+        //Object message = responseJson.get("message");
+        //System.out.println(message);
+        Object data = responseJson.get("data");
+       // System.out.println(data);      对象不能遍历   [{key:value,key1:value1,...,keyN:valueN},{key:value,key1:value1,...}]
+        JSONArray jsonArray = JSONArray.fromObject(data );
+        //System.out.println(jsonArray); 集合可以遍历   [{key:value,key1:value1,...,keyN:valueN},{key:value,key1:value1,...}]
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JSONObject jsonObject = JSONObject.fromObject(jsonArray.get(i));
+            //System.out.println(jsonObject.toString());//对象 {key:value,key1:value1,...,keyN:valueN}
+           // System.out.println(jsonObject);
+            Object appliid = jsonObject.get("APPLIID");
+            System.out.println(appliid);
+            Object linkmannm = jsonObject.get("LINKMANNM");
+            System.out.println(linkmannm);
+            Object telephonenumnb = jsonObject.get("TELEPHONENUMNB");
+            System.out.println(telephonenumnb);
+            Object consigner = jsonObject.get("CONSIGNER");
+            System.out.println(consigner);
+            //insert into
+        }
     }
 }
