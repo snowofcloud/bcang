@@ -1,5 +1,5 @@
 
-package com.heqin;
+package com.hthj.data.services;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;

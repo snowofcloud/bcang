@@ -1,5 +1,5 @@
 
-package com.heqin;
+package com.hthj.data.services;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>GhsjzxService complex type的 Java 类。
+ * <p>GhsjzxService complex type锟斤拷 Java 锟洁。
  * 
- * <p>以下模式片段指定包含在此类中的预期内容。
+ * <p>锟斤拷锟斤拷模式片锟斤拷指锟斤拷锟斤拷锟斤拷锟节达拷锟斤拷锟叫碉拷预锟斤拷锟斤拷锟捷★拷
  * 
  * <pre>
  * &lt;complexType name="GhsjzxService">
@@ -49,7 +49,7 @@ public class GhsjzxService {
     protected String param;
 
     /**
-     * 获取userName属性的值。
+     * 锟斤拷取userName锟斤拷锟皆碉拷值锟斤拷
      * 
      * @return
      *     possible object is
@@ -61,7 +61,7 @@ public class GhsjzxService {
     }
 
     /**
-     * 设置userName属性的值。
+     * 锟斤拷锟斤拷userName锟斤拷锟皆碉拷值锟斤拷
      * 
      * @param value
      *     allowed object is
@@ -73,7 +73,7 @@ public class GhsjzxService {
     }
 
     /**
-     * 获取password属性的值。
+     * 锟斤拷取password锟斤拷锟皆碉拷值锟斤拷
      * 
      * @return
      *     possible object is
@@ -85,7 +85,7 @@ public class GhsjzxService {
     }
 
     /**
-     * 设置password属性的值。
+     * 锟斤拷锟斤拷password锟斤拷锟皆碉拷值锟斤拷
      * 
      * @param value
      *     allowed object is
@@ -97,7 +97,7 @@ public class GhsjzxService {
     }
 
     /**
-     * 获取page属性的值。
+     * 锟斤拷取page锟斤拷锟皆碉拷值锟斤拷
      * 
      */
     public int getPage() {
@@ -105,7 +105,7 @@ public class GhsjzxService {
     }
 
     /**
-     * 设置page属性的值。
+     * 锟斤拷锟斤拷page锟斤拷锟皆碉拷值锟斤拷
      * 
      */
     public void setPage(int value) {
@@ -113,7 +113,7 @@ public class GhsjzxService {
     }
 
     /**
-     * 获取pageSize属性的值。
+     * 锟斤拷取pageSize锟斤拷锟皆碉拷值锟斤拷
      * 
      */
     public int getPageSize() {
@@ -121,7 +121,7 @@ public class GhsjzxService {
     }
 
     /**
-     * 设置pageSize属性的值。
+     * 锟斤拷锟斤拷pageSize锟斤拷锟皆碉拷值锟斤拷
      * 
      */
     public void setPageSize(int value) {
@@ -129,7 +129,7 @@ public class GhsjzxService {
     }
 
     /**
-     * 获取interfaceId属性的值。
+     * 锟斤拷取interfaceId锟斤拷锟皆碉拷值锟斤拷
      * 
      * @return
      *     possible object is
@@ -141,7 +141,7 @@ public class GhsjzxService {
     }
 
     /**
-     * 设置interfaceId属性的值。
+     * 锟斤拷锟斤拷interfaceId锟斤拷锟皆碉拷值锟斤拷
      * 
      * @param value
      *     allowed object is
@@ -153,7 +153,7 @@ public class GhsjzxService {
     }
 
     /**
-     * 获取param属性的值。
+     * 锟斤拷取param锟斤拷锟皆碉拷值锟斤拷
      * 
      * @return
      *     possible object is
@@ -165,7 +165,7 @@ public class GhsjzxService {
     }
 
     /**
-     * 设置param属性的值。
+     * 锟斤拷锟斤拷param锟斤拷锟皆碉拷值锟斤拷
      * 
      * @param value
      *     allowed object is

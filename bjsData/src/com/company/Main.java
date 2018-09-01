@@ -1,7 +1,7 @@
 package com.company;
 
-import com.heqin.Ghsjzx;
-import com.heqin.GhsjzxService_Service;
+import com.hthj.data.services.Ghsjzx;
+import com.hthj.data.services.GhsjzxService_Service;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
@@ -46,7 +46,13 @@ public class Main {
             System.out.println(telephonenumnb);
             Object consigner = jsonObject.get("CONSIGNER");
             System.out.println(consigner);
-            //insert into
+
+            String sql="insert into V_WH_WHZYSBD (APPLIID,LINKMANNM,TELEPHONENUMNB,CONSIGNER) values (appliid,linkmannm,telephonenumnb,consigner)";
+
         }
     }
+
+
+
+
 }

@@ -1,5 +1,5 @@
 
-package com.heqin;
+package com.hthj.data.services;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -36,8 +36,8 @@ public interface Ghsjzx {
      */
     @WebMethod(operationName = "GhsjzxService")
     @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "GhsjzxService", targetNamespace = "http://service.zjygj.com/", className = "com.heqin.GhsjzxService")
-    @ResponseWrapper(localName = "GhsjzxServiceResponse", targetNamespace = "http://service.zjygj.com/", className = "com.heqin.GhsjzxServiceResponse")
+    @RequestWrapper(localName = "GhsjzxService", targetNamespace = "http://service.zjygj.com/", className = "com.hthj.data.services.GhsjzxService")
+    @ResponseWrapper(localName = "GhsjzxServiceResponse", targetNamespace = "http://service.zjygj.com/", className = "com.hthj.data.services.GhsjzxServiceResponse")
     public String ghsjzxService(
             @WebParam(name = "userName", targetNamespace = "")
                     String userName,

@@ -1,5 +1,5 @@
 
-package com.heqin;
+package com.hthj.data.services;
 
 import java.net.MalformedURLException;
 import java.net.URL;
