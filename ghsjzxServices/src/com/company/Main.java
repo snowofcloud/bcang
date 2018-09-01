@@ -40,13 +40,13 @@ public class Main {
             //System.out.println(jsonObject.toString());//对象 {key:value,key1:value1,...,keyN:valueN}
            // System.out.println(jsonObject);
             Object appliid = jsonObject.get("APPLIID");
-            System.out.println(appliid);
+            //System.out.println(appliid);
             Object linkmannm = jsonObject.get("LINKMANNM");
-            System.out.println(linkmannm);
+           // System.out.println(linkmannm);
             Object telephonenumnb = jsonObject.get("TELEPHONENUMNB");
-            System.out.println(telephonenumnb);
+            //System.out.println(telephonenumnb);
             Object consigner = jsonObject.get("CONSIGNER");
-            System.out.println(consigner);
+            //System.out.println(consigner);
 
             /**码头作业信息进行封装*/
             DockWorkInformation dwi = new DockWorkInformation();
@@ -54,6 +54,9 @@ public class Main {
             dwi.setLINKMANNM((String)linkmannm);
             dwi.setTELEPHONENUMNB((String)telephonenumnb);
             dwi.setCONSIGNER((String)consigner);
+            String appliid1 = dwi.getAPPLIID();
+            System.out.println(appliid1);
+            /**把dwi转发到serlet*/
 
 
             //String sql="insert into V_WH_WHZYSBD (APPLIID,LINKMANNM,TELEPHONENUMNB,CONSIGNER) values (appliid,linkmannm,telephonenumnb,consigner)";
