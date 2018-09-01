@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 
 public class RequestServlet extends HttpServlet {
 
@@ -17,9 +18,18 @@ public class RequestServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         super.doGet(req, resp);
 
+        Object dwi = null;
+        Map<String, String[]> parameterMap = req.getParameterMap();
+
         RequestService requestService = new RequestService();
         //requestService.saveData(DockWorkInformation dwi);
+        //requestService.saveData(dwi);
         //提示插入成功
+
+
+
+
+
     }
 
     @Override

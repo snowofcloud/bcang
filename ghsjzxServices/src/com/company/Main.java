@@ -3,15 +3,18 @@ package com.company;
 import com.hthj.data.domain.DockWorkInformation;
 import com.hthj.data.services.Ghsjzx;
 import com.hthj.data.services.GhsjzxService_Service;
+import com.hthj.data.setvice.RequestService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
+
+import java.sql.SQLException;
 
 public class Main {
 
     private static Logger log = Logger.getLogger(Main.class);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
 
         GhsjzxService_Service ghsjzxService_service = new GhsjzxService_Service();
 
@@ -19,7 +22,7 @@ public class Main {
 
         //码头作业信息
         String s = ghsjzxPort.ghsjzxService("HH_ZHGS", "HH_ZHGS",
-                2, 1, "V_WH_WHZYSBD", "0");
+                1, 3000, "V_WH_WHZYSBD", "0");
 
         //港口企业数据
         /*String ss = ghsjzxPort.ghsjzxService("HH_ZHGS", "HH_ZHGS",
@@ -35,7 +38,9 @@ public class Main {
        // System.out.println(data);      对象不能遍历   [{key:value,key1:value1,...,keyN:valueN},{key:value,key1:value1,...}]
         JSONArray jsonArray = JSONArray.fromObject(data );
         //System.out.println(jsonArray); 集合可以遍历   [{key:value,key1:value1,...,keyN:valueN},{key:value,key1:value1,...}]
+        int count = 0;
         for (int i = 0; i < jsonArray.size(); i++) {
+            count++;
             JSONObject jsonObject = JSONObject.fromObject(jsonArray.get(i));
             //System.out.println(jsonObject.toString());//对象 {key:value,key1:value1,...,keyN:valueN}
            // System.out.println(jsonObject);
@@ -54,14 +59,17 @@ public class Main {
             dwi.setLINKMANNM((String)linkmannm);
             dwi.setTELEPHONENUMNB((String)telephonenumnb);
             dwi.setCONSIGNER((String)consigner);
-            String appliid1 = dwi.getAPPLIID();
-            System.out.println(appliid1);
+           // String appliid1 = dwi.getAPPLIID();
+            //System.out.println(appliid1);
+
             /**把dwi转发到serlet*/
+            RequestService requestService = new RequestService();
+            //requestService.saveData(DockWorkInformation dwi);
+            requestService.saveData(dwi);
 
-
-            //String sql="insert into V_WH_WHZYSBD (APPLIID,LINKMANNM,TELEPHONENUMNB,CONSIGNER) values (appliid,linkmannm,telephonenumnb,consigner)";
 
         }
+        System.out.println("本次插入"+count+"条数据,总共插入");
     }
 
 
