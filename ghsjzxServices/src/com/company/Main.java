@@ -1,5 +1,6 @@
 package com.company;
 
+import com.hthj.data.domain.DockWorkInformation;
 import com.hthj.data.services.Ghsjzx;
 import com.hthj.data.services.GhsjzxService_Service;
 import net.sf.json.JSONArray;
@@ -47,7 +48,15 @@ public class Main {
             Object consigner = jsonObject.get("CONSIGNER");
             System.out.println(consigner);
 
-            String sql="insert into V_WH_WHZYSBD (APPLIID,LINKMANNM,TELEPHONENUMNB,CONSIGNER) values (appliid,linkmannm,telephonenumnb,consigner)";
+            /**码头作业信息进行封装*/
+            DockWorkInformation dwi = new DockWorkInformation();
+            dwi.setAPPLIID((String) appliid);
+            dwi.setLINKMANNM((String)linkmannm);
+            dwi.setTELEPHONENUMNB((String)telephonenumnb);
+            dwi.setCONSIGNER((String)consigner);
+
+
+            //String sql="insert into V_WH_WHZYSBD (APPLIID,LINKMANNM,TELEPHONENUMNB,CONSIGNER) values (appliid,linkmannm,telephonenumnb,consigner)";
 
         }
     }
