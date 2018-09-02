@@ -11,7 +11,9 @@ public class RequestDao {
         QueryRunner queryRunner=new QueryRunner(JDBCUtils.getDataSource());
 
         String sql="insert into v_wh_whzysbd (APPLIID,LINKMANNM,TELEPHONENUMNB,CONSIGNER) values (?,?,?,?)";
+//        String sql="insert into v_wh_whzysbd ('APPLIID','LINKMANNM','TELEPHONENUMNB','CONSIGNER') values (?,?,?,?)";
         Object[] params ={dwi.getAPPLIID(),dwi.getLINKMANNM(),dwi.getTELEPHONENUMNB(),dwi.getCONSIGNER()};
+        String linkmannm = dwi.getLINKMANNM();
         queryRunner.update(sql,params);
     }
 }
