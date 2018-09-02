@@ -7,4 +7,5 @@ ghsjzxServices
 	5 主要工程完毕
 	6 数据正常插入
 	7 持续更新
+	8 删除多余class
 

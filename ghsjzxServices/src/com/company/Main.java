@@ -3,7 +3,7 @@ package com.company;
 import com.hthj.data.domain.DockWorkInformation;
 import com.hthj.data.services.Ghsjzx;
 import com.hthj.data.services.GhsjzxService_Service;
-import com.hthj.data.setvice.RequestService;
+import com.hthj.data.service.RequestService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
@@ -22,7 +22,7 @@ public class Main {
 
         //码头作业信息
         String s = ghsjzxPort.ghsjzxService("HH_ZHGS", "HH_ZHGS",
-                1, 3000, "V_WH_WHZYSBD", "0");
+                2, 2, "V_WH_WHZYSBD", "0");
 
         //港口企业数据
         /*String ss = ghsjzxPort.ghsjzxService("HH_ZHGS", "HH_ZHGS",
