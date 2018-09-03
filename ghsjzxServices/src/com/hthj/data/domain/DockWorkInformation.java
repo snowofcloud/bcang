@@ -8,7 +8,7 @@ public class DockWorkInformation {
     private String TELEPHONENUMNB;
     private String CONSIGNER;
     private String CONSIGNERTELNB;
-    private Date PLANSTARTDATEDT;
+    private String PLANSTARTDATEDT;
     private String PLANWORKTIME;
     private String CARRIERDEPARTNM;
     private String CARRIERSHIPNM;
@@ -131,11 +131,11 @@ public class DockWorkInformation {
         this.CONSIGNERTELNB = CONSIGNERTELNB;
     }
 
-    public Date getPLANSTARTDATEDT() {
+    public String getPLANSTARTDATEDT() {
         return PLANSTARTDATEDT;
     }
 
-    public void setPLANSTARTDATEDT(Date PLANSTARTDATEDT) {
+    public void setPLANSTARTDATEDT(String PLANSTARTDATEDT) {
         this.PLANSTARTDATEDT = PLANSTARTDATEDT;
     }
 

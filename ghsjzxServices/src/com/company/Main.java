@@ -25,7 +25,7 @@ public class Main {
 
         /**获取码头作业信息*/
         String s = ghsjzxPort.ghsjzxService("HH_ZHGS", "HH_ZHGS",
-                5, 3, "V_WH_WHZYSBD", "0");
+                1, 1, "V_WH_WHZYSBD", "0");
 
         /**获取港口企业数据*/
         /*String ss = ghsjzxPort.ghsjzxService("HH_ZHGS", "HH_ZHGS",
@@ -47,13 +47,11 @@ public class Main {
         for (int i = 0; i < jsonArray.size(); i++) {
             count++;
             JSONObject jsonObject = JSONObject.fromObject(jsonArray.get(i));
-            //System.out.println(jsonObject.toString());//对象 {key:value,key1:value1,...,keyN:valueN}
 
             DockWorkInformation dwi = DataTransformUtils.getData(jsonObject);
 
             /**把dwi转发到serlet*/
             RequestService requestService = new RequestService();
-            //requestService.saveData(DockWorkInformation dwi);
             requestService.saveData(dwi);
         }
         System.out.println("本次插入"+count+"条数据,总共插入");
