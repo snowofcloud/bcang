@@ -10,4 +10,5 @@ ghsjzxServices
 	8 删除多余class
 	9 修复中文乱码
 	10 Dates数据类型转化
+	11 数据正常插入
 

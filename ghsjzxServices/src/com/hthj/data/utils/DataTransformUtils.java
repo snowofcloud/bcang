@@ -16,7 +16,7 @@ public class DataTransformUtils {
         Object consigner = jsonObject.get("CONSIGNER");
         Object consignertelnb = jsonObject.get("CONSIGNERTELNB");
         Object planstartdatedt = jsonObject.get("PLANSTARTDATEDT");
-        System.out.println(planstartdatedt);
+
         Object planworktime = jsonObject.get("PLANWORKTIME");
         Object carrierdepartnm = jsonObject.get("CARRIERDEPARTNM");
         Object carriershipnm = jsonObject.get("CARRIERSHIPNM");
@@ -76,6 +76,7 @@ public class DataTransformUtils {
         Object emergency_team = jsonObject.get("EMERGENCY_TEAM");
         Object marine_status = jsonObject.get("MARINE_STATUS");
         Object draught = jsonObject.get("DRAUGHT");
+
         Object ship_length = jsonObject.get("SHIP_LENGTH");
         Object ship_cert_no = jsonObject.get("SHIP_CERT_NO");
         Object cert_valid_date = jsonObject.get("CERT_VALID_DATE");
@@ -92,6 +93,7 @@ public class DataTransformUtils {
         Object is_read = jsonObject.get("IS_READ");
         Object sjc = jsonObject.get("SJC");
         Object tszt_q = jsonObject.get("TSZT_Q");
+//        System.out.println(tszt_q);
         Object tszt_h = jsonObject.get("TSZT_H");
         Object report_type = jsonObject.get("REPORT_TYPE");
 
@@ -108,7 +110,7 @@ public class DataTransformUtils {
         dwi.setCARRIERSHIPNM((String)carriershipnm);
         dwi.setCARRIERVOYAGENM((String)carriervoyagenm);
         dwi.setSHIPCHECKLOADNB((String)shipcheckloadnb);
-        dwi.setARRIVEDATEDT((Date)arrivedatedt);
+        dwi.setARRIVEDATEDT((String)arrivedatedt);
         dwi.setSPECIALDEMAND((String)specialdemand);
         dwi.setWORKDOCKID((String)workdockid);
         dwi.setWORKDOCKNAME((String)workdockname);
@@ -122,10 +124,10 @@ public class DataTransformUtils {
         dwi.setSHIPWORKTYPEID((String)shipworktypeid);
         dwi.setAUDITSTATENM((String)auditstatenm);
         dwi.setAUDITMANID((String)auditmanid);
-        dwi.setAUDITDATEDT((Date)auditdatedt);
+        dwi.setAUDITDATEDT((String)auditdatedt);
         dwi.setAUDITNOTE((String)auditnote);
         dwi.setSENDMANID((String)sendmanid);
-        dwi.setSENDDATEDT((Date)senddatedt);
+        dwi.setSENDDATEDT((String)senddatedt);
         dwi.setSENDMANNAME((String)sendmanname);
         dwi.setISIN((String)isin);
         dwi.setISAPPEND((String)isappend);
@@ -137,10 +139,10 @@ public class DataTransformUtils {
         dwi.setBACKAPPLYNOTE((String)backapplynote);
         dwi.setORG_NAME((String)org_name);
         dwi.setOU((String)ou);
-        dwi.setCREATE_TIME((Date)create_time);
+        dwi.setCREATE_TIME((String)create_time);
         dwi.setUSER_ID((String)user_id);
         dwi.setUSER_NAME((String)user_name);
-        dwi.setUPDATE_TIME((Date)update_time);
+        dwi.setUPDATE_TIME((String)update_time);
         dwi.setOPERATOR((String)operator);
         dwi.setOPERATORNAME((String)operatorname);
         dwi.setRESERVE1((String)reserve1);
@@ -162,24 +164,24 @@ public class DataTransformUtils {
         dwi.setEMERGENCY_RESPONSE((String)emergency_response);
         dwi.setEMERGENCY_TEAM((String)emergency_team);
         dwi.setMARINE_STATUS((String)marine_status);
-        dwi.setDRAUGHT((int)draught);
-        dwi.setSHIP_LENGTH((int)ship_length);
+        dwi.setDRAUGHT((String)draught);
+        dwi.setSHIP_LENGTH((String)ship_length);
         dwi.setSHIP_CERT_NO((String)ship_cert_no);
-        dwi.setCERT_VALID_DATE((Date)cert_valid_date);
+        dwi.setCERT_VALID_DATE((String)cert_valid_date);
         dwi.setMARINE_APP_NO((String)marine_app_no);
-        dwi.setMARINE_APP_TIME((Date)marine_app_time);
+        dwi.setMARINE_APP_TIME((String)marine_app_time);
         dwi.setMARINE_PAPER_FLAG((String)marine_paper_flag);
         dwi.setMESSAGE_FLAG((String)message_flag);
         dwi.setMESSAGE_REFNO((String)message_refno);
         dwi.setNEW_MESSAGE_REFNO((String)new_message_refno);
         dwi.setREMARK((String)remark);
-        dwi.setXML_MODIFY_NUM((int)xml_modify_num);
+        dwi.setXML_MODIFY_NUM((String)xml_modify_num);
         dwi.setIN_PORT((String)in_port);
-        dwi.setIS_DELETE((int)is_delete);
-        dwi.setIS_READ((int)is_read);
-        dwi.setSJC((Date)sjc);
-        dwi.setTSZT_Q((char)tszt_q);
-        dwi.setTSZT_H((char)tszt_h);
+        dwi.setIS_DELETE((String)is_delete);
+        dwi.setIS_READ((String)is_read);
+        dwi.setSJC((String)sjc);
+        dwi.setTSZT_Q((String)tszt_q);
+        dwi.setTSZT_H((String)tszt_h);
         dwi.setREPORT_TYPE((String)report_type);
         /**返回dwi*/
         return dwi;

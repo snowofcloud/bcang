@@ -15,7 +15,7 @@ public class DockWorkInformation {
     private String CARRIERVOYAGENM;
 
     private String SHIPCHECKLOADNB;
-    private Date ARRIVEDATEDT;
+    private String ARRIVEDATEDT;
     private String SPECIALDEMAND;
     private String WORKDOCKID;
     private String WORKDOCKNAME;
@@ -30,11 +30,11 @@ public class DockWorkInformation {
     private String AUDITSTATENM;
 
     private String AUDITMANID;
-    private Date AUDITDATEDT;
+    private String AUDITDATEDT;
     private String AUDITNOTE;
     private String SENDMANID;
     private String SENDMANNAME;
-    private Date SENDDATEDT;
+    private String SENDDATEDT;
     private String ISIN;
     private String ISAPPEND;
     private String AUDITDEPARTID;
@@ -45,10 +45,10 @@ public class DockWorkInformation {
     private String ORG_NAME;
     private String OU;
 
-    private Date CREATE_TIME;
+    private String CREATE_TIME;
     private String USER_ID;
     private String USER_NAME;
-    private Date UPDATE_TIME;
+    private String UPDATE_TIME;
     private String OPERATOR;
     private String OPERATORNAME;
     private String RESERVE1;
@@ -71,24 +71,24 @@ public class DockWorkInformation {
     private String EMERGENCY_RESPONSE;
     private String EMERGENCY_TEAM;
     private String MARINE_STATUS;
-    private int DRAUGHT;
-    private int SHIP_LENGTH;
+    private String DRAUGHT;
+    private String SHIP_LENGTH;
     private String SHIP_CERT_NO;
-    private Date CERT_VALID_DATE;
+    private String CERT_VALID_DATE;
     private String MARINE_APP_NO;
-    private Date MARINE_APP_TIME;
+    private String MARINE_APP_TIME;
     private String MARINE_PAPER_FLAG;
     private String MESSAGE_FLAG;
     private String MESSAGE_REFNO;
     private String NEW_MESSAGE_REFNO;
     private String REMARK;
-    private int XML_MODIFY_NUM;
+    private String XML_MODIFY_NUM;
     private String IN_PORT;
-    private int IS_DELETE;
-    private int IS_READ;
-    private Date SJC;
-    private char TSZT_Q;
-    private char TSZT_H;
+    private String IS_DELETE;
+    private String IS_READ;
+    private String SJC;
+    private String TSZT_Q;
+    private String TSZT_H;
     private String REPORT_TYPE;
 
     public String getAPPLIID() {
@@ -179,11 +179,11 @@ public class DockWorkInformation {
         this.SHIPCHECKLOADNB = SHIPCHECKLOADNB;
     }
 
-    public Date getARRIVEDATEDT() {
+    public String getARRIVEDATEDT() {
         return ARRIVEDATEDT;
     }
 
-    public void setARRIVEDATEDT(Date ARRIVEDATEDT) {
+    public void setARRIVEDATEDT(String ARRIVEDATEDT) {
         this.ARRIVEDATEDT = ARRIVEDATEDT;
     }
 
@@ -291,11 +291,11 @@ public class DockWorkInformation {
         this.AUDITMANID = AUDITMANID;
     }
 
-    public Date getAUDITDATEDT() {
+    public String getAUDITDATEDT() {
         return AUDITDATEDT;
     }
 
-    public void setAUDITDATEDT(Date AUDITDATEDT) {
+    public void setAUDITDATEDT(String AUDITDATEDT) {
         this.AUDITDATEDT = AUDITDATEDT;
     }
 
@@ -323,11 +323,11 @@ public class DockWorkInformation {
         this.SENDMANNAME = SENDMANNAME;
     }
 
-    public Date getSENDDATEDT() {
+    public String getSENDDATEDT() {
         return SENDDATEDT;
     }
 
-    public void setSENDDATEDT(Date SENDDATEDT) {
+    public void setSENDDATEDT(String SENDDATEDT) {
         this.SENDDATEDT = SENDDATEDT;
     }
 
@@ -403,11 +403,11 @@ public class DockWorkInformation {
         this.OU = OU;
     }
 
-    public Date getCREATE_TIME() {
+    public String getCREATE_TIME() {
         return CREATE_TIME;
     }
 
-    public void setCREATE_TIME(Date CREATE_TIME) {
+    public void setCREATE_TIME(String CREATE_TIME) {
         this.CREATE_TIME = CREATE_TIME;
     }
 
@@ -427,11 +427,11 @@ public class DockWorkInformation {
         this.USER_NAME = USER_NAME;
     }
 
-    public Date getUPDATE_TIME() {
+    public String getUPDATE_TIME() {
         return UPDATE_TIME;
     }
 
-    public void setUPDATE_TIME(Date UPDATE_TIME) {
+    public void setUPDATE_TIME(String UPDATE_TIME) {
         this.UPDATE_TIME = UPDATE_TIME;
     }
 
@@ -603,19 +603,19 @@ public class DockWorkInformation {
         this.MARINE_STATUS = MARINE_STATUS;
     }
 
-    public int getDRAUGHT() {
+    public String getDRAUGHT() {
         return DRAUGHT;
     }
 
-    public void setDRAUGHT(int DRAUGHT) {
+    public void setDRAUGHT(String DRAUGHT) {
         this.DRAUGHT = DRAUGHT;
     }
 
-    public int getSHIP_LENGTH() {
+    public String getSHIP_LENGTH() {
         return SHIP_LENGTH;
     }
 
-    public void setSHIP_LENGTH(int SHIP_LENGTH) {
+    public void setSHIP_LENGTH(String SHIP_LENGTH) {
         this.SHIP_LENGTH = SHIP_LENGTH;
     }
 
@@ -627,11 +627,11 @@ public class DockWorkInformation {
         this.SHIP_CERT_NO = SHIP_CERT_NO;
     }
 
-    public Date getCERT_VALID_DATE() {
+    public String getCERT_VALID_DATE() {
         return CERT_VALID_DATE;
     }
 
-    public void setCERT_VALID_DATE(Date CERT_VALID_DATE) {
+    public void setCERT_VALID_DATE(String CERT_VALID_DATE) {
         this.CERT_VALID_DATE = CERT_VALID_DATE;
     }
 
@@ -643,11 +643,11 @@ public class DockWorkInformation {
         this.MARINE_APP_NO = MARINE_APP_NO;
     }
 
-    public Date getMARINE_APP_TIME() {
+    public String getMARINE_APP_TIME() {
         return MARINE_APP_TIME;
     }
 
-    public void setMARINE_APP_TIME(Date MARINE_APP_TIME) {
+    public void setMARINE_APP_TIME(String MARINE_APP_TIME) {
         this.MARINE_APP_TIME = MARINE_APP_TIME;
     }
 
@@ -691,11 +691,11 @@ public class DockWorkInformation {
         this.REMARK = REMARK;
     }
 
-    public int getXML_MODIFY_NUM() {
+    public String getXML_MODIFY_NUM() {
         return XML_MODIFY_NUM;
     }
 
-    public void setXML_MODIFY_NUM(int XML_MODIFY_NUM) {
+    public void setXML_MODIFY_NUM(String XML_MODIFY_NUM) {
         this.XML_MODIFY_NUM = XML_MODIFY_NUM;
     }
 
@@ -707,43 +707,43 @@ public class DockWorkInformation {
         this.IN_PORT = IN_PORT;
     }
 
-    public int getIS_DELETE() {
+    public String getIS_DELETE() {
         return IS_DELETE;
     }
 
-    public void setIS_DELETE(int IS_DELETE) {
+    public void setIS_DELETE(String IS_DELETE) {
         this.IS_DELETE = IS_DELETE;
     }
 
-    public int getIS_READ() {
+    public String getIS_READ() {
         return IS_READ;
     }
 
-    public void setIS_READ(int IS_READ) {
+    public void setIS_READ(String IS_READ) {
         this.IS_READ = IS_READ;
     }
 
-    public Date getSJC() {
+    public String getSJC() {
         return SJC;
     }
 
-    public void setSJC(Date SJC) {
+    public void setSJC(String SJC) {
         this.SJC = SJC;
     }
 
-    public char getTSZT_Q() {
+    public String getTSZT_Q() {
         return TSZT_Q;
     }
 
-    public void setTSZT_Q(char TSZT_Q) {
+    public void setTSZT_Q(String TSZT_Q) {
         this.TSZT_Q = TSZT_Q;
     }
 
-    public char getTSZT_H() {
+    public String getTSZT_H() {
         return TSZT_H;
     }
 
-    public void setTSZT_H(char TSZT_H) {
+    public void setTSZT_H(String TSZT_H) {
         this.TSZT_H = TSZT_H;
     }
 
