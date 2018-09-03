@@ -5,10 +5,14 @@
     <property name="driverClass">com.mysql.jdbc.Driver</property>
 	<!--<property name="jdbcUrl">jdbc:mysql:///weihuapin</property>-->
 	<!--<property name="jdbcUrl">jdbc:mysql://localhost:3306/weihuapin?useUnicode=true&amp;characterEncoding=UTF8</property>-->
-	 <property name="jdbcUrl">jdbc:mysql://localhost:3306/yydata?useUnicode=true&amp;characterEncoding=UTF8</property>
-	 <!-- jdbc:mysql://ricky.test.com:3306/data_production?useUnicode=true&characterEncoding=UTF8-->
-	<property name="user">root2</property>
+	<!--<property name="jdbcUrl">jdbc:mysql://localhost:3306/yydata?useUnicode=true&amp;characterEncoding=UTF8</property>-->
+	  <!--公司危化品数据库-->
+	 <property name="jdbcUrl">jdbc:mysql://192.168.1.150:3306/weihuapin?useUnicode=true&amp;characterEncoding=UTF8</property>
+	<property name="user">root</property>
 	<property name="password">123456</property>
+	  <!--本地自己的-->
+	<!--<property name="user">root2</property>
+	<property name="password">123456</property>-->
 	<property name="initialPoolSize">10</property>
 	<property name="maxPoolSize">20</property>
   </default-config>

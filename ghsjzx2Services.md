@@ -1,4 +1,4 @@
-ghsjzxServices
+ghsjzx2Services
 
 	1 抽取webservice接口数据，获取相关数据
 	2 web工程搭建
