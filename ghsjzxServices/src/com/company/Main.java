@@ -25,7 +25,7 @@ public class Main {
 
         /**获取码头作业信息*/
         String s = ghsjzxPort.ghsjzxService("HH_ZHGS", "HH_ZHGS",
-                1, 1, "V_WH_WHZYSBD", "0");
+                1, 10000, "V_WH_WHZYSBD", "0");
 
         /**获取港口企业数据*/
         /*String ss = ghsjzxPort.ghsjzxService("HH_ZHGS", "HH_ZHGS",
@@ -33,6 +33,7 @@ public class Main {
 
         /**将数据打印到日志里面*/
         //log.info(ss);
+        //System.out.println(s);
 
         /**将String数据转化为JSON数据*/
         JSONObject responseJson = JSONObject.fromObject(s);
@@ -43,6 +44,7 @@ public class Main {
         JSONArray jsonArray = JSONArray.fromObject(data );
         //System.out.println(jsonArray); 集合可以遍历   [{key:value,key1:value1,...,keyN:valueN},{key:value,key1:value1,...}]
         /**统计插入数据数量*/
+
         int count = 0;
         for (int i = 0; i < jsonArray.size(); i++) {
             count++;
@@ -54,7 +56,9 @@ public class Main {
             RequestService requestService = new RequestService();
             requestService.saveData(dwi);
         }
+
         System.out.println("本次插入"+count+"条数据,总共插入");
+
     }
 
 

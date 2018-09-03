@@ -4,7 +4,8 @@
   <default-config>
     <property name="driverClass">com.mysql.jdbc.Driver</property>
 	<!--<property name="jdbcUrl">jdbc:mysql:///weihuapin</property>-->
-	<property name="jdbcUrl">jdbc:mysql://localhost:3306/weihuapin?useUnicode=true&amp;characterEncoding=UTF8</property>
+	<!--<property name="jdbcUrl">jdbc:mysql://localhost:3306/weihuapin?useUnicode=true&amp;characterEncoding=UTF8</property>-->
+	 <property name="jdbcUrl">jdbc:mysql://localhost:3306/yydata?useUnicode=true&amp;characterEncoding=UTF8</property>
 	 <!-- jdbc:mysql://ricky.test.com:3306/data_production?useUnicode=true&characterEncoding=UTF8-->
 	<property name="user">root2</property>
 	<property name="password">123456</property>
