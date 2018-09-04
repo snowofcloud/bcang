@@ -1,6 +1,6 @@
 package com.company;
 
-import com.hthj.data.domain.PortEnterpriseData;
+import com.hthj.data.domain.DockWorkInformation;
 import com.hthj.data.service.RequestService;
 import com.hthj.data.services.Ghsjzx;
 import com.hthj.data.services.GhsjzxService_Service;
@@ -8,7 +8,6 @@ import com.hthj.data.utils.DataTransformUtils;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
-
 import java.sql.SQLException;
 
 public class Main {
@@ -25,20 +24,19 @@ public class Main {
         Ghsjzx ghsjzxPort = ghsjzxService_service.getGhsjzxPort();
 
         /**获取码头作业信息*/
-        /*String s = ghsjzxPort.ghsjzxService("HH_ZHGS", "HH_ZHGS",
-                4, 10000, "V_WH_WHZYSBD", "0");*/
+        String s = ghsjzxPort.ghsjzxService("HH_ZHGS", "HH_ZHGS",
+                5, 20000, "V_WH_WHZYSBD", "0");
 
         /**获取港口企业数据*/
-        String ss = ghsjzxPort.ghsjzxService("HH_ZHGS", "HH_ZHGS",
-                1, 1000, "V_WH_SBQYXX", "0");
-        //每次每页获取一千条数据
+        /*String ss = ghsjzxPort.ghsjzxService("HH_ZHGS", "HH_ZHGS",
+                1, 10, "V_WH_SBQYXX", "0");*/
 
         /**将数据打印到日志里面*/
         //log.info(ss);
-//        System.out.println(ss);
+        //System.out.println(s);
 
         /**将String数据转化为JSON数据*/
-        JSONObject responseJson = JSONObject.fromObject(ss);
+        JSONObject responseJson = JSONObject.fromObject(s);
 
         /**获取data数据*/
         Object data = responseJson.get("data");
@@ -52,11 +50,11 @@ public class Main {
             JSONObject jsonObject = JSONObject.fromObject(jsonArray.get(i));
 
             /**将查询的数据封装到对象DockWorkInformation*/
-            PortEnterpriseData ped = DataTransformUtils.getData(jsonObject);
+            DockWorkInformation dwi = DataTransformUtils.getData(jsonObject);
 
-            /**对象DockWorkInformation里的数据获取，通过sql存入MySql*/
+           /**对象DockWorkInformation里的数据获取，通过sql存入MySql*/
             RequestService requestService = new RequestService();
-            requestService.saveData(ped);
+            requestService.saveData(dwi);
         }
 
         System.out.println("本次插入"+count+"条数据.");
