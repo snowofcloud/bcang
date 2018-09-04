@@ -8,8 +8,8 @@ public class Study {
         int i = a.indexOf(0);
         System.out.println(i);*/
 
-        /**测试系统时间*/
-        long start = System.currentTimeMillis();
+        /**测试总耗时*/
+       /* long start = System.currentTimeMillis();
         int[] arr = new int[100000000];
         arr[0] = 1;
         for (int i = 0; i <arr.length-1 ; i++) {
@@ -21,8 +21,18 @@ public class Study {
         long totalSeconds = total / 1000;
         long totalMintues = totalSeconds / 60;
         long totalHours = totalMintues / 60;
-        System.out.println(totalHours+"时="+totalMintues+"分="+totalSeconds+"秒="+total+"毫秒");
+        System.out.println(totalHours+"时="+totalMintues+"分="+totalSeconds+"秒="+total+"毫秒");*/
 
+       /**测试系统时间*/
+        long totalMillisSeconds=System.currentTimeMillis();
+        long totalSeconds=totalMillisSeconds/1000;
+        int nowSeconds=(int)totalSeconds%60;
+        long totalMinutes=totalSeconds/60;
+        int nowMinutes=(int)totalMinutes%60;
+        long totalHours=totalMinutes/60;
+        int nowHours=(int)totalHours%24;
+        System.out.println(totalMillisSeconds);
+        System.out.println("GMT Time is :  "+nowHours+":"+nowMinutes+":"+nowSeconds);
 
 
     }
