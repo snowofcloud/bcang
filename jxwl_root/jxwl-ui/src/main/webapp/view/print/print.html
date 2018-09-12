@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/JXWL/js/lib/bootstrap-3.3.4/css/bootstrap.css"/>
+    <title>打印页面</title>
+    <link rel="shortcut icon" href="/GDYY/images/icon/gdyy_logo.ico" type="image/x-icon">
+    <style>
+    	html{
+			min-height: 100%;
+  			background: linear-gradient(to bottom, rgba(204, 204, 204, 0.45), #fff);
+  			min-width: 1024px;
+    	}
+    	body{
+    		background: rgba(255, 255, 255, 0);
+    	}
+    	.container-print{
+			width: 90%;
+			height: auto;
+			margin: 0 auto;
+			box-sizing: content-box;
+			border: 1px solid #ccc;
+			box-shadow: 0 0 3px 1px #ccc;
+			border-radius: 4px;
+			background-color: #fff;
+			margin-bottom: 20px;
+  		}
+  		.top-menu{
+  			height: 60px;
+			border-bottom: 1px solid #ccc;
+			margin-bottom: 40px;
+			box-shadow: 0 0 8px 3px #ccc;
+  		}
+  		.col-xs-2{
+  		  	height: 60px;
+  		  	line-height: 60px;
+		  	font-size: 35px;
+		  	padding-left: 2%;
+		  	background-color: rgba(43, 87, 154, 0.88);
+		  	color: #fff;
+  		}
+  		.col-xs-10{
+  			background-color: rgba(0, 0, 0, 0.66);
+  			height: 60px;
+			padding-left: 234px;
+			line-height: 60px;
+  		}
+  		.col-xs-10 > a{
+  			float: right;
+  			margin-top: 7px;
+  		}
+  		@media screen and (max-width: 1300px) {
+			.col-xs-2{
+			  	font-size: 30px;
+	  		}
+		}
+    </style>
+</head>
+<body>
+	<div class="top-menu">
+		<div class="row">
+			<div class="col-xs-2">
+				<span>打印预览</span>
+			</div>
+			<div class="col-xs-10">
+				<button type="button" class="btn btn-success btn-lg" onclick="printPage()">
+					<span class="glyphicon glyphicon-print"></span>&nbsp;打印
+				</button>
+				&nbsp;&nbsp;
+				<a class="btn btn-default btn-lg" href="javascript:window.close()">
+					<span class="glyphicon glyphicon-remove"></span>
+				</a>
+			</div>
+		</div>
+	</div>
+    <div id="container" class="container-print">
+    	
+    </div>
+    <script src="/JXWL/js/lib/jquery/jquery-1.11.2.min.js"></script>
+    <script>
+    	$(function(){
+    		iframeLoad();
+    	});
+    	function iframeLoad(){
+    		//自适应高度
+    		var url = window.sessionStorage.getItem("url");
+    		var data = JSON.parse(window.sessionStorage.getItem("data"));
+    		var dataItem =  JSON.parse(window.sessionStorage.getItem("dataItem"));
+    		$("#container").append('<iframe id="window-panel" width="100%" frameborder="0" height="944" scrolling="no" src="/JXWL/view/print/goodsTrade/wayBillManage/waybill.html"></iframe>');
+    		
+    		var printContent = document.getElementById("window-panel").contentWindow;
+    		printContent.printWindowData = data;
+    		printContent.printWindowDataItem = dataItem;
+    		
+    		
+    	}   
+    	function printPage(){
+    		var page = document.getElementById("window-panel");
+    		if(document.forms['window-panel'] == null){
+    			page.contentWindow.focus();
+    			page.contentWindow.print();	
+    		}else{
+    			document.forms['window-panel'].focus();
+    			document.forms['window-panel'].print();
+    		}
+    	}
+    </script>
+</body>
+</html>

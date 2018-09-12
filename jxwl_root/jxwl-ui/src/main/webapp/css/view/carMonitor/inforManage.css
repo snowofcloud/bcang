@@ -1,0 +1,100 @@
+@charset "UTF-8";
+
+/* 物流信息 */
+
+.tabMinWidth{
+	min-width: 1280px;
+}
+#check-logisticst-panel .verify-park-info .row{
+	  margin-left: 20px;
+	  margin-bottom: 0px
+}
+
+#inforMag-tabs li{
+	width:160px
+}
+#inforMag-tabs li a{
+	padding-left: 0px;
+	padding-right: 0px;
+	font-size: 16px;
+}
+
+ .twoSpan >div:nth-child(1){
+	 margin-left: 4px;
+}
+.twoSpan >div:nth-child(2){
+	margin-left: -4px;
+}
+
+.panel-body-content .row .oneSpan{
+	margin-left: 20px;
+ }
+
+.fileDetails{
+	  margin-top: 6px;
+}
+
+.img-priview:after {
+    content: url(/JXWL/images/icon/previewIcon.png);
+    vertical-align: middle;
+}
+
+
+
+/*移动APP模块二级Tab标签样式*/
+#removalApp-tabs{
+	background-color: #0F4576;
+	border-bottom: 1px solid #0D5BB2;
+}
+
+#removalApp-tabs li{
+	margin: 10px;
+  	background-color: #0F4576;
+  	border:1px solid #83F7F5;
+}
+
+#removalApp-tabs a{
+	color: #83F7F5;
+	font-size: 15px;
+	padding-left: 26px;
+    padding-right: 16px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+/* 企业信息模块表单特殊输入框 */
+.width-formElement{
+	width: 467px;
+}
+
+
+.alarm-input{
+	width: 445px;
+}
+
+.subtitleIco{
+	background-color: rgb(157, 199, 55);
+	width: 10px;
+	height: 32px;
+	float: left;
+}
+.accountVerify-amount{
+	  position: relative;
+  	  left: 6px;
+}
+.rejectContent{
+	  background-color: rgba(127, 132, 147, 0.46);
+}
+.circleOne{
+  width: 22px;
+  height: 22px;
+  border-radius: 11px;
+   position: absolute;
+ left: 805px;
+  top: 220px;
+  background: #90BB2D;
+}
+.circleTwo{
+  left: 800px;
+}
+ 

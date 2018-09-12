@@ -1,0 +1,826 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.c503.sc.jxwl.vehiclemonitor.dao.IDangerVehicleDao" >
+  <resultMap id="BaseResultMap" type="com.c503.sc.jxwl.zcpt.bean.DangerVehicleEntity" >
+    <id column="ID"                     property="id"               jdbcType="VARCHAR" />
+    <result column="CORPORATE_NO"       property="corporateNo"      jdbcType="VARCHAR" />
+    <result column="ENTERPRISE_ID"      property="enterpriseId"     jdbcType="VARCHAR" />
+    <result column="ENTERPRISE_NAME"    property="enterpriseName"   jdbcType="VARCHAR" />
+    <result column="TERMINAL_ID"        property="terminalId"       jdbcType="VARCHAR" />
+    <result column="LICENCE_PLATE_NO"   property="licencePlateNo"   jdbcType="VARCHAR" />
+    <result column="VEHICLE_BRAND"      property="vehicleBrand"     jdbcType="VARCHAR" />
+    <result column="VEHICLE_BRAND_TYPE" property="vehicleBrandType" jdbcType="VARCHAR" />
+    <result column="VEHICLE_COLOR"      property="vehicleColor"     jdbcType="VARCHAR" />
+    <result column="VEHICLE_TYPE"       property="vehicleType"      jdbcType="VARCHAR" />
+    <result column="VEHICLE_OUTPUT"     property="vehicleOutput"    jdbcType="VARCHAR" />
+    <result column="MOTOR_NO"           property="motorNo"          jdbcType="VARCHAR" />
+    <result column="CROSS_DOMAIN_TYPE"  property="crossDomainType"  jdbcType="VARCHAR" />
+    <result column="GRADUADED_NO"       property="graduadedNo"      jdbcType="VARCHAR" />
+    <result column="VEHICLE_NO"         property="vehicleNo"        jdbcType="CHAR" />
+    <result column="STATUS"             property="status"           jdbcType="CHAR" />
+    <result column="TRANSPORT_ROUTE"     property="transportRoute"           	jdbcType="VARCHAR" />
+    <result column="GOODSTYPE"           property="goodstype" jdbcType="VARCHAR" />
+    <result column="QUANTITY"            property="quantity"  jdbcType="VARCHAR" />
+    <result column="MAX_LOAD_WEIGHT"             				property="maxLoadWeight"           		jdbcType="VARCHAR" />
+    <result column="CONTACTPHONE"             					property="contactPhone"           		jdbcType="VARCHAR" />
+    <result column="CREATE_BY"          property="createBy"         jdbcType="VARCHAR" />
+    <result column="CREATE_TIME"        property="publishDate"       jdbcType="TIMESTAMP" />
+    <result column="UPDATE_BY"          property="updateBy"         jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME"        property="updateTime"       jdbcType="TIMESTAMP" />
+    <result column="REMOVE"             property="remove"           jdbcType="CHAR" />
+    <!-- 额外添加字段 -->
+    <result column="FILE_NAME"     property="fileName"     jdbcType="VARCHAR" />
+    <result column="BLACK_STATUS"     property="blackStatus"     jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="BaseResultMap2" type="com.c503.sc.jxwl.zcpt.bean.DangerVehicleEntity" extends="BaseResultMap">
+    <collection property="dangerFileRela" ofType="com.c503.sc.jxwl.zcpt.bean.DangerFileRelaEntity">
+      <result column="FILE_ID"     property="fileId"      jdbcType="VARCHAR"/>
+      <result column="FILE_NAME"   property="fileName"    jdbcType="VARCHAR"/>
+    </collection>
+  </resultMap>
+  
+  <resultMap id="BaseResultMap3" type="com.c503.sc.jxwl.common.bean.LocationEntity" extends="BaseResultMap">
+	<id column="CARRIER_NAME"           		property="carrierName"               jdbcType="VARCHAR" />
+    <result column="POINT_SOURCE_TYPE"       	property="orgin"      jdbcType="VARCHAR" />
+    <result column="ENTERPRISE_NAME"         	property="enterpriseName"      jdbcType="VARCHAR" />
+    <result column="ONLINE_STATUS"      		property="onlineStatus"     jdbcType="VARCHAR" />
+    <result column="POINT_TIME"    				property="gpstime"   jdbcType="TIMESTAMP" />
+    <result column="LONGITUDE"        			property="longitude"       jdbcType="DOUBLE" />
+    <result column="LATITUDE"   				property="latitude"   jdbcType="DOUBLE" />
+    <result column="ELEVATION"      			property="elevation"     jdbcType="DOUBLE" />
+    <result column="SPEED" 						property="speed" jdbcType="DOUBLE" />
+    <result column="DIRECTION"      			property="direction"     jdbcType="DOUBLE" />
+    <result column="TEMPERATURE"       			property="temperature"      jdbcType="DOUBLE" />
+    <result column="PRESSURE"     				property="pressure"    jdbcType="DOUBLE" />
+    <result column="LIQUID_LEVEL"     			property="liquidLevel"    jdbcType="DOUBLE" />
+    <result column="TYRE_PRESSURE"     			property="tirePressure"    jdbcType="DOUBLE" />
+    <result column="ALARM_NUM"     				property="alarmNum"    jdbcType="DECIMAL" />
+  </resultMap>
+  
+  <!-- 通过车牌号或运单号查询车辆时，需要此resultMap -->
+  <resultMap id="BaseResultMap4" type="java.util.Map">
+  	<result column="LICENCE_PLATE_NO"	property="licencePlateNo"	jdbcType="VARCHAR" />
+  	<result column="CHECKNO"			property="checkno"      	jdbcType="VARCHAR" />
+  	<result column="ENTERPRISE_NAME"    property="enterpriseName"   jdbcType="VARCHAR" />
+  	<result column="CORPORATE_NO"       property="corporateNo"      jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID, CORPORATE_NO, ENTERPRISE_ID, ENTERPRISE_NAME, TERMINAL_ID, LICENCE_PLATE_NO, VEHICLE_BRAND, VEHICLE_BRAND_TYPE, 
+    VEHICLE_COLOR, VEHICLE_TYPE, VEHICLE_OUTPUT, MOTOR_NO, CROSS_DOMAIN_TYPE, GRADUADED_NO, VEHICLE_NO, STATUS,
+    CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, REMOVE
+  </sql>
+  
+  <!-- 新增、编辑时判断车牌号唯一 -->
+  <select id="findLicencePlateNoExit" parameterType="String" resultType="String">
+  		SELECT LICENCE_PLATE_NO
+      		FROM T_DANGER_VEHICLE
+     		WHERE REMOVE = '0'
+       		AND LICENCE_PLATE_NO = #{licencePlateNo}
+     		<if test="id != null and id != ''">
+       			AND ID <![CDATA[<>]]> #{id}
+     		</if>
+       		AND ROWNUM = 1
+  </select>
+  
+  <!-- 新增、编辑时判断车牌号唯一 -->
+  <select id="findCodeByLicencePlateNo" parameterType="String" resultType="String">
+  		SELECT CORPORATE_NO
+      		FROM T_DANGER_VEHICLE
+     		WHERE REMOVE = '0'
+       		AND LICENCE_PLATE_NO = #{licencePlateNo}
+       		AND ROWNUM = 1
+  </select>
+  
+  <!-- 模糊查询当前登录物流企业下的车辆的车牌号 -->
+  <select id="findCarrierName" parameterType="map" resultType="String">
+  	SELECT T.LICENCE_PLATE_NO
+  	FROM T_DANGER_VEHICLE T
+ 	WHERE T.CORPORATE_NO = #{corporateNo,jdbcType=VARCHAR} 
+   		AND T.LICENCE_PLATE_NO LIKE '%'||#{carrierName,jdbcType=VARCHAR}||'%'
+   		AND T.REMOVE = '0'
+  </select>
+  
+  <!-- 通过id查询危险品车辆信息 -->
+  <select id="findById" parameterType="map" resultMap="BaseResultMap2" >
+	SELECT TA.ID,
+	       TA.CORPORATE_NO,
+	       TA.ENTERPRISE_ID,
+	       TA.TERMINAL_ID,
+	       TA.LICENCE_PLATE_NO,
+	       TA.VEHICLE_BRAND,
+	       TA.VEHICLE_BRAND_TYPE,
+	       TA.VEHICLE_COLOR,
+	       TA.VEHICLE_TYPE,
+	       TA.VEHICLE_OUTPUT,
+	       TA.MOTOR_NO,
+	       TA.CROSS_DOMAIN_TYPE,
+	       TA.GRADUADED_NO,
+	       TA.VEHICLE_NO,
+	       TA.TRANSPORT_ROUTE,
+	       TA.GOODSTYPE,
+	       TA.QUANTITY,
+	       TA.MAX_LOAD_WEIGHT,
+	       TA.CONTACTPHONE,
+	       TA.CREATE_TIME,
+	       TC.ID         AS FILE_ID, 
+	       TC.FILE_NAME,
+	       TD.ENTERPRISE_NAME,
+           <!-- 判断时间差值（30分钟内：在线） -->
+           CASE
+             WHEN (CEIL(((TO_DATE(#{curDate}, 'yyyy-mm-dd hh24-mi-ss') -
+                        TL.POINT_TIME)) * 24 * 60) &lt;= 30) THEN
+              '0' <!-- 在线 -->
+             ELSE
+              '1' <!-- 离线 -->
+           END STATUS
+	  FROM T_DANGER_VEHICLE TA
+	  LEFT JOIN T_DANGER_FILE_RELA  TB ON TA.ID = TB.DANGER_VEHICLE_ID
+	   AND TB.REMOVE = '0'
+	  LEFT JOIN T_FILE_UPLOAD TC ON TC.ID = TB.FILE_ID
+	   AND TC.REMOVE = '0'
+	  LEFT JOIN T_ENTERPRISE TD ON TD.CORPORATE_NO = TA.CORPORATE_NO
+	  LEFT JOIN T_CAR_LOCATION     TL ON TL.CARRIER_NAME = TA.LICENCE_PLATE_NO
+	 WHERE TA.ID = #{id}
+  </select>
+  
+  
+  <!-- 通过车牌号查询危险品车辆信息 -->
+  <select id="findByCarrierName" parameterType="map" resultMap="BaseResultMap2" >
+	SELECT TA.ID,
+	       TA.CORPORATE_NO,
+	       TA.ENTERPRISE_ID,
+	       TA.TERMINAL_ID,
+	       TA.LICENCE_PLATE_NO,
+	       TA.VEHICLE_BRAND,
+	       TA.VEHICLE_BRAND_TYPE,
+	       TA.VEHICLE_COLOR,
+	       TA.VEHICLE_TYPE,
+	       TA.VEHICLE_OUTPUT,
+	       TA.MOTOR_NO,
+	       TA.CROSS_DOMAIN_TYPE,
+	       TA.GRADUADED_NO,
+	       TA.VEHICLE_NO,
+	       TC.ID         AS FILE_ID, 
+	       TC.FILE_NAME,
+	       TD.ENTERPRISE_NAME,
+           <!-- 判断时间差值（30分钟内：在线） -->
+           CASE
+             WHEN (CEIL(((TO_DATE(#{curDate}, 'yyyy-mm-dd hh24-mi-ss') -
+                        TL.POINT_TIME)) * 24 * 60) &lt;= 30) THEN
+              '0' <!-- 在线 -->
+             ELSE
+              '1' <!-- 离线 -->
+           END STATUS
+	  FROM T_DANGER_VEHICLE TA
+	  LEFT JOIN T_DANGER_FILE_RELA  TB ON TA.ID = TB.DANGER_VEHICLE_ID
+	   AND TB.REMOVE = '0'
+	  LEFT JOIN T_FILE_UPLOAD TC ON TC.ID = TB.FILE_ID
+	   AND TC.REMOVE = '0'
+	  LEFT JOIN T_ENTERPRISE TD ON TD.CORPORATE_NO = TA.CORPORATE_NO
+	  LEFT JOIN T_CAR_LOCATION     TL ON TL.CARRIER_NAME = TA.LICENCE_PLATE_NO
+	 WHERE TA.LICENCE_PLATE_NO = #{carrierName, jdbcType=VARCHAR} <!-- TL.CARRIER_NAME = #{carrierName, jdbcType=VARCHAR} -->
+	 <!-- 此sql有缺陷，导致只有在T_CAR_LOCATION表中存在的车牌号才能查出来  建议换成TA.LICENCE_PLATE_NO = #{carrierName, jdbcType=VARCHAR}-->
+	 AND TA.REMOVE = '0'
+  </select>
+  
+  
+  
+ 	<!-- 分页查询危险品车辆信息 -->
+	<select id="findByParams" resultMap="BaseResultMap" parameterType="java.util.Map">
+		SELECT TB.ID,
+		       TB.ENTERPRISE_ID,
+		       TB.TERMINAL_ID,
+		       TB.CORPORATE_NO,
+		       TB.LICENCE_PLATE_NO,
+		       TB.VEHICLE_BRAND,
+		       TB.VEHICLE_COLOR,
+		       TB.VEHICLE_OUTPUT,
+		       TB.MOTOR_NO,
+		       TB.GRADUADED_NO,
+		       TB.VEHICLE_NO,
+		       TB.VEHICLE_BRAND_TYPE,
+		       TB.TRANSPORT_ROUTE,
+		       TB.GOODSTYPE,
+		       TB.QUANTITY,
+		       TB.MAX_LOAD_WEIGHT,
+		       TB.CONTACTPHONE,
+		       TB.CREATE_TIME,
+		       TC.NAME AS VEHICLE_TYPE,
+		       TD.NAME AS CROSS_DOMAIN_TYPE,
+		       TF.ENTERPRISE_NAME,
+               <!-- 判断时间差值（30分钟内：在线） -->
+               CASE
+                 WHEN (CEIL(((TO_DATE(#{curDate}, 'yyyy-mm-dd hh24-mi-ss') -
+                            TL.POINT_TIME)) * 24 * 60) &lt;= 30) THEN
+                  '0' <!-- 在线 -->
+                 ELSE
+                  '1' <!-- 离线 -->
+               END STATUS
+		FROM T_DANGER_VEHICLE TB 
+		LEFT JOIN T_DICTIONARY_VALUE TC ON TC.VALUE        = TB.VEHICLE_TYPE  
+		LEFT JOIN T_DICTIONARY_VALUE TD ON TD.VALUE        = TB.CROSS_DOMAIN_TYPE 
+		LEFT JOIN T_ENTERPRISE       TF ON TF.CORPORATE_NO = TB.CORPORATE_NO
+		LEFT JOIN T_CAR_LOCATION     TL ON TL.CARRIER_NAME = TB.LICENCE_PLATE_NO
+		<where>
+			AND TB.REMOVE = '0' 
+			AND TF.REMOVE = '0'
+			<if test="crossDomainType != null and crossDomainType != '' ">
+				AND TB.CROSS_DOMAIN_TYPE=#{crossDomainType, jdbcType=VARCHAR}
+			</if>
+			<if test="licencePlateNo != null and licencePlateNo != '' ">
+				AND TB.LICENCE_PLATE_NO LIKE CONCAT(CONCAT('%',#{licencePlateNo}),'%')
+			</if>
+			<if test="corporateNo != null and corporateNo != '' ">
+				AND TB.CORPORATE_NO=#{corporateNo, jdbcType=VARCHAR}
+			</if>
+			<if test="enterpriseName != null and enterpriseName != ''">
+		     AND (TF.ENTERPRISE_NAME LIKE CONCAT(CONCAT('%',#{enterpriseName}),'%')
+		      OR  TB.CORPORATE_NO LIKE CONCAT(CONCAT('%',#{enterpriseName}),'%')) 
+		   </if>
+		   <if test="vehicleSrcFlag != null and vehicleSrcFlag != '' ">
+				AND TB.VEHICLE_SRC_FLAG=#{vehicleSrcFlag, jdbcType=CHAR}
+			</if>
+		</where>
+		ORDER BY NLSSORT(TF.ENTERPRISE_NAME, 'NLS_SORT=SCHINESE_PINYIN_M') ASC, 
+     			 NLSSORT(TB.LICENCE_PLATE_NO, 'NLS_SORT=SCHINESE_PINYIN_M') ASC
+	</select>
+  
+  <!--保存危险品车辆信息  -->
+  <insert id="save" parameterType="com.c503.sc.jxwl.zcpt.bean.DangerVehicleEntity" >
+    insert into T_DANGER_VEHICLE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="corporateNo != null" >
+        CORPORATE_NO,
+      </if>
+      <if test="enterpriseId != null" >
+        ENTERPRISE_ID,
+      </if>
+      <if test="enterpriseName != null" >
+        ENTERPRISE_NAME,
+      </if>
+      <if test="terminalId != null" >
+        TERMINAL_ID,
+      </if>
+      <if test="licencePlateNo != null" >
+        LICENCE_PLATE_NO,
+      </if>
+      <if test="vehicleBrand != null" >
+        VEHICLE_BRAND,
+      </if>
+      <if test="vehicleBrandType != null" >
+        VEHICLE_BRAND_TYPE,
+      </if>
+      <if test="vehicleColor != null" >
+        VEHICLE_COLOR,
+      </if>
+      <if test="vehicleType != null" >
+        VEHICLE_TYPE,
+      </if>
+      <if test="vehicleOutput != null" >
+        VEHICLE_OUTPUT,
+      </if>
+      <if test="motorNo != null" >
+        MOTOR_NO,
+      </if>
+      <if test="crossDomainType != null" >
+        CROSS_DOMAIN_TYPE,
+      </if>
+      <if test="graduadedNo != null" >
+        GRADUADED_NO,
+      </if>
+      <if test="vehicleNo != null" >
+        VEHICLE_NO,
+      </if>
+      <if test="vehicleSrcFlag != null" >
+        VEHICLE_SRC_FLAG,
+      </if>
+      <if test="transportRoute != null" >
+        TRANSPORT_ROUTE,
+      </if>
+      <if test="goodstype!= null" >
+        GOODSTYPE,
+      </if>
+      <if test="quantity!= null" >
+        QUANTITY,
+      </if>
+      <if test="maxLoadWeight != null" >
+        MAX_LOAD_WEIGHT,
+      </if>
+      <if test="contactPhone != null" >
+        CONTACTPHONE,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="updateBy != null" >
+        UPDATE_BY,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="remove != null" >
+        REMOVE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="corporateNo != null" >
+        #{corporateNo,jdbcType=VARCHAR},
+      </if>
+      <if test="enterpriseId != null" >
+        #{enterpriseId,jdbcType=VARCHAR},
+      </if>
+      <if test="enterpriseName != null" >
+        #{enterpriseName,jdbcType=VARCHAR},
+      </if>
+      <if test="terminalId != null" >
+        #{terminalId,jdbcType=VARCHAR},
+      </if>
+      <if test="licencePlateNo != null" >
+        #{licencePlateNo,jdbcType=VARCHAR},
+      </if>
+      <if test="vehicleBrand != null" >
+        #{vehicleBrand,jdbcType=VARCHAR},
+      </if>
+      <if test="vehicleBrandType != null" >
+        #{vehicleBrandType,jdbcType=VARCHAR},
+      </if>
+      <if test="vehicleColor != null" >
+        #{vehicleColor,jdbcType=VARCHAR},
+      </if>
+      <if test="vehicleType != null" >
+        #{vehicleType,jdbcType=VARCHAR},
+      </if>
+      <if test="vehicleOutput != null" >
+        #{vehicleOutput,jdbcType=VARCHAR},
+      </if>
+      <if test="motorNo != null" >
+        #{motorNo,jdbcType=VARCHAR},
+      </if>
+      <if test="crossDomainType != null" >
+        #{crossDomainType,jdbcType=VARCHAR},
+      </if>
+      <if test="graduadedNo != null" >
+        #{graduadedNo,jdbcType=VARCHAR},
+      </if>
+      <if test="vehicleNo != null" >
+        #{vehicleNo,jdbcType=VARCHAR},
+      </if>
+      <if test="vehicleSrcFlag != null" >
+        #{vehicleSrcFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="transportRoute != null" >
+        #{transportRoute,jdbcType=VARCHAR},
+      </if>
+      <if test="goodstype != null" >
+        #{goodstype,jdbcType=VARCHAR},
+      </if>
+      <if test="quantity != null" >
+        #{quantity,jdbcType=VARCHAR},
+      </if>
+      <if test="maxLoadWeight != null" >
+        #{maxLoadWeight,jdbcType=VARCHAR},
+      </if>
+      <if test="contactPhone != null" >
+        #{contactPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remove != null" >
+        #{remove,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <!--编辑危险品车辆信息  -->
+  <update id="update" parameterType="com.c503.sc.jxwl.zcpt.bean.DangerVehicleEntity" >
+    update T_DANGER_VEHICLE
+    <set >
+      <if test="corporateNo != null" >
+        CORPORATE_NO = #{corporateNo,jdbcType=VARCHAR},
+      </if>
+      <if test="enterpriseId != null" >
+        ENTERPRISE_ID = #{enterpriseId,jdbcType=VARCHAR},
+      </if>
+      <if test="terminalId != null" >
+        TERMINAL_ID = #{terminalId,jdbcType=VARCHAR},
+      </if>
+      <if test="licencePlateNo != null" >
+        LICENCE_PLATE_NO = #{licencePlateNo,jdbcType=VARCHAR},
+      </if>
+      <if test="vehicleBrand != null" >
+        VEHICLE_BRAND = #{vehicleBrand,jdbcType=VARCHAR},
+      </if>
+      <if test="vehicleBrandType != null" >
+        VEHICLE_BRAND_TYPE = #{vehicleBrandType,jdbcType=VARCHAR},
+      </if>
+      <if test="vehicleColor != null" >
+        VEHICLE_COLOR = #{vehicleColor,jdbcType=VARCHAR},
+      </if>
+      <if test="vehicleType != null" >
+        VEHICLE_TYPE = #{vehicleType,jdbcType=VARCHAR},
+      </if>
+      <if test="vehicleOutput != null" >
+        VEHICLE_OUTPUT = #{vehicleOutput,jdbcType=VARCHAR},
+      </if>
+      <if test="motorNo != null" >
+        MOTOR_NO = #{motorNo,jdbcType=VARCHAR},
+      </if>
+      <if test="crossDomainType != null" >
+        CROSS_DOMAIN_TYPE = #{crossDomainType,jdbcType=VARCHAR},
+      </if>
+      <if test="graduadedNo != null" >
+        GRADUADED_NO = #{graduadedNo,jdbcType=VARCHAR},
+      </if>
+      <if test="vehicleNo != null" >
+        VEHICLE_NO = #{vehicleNo,jdbcType=VARCHAR},
+      </if>
+      <if test="transportRoute != null" >
+        TRANSPORT_ROUTE = #{transportRoute,jdbcType=VARCHAR},
+      </if>
+      <if test="goodstype != null" >
+        GOODSTYPE = #{goodstype,jdbcType=VARCHAR},
+      </if>
+      <if test="quantity != null" >
+        QUANTITY = #{quantity,jdbcType=VARCHAR},
+      </if>
+      <if test="maxLoadWeight != null" >
+        MAX_LOAD_WEIGHT = #{maxLoadWeight,jdbcType=VARCHAR},
+      </if>
+      <if test="contactPhone != null" >
+        CONTACTPHONE = #{contactPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="vehicleSrcFlag != null" >
+        VEHICLE_SRC_FLAG = #{vehicleSrcFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remove != null" >
+        REMOVE = #{remove,jdbcType=CHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="delete" parameterType="map" >
+    BEGIN
+	  UPDATE T_FILE_UPLOAD
+	     SET REMOVE      = '1',
+        		UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+        		UPDATE_TIME = SYSDATE
+	   WHERE ID IN (SELECT FILE_ID FROM T_DANGER_FILE_RELA WHERE DANGER_VEHICLE_ID = #{id});
+	
+	  UPDATE  T_DANGER_FILE_RELA 
+	  	 SET REMOVE      = '1'
+	  WHERE DANGER_VEHICLE_ID  = #{id};
+	
+	  UPDATE T_DANGER_VEHICLE
+	     SET REMOVE      = '1' ,
+        		UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+        		UPDATE_TIME = SYSDATE
+	  WHERE ID = #{id};
+	
+	EXCEPTION
+	  WHEN OTHERS THEN
+	    ROLLBACK;
+	END;
+  </update>
+  
+  <!-- 删除附件关系信息 -->
+  <delete id="deleteRela" parameterType="java.lang.String" >
+    DELETE FROM T_DANGER_FILE_RELA WHERE DANGER_VEHICLE_ID = #{id,jdbcType=VARCHAR} AND REMOVE = '0'
+  </delete>
+  
+  
+  <!-- 通过车牌号或运单号查询车辆信息 -->
+	<select id="findDangerVehicleByParams" parameterType="java.util.Map" resultMap="BaseResultMap4">
+		<!-- 此SQL缺陷，当一个车有多个在运行中的运单时，会查出多条数据（同一个车多条），
+		不用解决此缺陷：实际业务是一个车运行中的运单只有一个
+		通过运单号、车牌号模糊查询车辆信息（包括车辆位置信息、车辆当前运单信息、物流企业信息） -->
+		SELECT TT.LICENCE_PLATE_NO,
+		                WB.CHECKNO,
+		                E.ENTERPRISE_NAME,
+		                E.CORPORATE_NO
+		                <!-- CL.* -->
+		  FROM ( <!-- 通过运单号、车牌号模糊查询车辆信息 并去重 -->
+		        SELECT DISTINCT T.*
+		          FROM (
+		                 <!-- 通过车牌号模糊查询车辆信息 -->
+		                 SELECT DV.*
+		                   FROM T_DANGER_VEHICLE DV
+		                  WHERE DV.REMOVE = '0'
+		                    AND DV.LICENCE_PLATE_NO LIKE CONCAT(CONCAT('%',#{licencePlateNo}),'%')
+		                 UNION ALL
+		                 <!-- 通过运单号模糊查询车辆信息 -->
+		                 SELECT DISTINCT DV.*
+		                   FROM T_WAYBILL W
+		                   LEFT JOIN T_DANGER_VEHICLE DV
+		                     ON W.CARNO = DV.LICENCE_PLATE_NO
+		                  WHERE W.REMOVE = '0'
+		                    AND DV.REMOVE = '0'
+		                    AND
+		                       <!-- 当前运输中的运单 -->
+		                        (W.CHECKSTATUS = '111001002' OR W.CHECKSTATUS = '111001003')
+		                    AND W.CHECKNO LIKE CONCAT(CONCAT('%',#{licencePlateNo}),'%')) T) TT
+		<!-- 车辆位置信息  暂时不需要车辆位置信息-->
+		 <!--  LEFT JOIN T_CAR_LOCATION CL
+		    ON TEMP.LICENCE_PLATE_NO = CL.CARRIER_NAME -->
+		<!-- 车辆当前信息运单 -->
+		  LEFT JOIN T_WAYBILL WB
+		    ON WB.REMOVE = '0'
+		   AND WB.CARNO = TT.LICENCE_PLATE_NO
+		   AND (WB.CHECKSTATUS = '111001002' OR WB.CHECKSTATUS = '111001003')
+		<!-- 企业信息 -->
+		  INNER JOIN T_ENTERPRISE E
+		    ON E.REMOVE = '0'
+		   AND E.CORPORATE_NO = TT.CORPORATE_NO
+	</select>
+  
+  <!-- 物流企业下对应的车辆信息 -->
+  <select id="findLicencePlateNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  		SELECT 
+  					ENTERPRISE_NAME,	CORPORATE_NO,    LICENCE_PLATE_NO 
+  		FROM 		T_DANGER_VEHICLE 
+  		WHERE 		CORPORATE_NO  = #{corporateNo} 
+		AND 		REMOVE = '0'
+  </select>
+  
+  
+  <!--通过法人代码查询该企业车辆数量 -->
+  <select id="getDangerVehicNumByCorporateNo" parameterType="java.lang.String" resultType="java.lang.Integer">
+		select
+		count(*)
+		from T_DANGER_VEHICLE
+		<where>
+		    remove = '0'
+		    <if test="corporateNo != null">
+		       AND CORPORATE_NO = #{corporateNo,jdbcType=VARCHAR}
+		     </if>
+		</where>
+		ORDER BY update_time DESC
+	</select>
+	
+ 
+  <!-- 左侧导航栏查询车辆 -->
+   <select id="findLeftManueName" parameterType="java.util.Map" resultMap="BaseResultMap2" >
+		  SELECT 	TA.ID,
+		  			TA.LICENCE_PLATE_NO,
+		       		TB.ENTERPRISE_NAME AS ENTERPRISE_NAME 
+		  FROM 		T_DANGER_VEHICLE TA 
+		  LEFT JOIN T_ENTERPRISE TB ON TB.CORPORATE_NO = TA.CORPORATE_NO
+		  <where> 
+			 <if test="corporateNo != null ">
+							TA.CORPORATE_NO = #{corporateNo, jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+  
+  <!-- 通过车牌查询车辆信息 -->
+  <select id="findByName" parameterType="java.lang.String" resultMap="BaseResultMap2" >
+  select TB.ID,
+  		 TB.CORPORATE_NO,
+		 TB.ENTERPRISE_ID,
+		 TB.TERMINAL_ID, 
+		 TB.LICENCE_PLATE_NO, 
+		 TB.VEHICLE_BRAND, 
+		 TB.VEHICLE_BRAND_TYPE, 
+		 TB.VEHICLE_COLOR,
+		 TB.VEHICLE_OUTPUT,
+		 TB.MOTOR_NO,
+		 TB.CROSS_DOMAIN_TYPE,
+		 TB.GRADUADED_NO, 
+		 TB.VEHICLE_NO,
+		 TC.NAME AS VEHICLE_TYPE,
+		 TF.ENTERPRISE_NAME AS ENTERPRISE_NAME
+	FROM T_DANGER_VEHICLE TB 
+	LEFT JOIN T_DICTIONARY_VALUE TC ON TC.VALUE        = TB.VEHICLE_TYPE  
+	LEFT JOIN T_ENTERPRISE       TF ON TF.CORPORATE_NO = TB.CORPORATE_NO
+	 WHERE    TB.LICENCE_PLATE_NO = #{carrierName,jdbcType=VARCHAR} AND TB.REMOVE=0
+  </select>
+  
+  
+  <!-- TODO 获取车辆实时位置 -->
+  <select id="findRealLocation" parameterType="java.lang.String" resultMap="BaseResultMap3" >
+  	SELECT * FROM T_CAR_LOCATION WHERE CARRIER_NAME = #{carrierName,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 查询车辆实时位置 -->
+  <select id="findRealLocationsByParams"  resultMap="BaseResultMap3" >
+  	select * from t_car_location where 
+  		longitude &gt;= #{minLon} and longitude &lt;= #{maxLon} and
+  		latitude &gt;= #{minLat} and latitude &lt;= #{maxLat}
+  </select>
+  
+    <!--查询所有车辆 -->
+  <select id="findRealLocationAll" parameterType="java.lang.String" resultMap="BaseResultMap3" >
+  	<!-- select TC.*, TE.ENTERPRISE_NAME AS ENTERPRISE_NAME, COUNT(TA.ID) AS ALARM_NUM
+		  from T_CAR_LOCATION TC
+		  left join T_DANGER_VEHICLE TD
+		    on TD.LICENCE_PLATE_NO = TC.CARRIER_NAME
+		  LEFT JOIN T_ENTERPRISE TE
+		    ON TE.CORPORATE_NO = TD.CORPORATE_NO
+		  LEFT JOIN T_ALARM_MANAGE TA
+		  	ON TA.LICENCE_PLATE_NO = TC.CARRIER_NAME
+		    WHERE TD.REMOVE = '0'
+		    AND TE.REMOVE = '0'
+		    AND TA.REMOVE = '0'
+		    AND TA.ALARM_DEAL_STATUS ='103002002'
+		    AND CEIL(  (  (TO_DATE(#{curDate}, 'yyyy-mm-dd hh24-mi-ss') -
+			                    TC.POINT_TIME)  ) * 24 * 60) &lt;= 30 -->
+			                    
+	select TC.*, TE.ENTERPRISE_NAME AS ENTERPRISE_NAME,
+			CASE
+	                 WHEN (TMP.ALARM_NUM IS NOT NULL) THEN
+	                  TMP.ALARM_NUM
+	                 ELSE
+	                  0
+	               END ALARM_NUM
+			from T_CAR_LOCATION TC     
+			left join T_DANGER_VEHICLE TD       
+			on TD.LICENCE_PLATE_NO = TC.CARRIER_NAME     
+			LEFT JOIN T_ENTERPRISE TE       
+			ON TE.CORPORATE_NO = TD.CORPORATE_NO     
+			LEFT JOIN ( SELECT LICENCE_PLATE_NO,COUNT(TA.ID) AS ALARM_NUM 
+			     FROM T_ALARM_MANAGE TA
+			     WHERE TA.REMOVE = '0'  
+			     AND TA.ALARM_DEAL_STATUS ='103002002'  
+			     GROUP BY LICENCE_PLATE_NO  ) TMP
+			ON TMP.LICENCE_PLATE_NO = TC.CARRIER_NAME
+			WHERE TD.REMOVE = '0'       
+			AND TE.REMOVE = '0'  
+			AND CEIL(  (  (TO_DATE(#{curDate}, 'yyyy-mm-dd hh24-mi-ss') -
+						                    TC.POINT_TIME)  ) * 24 * 60) &lt;= 30
+  </select>
+  
+   <!--查询车辆总数 -->
+   <select id="findTotal" resultType="int"> 
+   	select count(0)
+		  from T_DANGER_VEHICLE TD
+		  LEFT JOIN T_ENTERPRISE TE
+		    ON TE.CORPORATE_NO = TD.CORPORATE_NO
+		    WHERE TD.REMOVE = '0'
+		    AND TE.REMOVE = '0'
+   </select> 
+  
+  <resultMap id="resultMap4Enp" type="com.c503.sc.jxwl.zcpt.vo.WlEnpCarVo" >
+	<result column="ENTERPRISE_NAME" property="enterpriseName" jdbcType="VARCHAR" />
+	<result column="CORPORATE_NO"       property="corporateNo"    jdbcType="VARCHAR" />
+	<result column="CAR_NUM"            property="carNum"          />
+  	<collection property="cars" ofType="com.c503.sc.jxwl.zcpt.vo.WlCarVo" >
+  	    <result column="CARRIER_NAME"   property="carrierName"    jdbcType="VARCHAR" />
+	    <result column="CAR_CNT"        property="carCnt"          />
+	    <result column="ON_OFF_LINE"    property="onOffLine"      jdbcType="VARCHAR" />
+  	</collection>
+  </resultMap>
+  
+  <!-- 查询每个物流企业下的车辆 -->
+  <select id="findEnpCarForWl" parameterType="java.lang.String" resultMap="resultMap4Enp">
+	SELECT *
+	  FROM (SELECT TEMP.*,
+	               <!-- 判断时间差值（30分钟内：在线） -->
+	               CASE
+	                 WHEN (CEIL(((TO_DATE(#{curDate}, 'yyyy-mm-dd hh24-mi-ss') -
+	                            TLOC.POINT_TIME)) * 24 * 60) &lt;= 30) THEN
+	                  'on'
+	                 ELSE
+	                  'off'
+	               END ON_OFF_LINE
+	          FROM (SELECT DISTINCT TA.ENTERPRISE_NAME,
+	                                TA.CORPORATE_NO,
+	                                TB.LICENCE_PLATE_NO AS CARRIER_NAME,
+	                                COUNT(TB.ID) CAR_CNT,
+	                                (SELECT COUNT(ID)
+	                                   FROM T_DANGER_VEHICLE TC
+	                                  WHERE TC.CORPORATE_NO = TA.CORPORATE_NO
+	                                    AND TC.LICENCE_PLATE_NO IS NOT NULL
+	                                    AND TC.REMOVE = '0') CAR_NUM
+	                  FROM T_ENTERPRISE TA
+	                  JOIN T_DANGER_VEHICLE TB
+	                    ON TA.CORPORATE_NO = TB.CORPORATE_NO
+	                 WHERE TA.ENTERPRISE_TYPE = '106001001'
+	                   AND TA.REMOVE = '0'
+	                   AND TB.REMOVE = '0'
+	                 GROUP BY TA.ENTERPRISE_NAME,
+	                          TA.CORPORATE_NO,
+	                          TB.LICENCE_PLATE_NO
+	                HAVING TB.LICENCE_PLATE_NO IS NOT NULL
+	                 ORDER BY TA.CORPORATE_NO) TEMP
+	          LEFT JOIN T_CAR_LOCATION TLOC
+	            ON TEMP.CARRIER_NAME = TLOC.CARRIER_NAME) TT
+	 <where>
+	 	<if test="corporateNo != null and corporateNo !=''">
+	 		TT.CORPORATE_NO = #{corporateNo}
+	 	</if>
+	 </where>
+	 ORDER BY TT.CAR_NUM DESC, TT.ON_OFF_LINE DESC  
+  </select>
+  
+  
+  <select id="findAll" resultMap="BaseResultMap3">
+		  select TC.*, TE.ENTERPRISE_NAME AS ENTERPRISE_NAME
+		  from T_CAR_LOCATION TC
+		  left join T_DANGER_VEHICLE TD
+		    on TD.LICENCE_PLATE_NO = TC.CARRIER_NAME
+		  LEFT JOIN T_ENTERPRISE TE
+		    ON TE.CORPORATE_NO = TD.CORPORATE_NO
+		    WHERE TD.REMOVE = '0'
+		    AND TE.REMOVE = '0'
+  
+  </select>
+  <!-- 更新删除后的车辆 在资质管理审核状态改变 -->
+  <update id="updateLicenceInfo" parameterType="com.c503.sc.jxwl.zcpt.bean.DangerVehicleEntity">
+  	UPDATE T_LICENCE TL
+  	<!-- 通过的设定为已注销,其他的不变 -->
+  	 SET TL.VERIFY_STATUS = CASE
+                            WHEN TL.VERIFY_STATUS = '151001003' THEN
+                             '151001004'
+                            ELSE
+                             TL.VERIFY_STATUS
+                          END,
+   <!-- 处于审核和拒绝的，逻辑删除，其余不变 -->                          
+       TL.REMOVE = CASE
+                     WHEN TL.VERIFY_STATUS IN ('151001001', '151001002') THEN
+                      '1'
+                     ELSE
+                      TL.REMOVE
+                   END
+ WHERE TL.LICENCE_PLATE_NO = #{licencePlateNo,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="findNameByLicencePlateNo" parameterType="String" resultType="String"  >
+		  select TE.ENTERPRISE_NAME
+			  from T_DANGER_VEHICLE TD
+			  LEFT JOIN T_ENTERPRISE TE
+			    ON TD.CORPORATE_NO = TE.CORPORATE_NO
+			   AND TE.REMOVE = '0'
+			 WHERE TD.LICENCE_PLATE_NO = #{licencePlateNo,jdbcType=VARCHAR}
+			   AND TD.REMOVE = '0'
+  </select>
+  
+  <update id="updateVehicleSrcFlag" parameterType="java.util.Map">
+  	UPDATE T_DANGER_VEHICLE SET
+  	<trim suffixOverrides="," >
+       <if test="vehicleSrcFlag != null and vehicleSrcFlag != ''">
+        		VEHICLE_SRC_FLAG	= #{vehicleSrcFlag},
+        </if>
+       <if test="updateBy!= null and updateBy != ''">
+        		UPDATE_BY		= #{updateBy},
+        </if>
+       <if test="updateTime != null and updateTime != ''">
+        		UPDATE_TIME		= #{updateTime},
+        </if>
+      </trim>
+      WHERE ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <!-- 联想查询车辆信息 -->
+  <select id="findVehicle"  parameterType="map"  resultMap="BaseResultMap">
+	   SELECT TD.LICENCE_PLATE_NO,
+	       (CASE WHEN TB.ID IS NOT NULL THEN
+	          '是'
+	         ELSE
+	          '否'
+	       END) AS BLACK_STATUS
+	  FROM T_DANGER_VEHICLE TD
+	  LEFT JOIN T_BLACKLIST_MANAGE TB
+	    ON TD.LICENCE_PLATE_NO = TB.VEHICLE
+	   AND TB.OBJECT_TYPE = '104001003'
+	   AND TB.REMOVE = '0'
+	 WHERE TD.REMOVE = '0'
+	   <if test="licencePlateNo != null and licencePlateNo != ''">
+		AND TD.LICENCE_PLATE_NO like '%' || #{licencePlateNo,jdbcType=VARCHAR} || '%' 
+	  </if>
+	  <if test="corporateNo != null and corporateNo != ''">
+		AND TD.CORPORATE_NO = #{corporateNo,jdbcType=VARCHAR}
+	</if>
+  </select>
+</mapper>

@@ -1,0 +1,250 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+<meta name=Generator content="Microsoft Word 15 (filtered)">
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:宋体;
+	panose-1:2 1 6 0 3 1 1 1 1 1;}
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:"\@宋体";
+	panose-1:2 1 6 0 3 1 1 1 1 1;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	font-size:10pt;
+	font-family:"Times New Roman","serif";}
+p.MsoHeader, li.MsoHeader, div.MsoHeader
+	{mso-style-link:"页眉 Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:center;
+	layout-grid-mode:char;
+	border:none;
+	padding:0cm;
+	font-size:10.0pt;
+	font-family:"Calibri","sans-serif";}
+p.MsoFooter, li.MsoFooter, div.MsoFooter
+	{mso-style-link:"页脚 Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	layout-grid-mode:char;
+	font-size:10.0pt;
+	font-family:"Calibri","sans-serif";}
+span.Char
+	{mso-style-name:"页眉 Char";
+	mso-style-link:页眉;}
+span.Char0
+	{mso-style-name:"页脚 Char";
+	mso-style-link:页脚;}
+p.Style9, li.Style9, div.Style9
+	{mso-style-name:"_Style 9";
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:7.8pt;
+	margin-left:0cm;
+	text-indent:10.0pt;
+	line-height:12.0pt;
+	font-size:10pt;
+	font-family:"Times New Roman","serif";}
+.MsoChpDefault
+	{font-family:"Calibri","sans-serif";}
+ /* Page Definitions */
+ @page WordSection1
+	{size:21.0cm 842.0pt;
+	margin:2.0cm 2.0cm 2.0cm 57.85pt;
+	layout-grid:29.05pt;}
+div.WordSection1
+	{page:WordSection1;}
+-->
+td{
+	width:120pt;
+	height:35pt;
+	padding-left:10px;
+	line-height:35pt;
+	
+}
+.hidden{
+	display:none;
+}
+</style>
+
+</head>
+
+<body lang=ZH-CN style='text-justify-trim:punctuation' id="window-print-body" onload="loadData()">
+
+<div class=WordSection1 style='layout-grid:29.05pt'>
+
+	<p class=MsoNormal align=center style='text-align:center;line-height:24.0pt'><b><span
+	style='font-size:18.0pt;font-family:宋体;color:black'>危险品电子路单</span></b></p>
+
+
+	<div id="printFunc" align=center>
+		<table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0 style='border-collapse:collapse;border:none' id="producttable">
+		<tbody>
+	    <tr>
+	        <td colspan="2">托运单号&nbsp;&nbsp;{{checkno}}</td>
+	        <td colspan="2">客户单号&nbsp;&nbsp;{{consumerno}}</td>
+	        <td colspan="2">起点&nbsp;&nbsp;{{startpoint}}</td>
+	        <td colspan="2">到点&nbsp;&nbsp;{{endpoint}}</td>
+	    </tr>
+	    <tr>
+	        <td colspan="4">发货单位&nbsp;&nbsp;{{deliveryunit}}</td>
+	        <td colspan="2">联系人&nbsp;&nbsp;{{deliveryunitperson}}</td>
+	        <td colspan="2">电话&nbsp;&nbsp;{{deliveryunitphone}}</td>
+	    </tr>
+	    <tr>
+	        <td colspan="4">发货地址&nbsp;&nbsp;{{deliveryunitaddress}}</td>
+	        <td colspan="4">装货时间&nbsp;&nbsp;{{deliveryunittime}}</td>
+	    </tr>
+	    <tr>
+	        <td colspan="4">收货单位&nbsp;&nbsp;{{achieveuint}}</td>
+	        <td colspan="2">联系人&nbsp;&nbsp;{{achieveperson}}</td>
+	        <td colspan="2">电话&nbsp;&nbsp;{{achievephone}}</td>
+	    </tr>
+	    <tr>
+	        <td colspan="4">收货地址&nbsp;&nbsp;{{achieveaddress}}</td>
+	        <td colspan="4">卸货时间&nbsp;&nbsp;{{achievetime}}</td>
+	    </tr>
+	   <tr>
+	        <td colspan="2">驾驶员&nbsp;&nbsp;{{driver}}</td>
+	        <td colspan="2">电话&nbsp;&nbsp;{{driverphone}}</td>
+	        <td colspan="2">身份证号&nbsp;&nbsp;{{driverid}}</td>
+	        <td colspan="2">从业证号&nbsp;&nbsp;{{driverno}}</td>
+	    </tr>
+	    <tr>
+	        <td colspan="2">押运员&nbsp;&nbsp;{{escort}}</td>
+	        <td colspan="2">电话&nbsp;&nbsp;{{escortphone }}</td>
+	        <td colspan="2">身份证号&nbsp;&nbsp;{{ escortid }}</td>
+	        <td colspan="2">押运员证&nbsp;&nbsp;{{ escortno }}</td>
+	    </tr>
+	    <tr>
+	        <td colspan="2">车牌号码&nbsp;&nbsp;{{ carno }}</td>
+	        <td colspan="2">挂车车牌&nbsp;&nbsp;{{handcarno  }}</td>
+	        <td colspan="4">备注&nbsp;&nbsp;{{remark  }}</td>
+	
+	    </tr>
+	     <tr>
+	        <td>序号</td>
+	        <td>品名</td>
+	        <td>包装</td>
+	        <td>数量</td>
+	        <td>重量（吨）</td>
+	        <td>体积（立方米）</td>
+	        <td>规格</td>
+	        <td>批次</td>
+	    </tr>
+	    <!-- IE下打印 -->
+		<tr id="productrowForIE" v-for="item of items" class="hidden">
+	   		<td>{{item.num}}</td>
+			<td>{{item.goodsname}}</td>
+			<td>{{item.pack}}</td>
+			<td>{{item.quantity}}</td>
+			<td>{{item.weight}}</td>
+			<td>{{item.volume}}</td>
+			<td>{{item.format}}</td>
+			<td>{{item.batch}}</td>
+		</tr>
+		<!--chrome下打印  -->
+		<template id="productrow">
+			<tr id="productrowTr">
+				<td></td>
+				  <td></td>
+				  <td></td>
+				  <td></td>
+				  <td></td>
+				  <td></td>
+				  <td></td>
+				  <td></td>
+			</tr>
+		</template> 
+		</tbody>
+	</table>	 
+		</div>
+		
+	</div>
+	<script src="../../../../js/lib/vue.min.js"></script>
+	<script src="../../../../js/lib/jquery/jquery-1.11.2.min.js"></script>
+	<script>
+		
+		/**转换数据字典*/
+		Vue.filter('dic', function (value) {
+			if(value) {
+				var getCode = value.substr(0,6);
+				var dicValue = window.printWindowData.dic[getCode];
+				if(dicValue && dicValue !== ""){
+					var len = dicValue.length;
+				    for(var i = 0; i < len; i++){
+				    	if(value === dicValue[i].code){
+				    		return dicValue[i].name;
+				    	}
+				    }
+				} else {
+					return "";
+				}
+			}
+		});
+		function loadData(){
+			new Vue({
+				el:"#window-print-body",
+				data: window.printWindowData
+			});
+			
+			window.parent.document.getElementById('window-panel').height = document.body.scrollHeight + 100;
+		}
+		
+		function isIE(){
+			if(window.navigator.userAgent.indexOf("MSIE")>=1){return true}else{return false}
+		}
+		
+		if(isIE){
+			$('#productrowForIE').removeClass("hidden");
+			$('#productrowTr').addClass("hidden");
+			var data = window.printWindowDataItem
+			new Vue({
+				el:"#productrowForIE",
+				data:{items:data}
+			});
+		}else{
+			$('#productrowForIE').addClass("hidden");
+			$('#productrow tr').removeClass("hidden");
+			if("content" in document.createElement("template")){
+				var data = window.printWindowDataItem;
+				for(var i in data){
+					var t = document.querySelector("#productrow");
+					var td = t.content.querySelectorAll("td");
+					td[0].textContent = parseInt(i)+1;
+					td[1].textContent = data[i].goodsname;
+					td[2].textContent = data[i].pack;
+					td[3].textContent = data[i].quantity;
+					td[4].textContent = data[i].weight;
+					td[5].textContent = data[i].volume;
+					td[6].textContent = data[i].format;
+					td[7].textContent = data[i].batch;
+					var tb = document.querySelector("tbody");
+					var clone = document.importNode(t.content,true);
+					tb.appendChild(clone);
+				}
+			}else{
+					
+			}
+		}
+		
+		
+		
+		 
+		
+		
+	</script>
+	
+</body>
+</html>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.c503.sc.jxwl.transacation.dao.ILicenceFileRelaDao" >
+  <resultMap id="BaseResultMap" type="com.c503.sc.jxwl.transacation.bean.LicenceFileRelaEntity" >
+    <id     column="ID"                property="id"              jdbcType="VARCHAR" />
+    <result column="LICENCE_ID"        property="licenceId"       jdbcType="VARCHAR" />
+    <result column="FILE_ID"           property="fileId"          jdbcType="VARCHAR" />
+    <result column="REMOVE"            property="remove"          jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, LICENCE_ID, FILE_ID, REMOVE
+  </sql>
+  
+  <!-- 删除危险品车辆附件关系 -->
+  <delete id="delete" parameterType="java.lang.String" >
+    delete from T_LICENCE_FILE_RELA
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <!-- 批量保存资质信息附件关系 -->
+  <insert id="saves" parameterType="com.c503.sc.jxwl.transacation.bean.LicenceFileRelaEntity">
+    INSERT INTO T_LICENCE_FILE_RELA (ID, LICENCE_ID, FILE_ID, 
+      REMOVE)
+	<foreach collection="list" item="item" separator="union all">
+	  SELECT
+	  #{item.id},         #{item.licenceId},    #{item.fileId},
+	  #{item.remove} FROM DUAL
+	</foreach>
+  </insert>
+  <!-- 删除附件信息 -->
+   <delete id="deleteFileId" parameterType="java.lang.String" >
+    DELETE FROM T_LICENCE_FILE_RELA
+    WHERE LICENCE_ID = #{licenceId,jdbcType=VARCHAR}
+  </delete>
+  
+   <select id="findFileIdById" parameterType="java.lang.String" resultType="java.lang.String"  >
+    SELECT FILE_ID
+      FROM T_LICENCE_FILE_RELA
+     WHERE LICENCE_ID = #{licenceId,jdbcType=VARCHAR}
+       AND REMOVE = '0'
+  </select>
+  
+</mapper>

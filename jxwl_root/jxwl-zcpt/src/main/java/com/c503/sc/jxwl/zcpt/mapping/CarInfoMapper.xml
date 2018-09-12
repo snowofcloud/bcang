@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.c503.sc.jxwl.zcpt.dao.ICarInfoDao">
+    <resultMap id="BaseResultMap" type="com.c503.sc.jxwl.zcpt.bean.CarInfoEntity" >
+      <id column="ID" property="id" jdbcType="VARCHAR" />
+      <result column="CORPORATE_NO" property="corporateNo" jdbcType="VARCHAR" />
+      <result column="ENTERPRISE_ID" property="enterpriseId" jdbcType="VARCHAR" />
+      <result column="TERMINAL_ID" property="terminalId" jdbcType="VARCHAR" />
+      <result column="LICENCE_PLATE_NO" property="licencePlateNo" jdbcType="VARCHAR" />
+      <result column="VEHICLE_BRAND" property="vehicleBrand" jdbcType="VARCHAR" />
+      <result column="VEHICLE_BRAND_TYPE" property="vehicleBrandType" jdbcType="VARCHAR" />
+      <result column="VEHICLE_COLOR" property="vehicleColor" jdbcType="VARCHAR" />
+      <result column="VEHICLE_TYPE" property="vehicleType" jdbcType="VARCHAR" />
+      <result column="VEHICLE_OUTPUT" property="vehicleOutput" jdbcType="VARCHAR" />
+      <result column="MOTOR_NO" property="motorNo" jdbcType="VARCHAR" />
+      <result column="CROSS_DOMAIN_TYPE" property="crossDomainType" jdbcType="VARCHAR" />
+      <result column="GRADUADED_NO" property="graduadedNo" jdbcType="VARCHAR" />
+      <result column="STATUS" property="state" jdbcType="CHAR" />
+      <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+      <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+      <result column="UPDATE_BY" property="updateBy" jdbcType="VARCHAR" />
+      <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+      <result column="REMOVE" property="remove" jdbcType="CHAR" />
+    </resultMap>
+    
+	<sql id="Base_Column_List">
+		ID, CORPORATE_NO, ENTERPRISE_ID, ENTERPRISE_NAME,
+		TERMINAL_ID,
+		LICENCE_PLATE_NO, VEHICLE_BRAND, VEHICLE_BRAND_TYPE,
+		VEHICLE_COLOR, VEHICLE_TYPE, VEHICLE_OUTPUT, MOTOR_NO,
+		CROSS_DOMAIN_TYPE,
+		GRADUADED_NO, STATUS,
+		CREATE_BY, CREATE_TIME,
+		UPDATE_BY, UPDATE_TIME, REMOVE
+    </sql>
+    
+
+	<select id="findByLicencePlateNo" resultMap="BaseResultMap" parameterType="java.util.Map">
+		SELECT TA.ID,
+		       CORPORATE_NO,
+		       ENTERPRISE_ID,
+		       ENTERPRISE_NAME,
+		       TERMINAL_ID,
+		       LICENCE_PLATE_NO,
+		       VEHICLE_BRAND,
+		       VEHICLE_BRAND_TYPE,
+		       VEHICLE_COLOR,
+		       VEHICLE_OUTPUT,
+		       MOTOR_NO,
+		       CROSS_DOMAIN_TYPE,
+		       GRADUADED_NO,
+		       STATUS,
+		       TB.NAME VEHICLE_TYPE
+		  FROM T_DANGER_VEHICLE TA
+		  LEFT JOIN T_DICTIONARY_VALUE TB
+		    ON TA.VEHICLE_TYPE = TB.VALUE
+		 WHERE TA.REMOVE = '0'
+		 <if test="carrierName != null and carrierName != '' ">
+           AND TA.LICENCE_PLATE_NO = #{carrierName}
+		 </if>
+		   AND ROWNUM = 1
+		 ORDER BY TA.UPDATE_TIME DESC
+	</select>
+	
+	<select id="findCarPicId" parameterType="String" resultType="String">
+		SELECT TB.FILE_ID
+		  FROM T_DANGER_VEHICLE TA
+		  JOIN T_DANGER_FILE_RELA TB
+		    ON TA.ID = TB.DANGER_VEHICLE_ID
+		   AND TA.LICENCE_PLATE_NO = #{carrierName}
+		   AND TA.REMOVE = '0'		 
+	</select>
+
+    <!--通过车牌号查询运单信息  -->
+	<select id="findWayBillData" parameterType="String" resultType="com.c503.sc.jxwl.zcpt.bean.WayBillEntity">
+	SELECT TA.ID               id,
+	       TA.CONSUMERNO       consumerno,
+	       TA.CHECKNO          checkno,
+	       TOP.PERSON_NAME     driver,
+	       TOP.TELEPHONE       driverphone,
+	       TA.CARNO            carno,
+	       TA.HANDCARNO        handcarno,
+	       TA.DELIVERYUNIT     deliveryunit,
+	       TA.ACHIEVEUINT      achieveuint,
+	       TA.DELIVERYUNITTIME deliveryunittime,
+	       TA.ACHIEVETIME      achievetime,
+	       TA.DRIVERID         driverId,
+	       TA.DRIVERNO         driverno,
+	       TB.ENTERPRISE_NAME  enterpriseName
+	  FROM T_WAYBILL TA 
+	  LEFT JOIN T_OCCUPATION_PERSON TOP ON TOP.IDENTIFICATION_CARD_NO = TA.DRIVERID
+	  LEFT JOIN T_ENTERPRISE TB ON TA.LOGISTICS_ID = TB.CORPORATE_NO
+	 WHERE TA.CARNO = #{carNo}
+	   AND TA.CHECKSTATUS IN ('111001002', '111001003')
+	   AND TA.REMOVE = '0'
+	   AND ROWNUM = 1
+	   
+  </select>
+<!--   车牌号是否存在 -->
+  <select id="carrierNameIsExist" parameterType="String" resultType="int">
+	select count(0) from T_DANGER_VEHICLE where remove = '0' and LICENCE_PLATE_NO = #{carrierName, jdbcType=VARCHAR}
+  </select>
+</mapper>

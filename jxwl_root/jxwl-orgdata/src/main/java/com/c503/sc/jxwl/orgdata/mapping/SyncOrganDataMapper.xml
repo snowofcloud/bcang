@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.c503.sc.jxwl.orgdata.dao.ISyncOrganDataDao" >
+  <resultMap id="BaseResultMap" type="com.c503.sc.jxwl.orgdata.bean.SysOrganTypeEntity" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="PID" property="pid" jdbcType="VARCHAR" />
+    <result column="SYS_ID" property="sysId" jdbcType="VARCHAR" />
+    <result column="CODE" property="code" jdbcType="VARCHAR" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="ORGAN_TYPE_ID" property="organTypeId" jdbcType="VARCHAR" />
+    <result column="ALIAS" property="alias" jdbcType="VARCHAR" />
+    <result column="ORDERS" property="orders" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="RAEAID" property="raeaId" jdbcType="VARCHAR" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_BY" property="updateBy" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="REMOVE" property="remove" jdbcType="CHAR" />
+  </resultMap>
+  
+
+  <insert id="saveOrgInfo" parameterType="com.c503.sc.jxwl.orgdata.bean.SysOrganTypeEntity">
+	insert into t_sys_organization
+	<trim prefix="(" suffix=")" suffixOverrides=",">
+		<if test="id != null">
+			ID,
+		</if>
+		<if test="code != null">
+			CODE,
+		</if>
+		<if test="pid != null">
+			PID,
+		</if>
+		<if test="sysId != null">
+			SYS_ID,
+		</if>
+		<if test="name != null">
+			NAME,
+		</if>
+		<if test="organTypeId != null">
+			ORGAN_TYPE_ID,
+		</if>
+		<if test="alias != null">
+			ALIAS,
+		</if>
+		<if test="orders != null">
+			ORDERS,
+		</if>
+		<if test="status != null">
+			STATUS,
+		</if>
+		<if test="raeaId != null">
+			RAEAID,
+		</if>
+		<if test="createBy != null">
+			CREATE_BY,
+		</if>
+		<if test="createTime != null">
+			CREATE_TIME,
+		</if>
+		<if test="remove != null">
+			REMOVE
+		</if>
+	</trim>
+	<trim prefix="values (" suffix=")" suffixOverrides=",">
+		<if test="id != null">
+			#{id,jdbcType=VARCHAR},
+		</if>
+		<if test="code != null">
+			#{code,jdbcType=VARCHAR},
+		</if>
+		<if test="pid != null">
+			#{pid,jdbcType=VARCHAR},
+		</if>
+		<if test="sysId != null ">
+			 #{sysId,jdbcType=VARCHAR},
+		</if>
+		<if test="name != null">
+			#{name,jdbcType=VARCHAR},
+		</if>
+		<if test="organTypeId != null">
+			#{organTypeId,jdbcType=VARCHAR},
+		</if>
+		<if test="alias != null">
+			#{alias,jdbcType=VARCHAR},
+		</if>
+		<if test="orders != null">
+			#{orders,jdbcType=VARCHAR},
+		</if>
+		<if test="status != null">
+			#{status,jdbcType=VARCHAR},
+		</if>
+		<if test="raeaId != null">
+			#{raeaId,jdbcType=VARCHAR},
+		</if>
+		<if test="createBy != null">
+			#{createBy,jdbcType=VARCHAR},
+		</if>
+		<if test="createTime != null">
+			#{createTime,jdbcType=TIMESTAMP},
+		</if>
+		<if test="remove != null">
+			#{remove,jdbcType=CHAR}
+		</if>
+	</trim>
+  </insert>
+
+
+  <update id="updateInfo" parameterType="com.c503.sc.jxwl.orgdata.bean.SysOrganTypeEntity">
+	UPDATE T_SYS_ORGANIZATION
+	<set>
+		<if test="code != null ">
+			CODE = #{code,jdbcType=VARCHAR},
+		</if>
+		<if test="pid != null ">
+			PID = #{pid,jdbcType=VARCHAR},
+		</if>
+		<if test="name != null">
+			NAME=#{name,jdbcType=VARCHAR},
+		</if>
+		<if test="organTypeId != null ">
+			ORGAN_TYPE_ID = #{organTypeId,jdbcType=VARCHAR},
+		</if>
+			<if test="alias != null ">
+			ALIAS = #{alias,jdbcType=VARCHAR},
+		</if>
+		<if test="orders != null ">
+			ORDERS = #{orders,jdbcType=VARCHAR},
+		</if>
+		<if test="status != null">
+			STATUS = #{status,jdbcType=VARCHAR},
+		</if>
+		<if test="raeaId != null ">
+			RAEAID = #{raeaId,jdbcType=VARCHAR},
+		</if>
+		<if test="updateBy != null ">
+			UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+		</if>
+		<if test="updateTime != null ">
+			UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
+		</if>
+	</set>
+	<where>
+	      ID = #{id,jdbcType=VARCHAR}
+	  AND SYS_ID = #{sysId,jdbcType=VARCHAR}
+	</where>
+  </update>
+
+</mapper>

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.c503.sc.jxwl.vehiclemonitor.dao.IEmergencyInfoDao" >
+  <resultMap id="BaseResultMap" type="com.c503.sc.jxwl.vehiclemonitor.bean.EmergencyEntity" >
+    <id     column="ID"             property="id"          jdbcType="VARCHAR" />
+    <result column="TITLE"          property="title"       jdbcType="VARCHAR" />
+    <result column="CONTENT"        property="content"     jdbcType="VARCHAR" />
+    <result column="MESSAGE_ORIGIN" property="source"      jdbcType="VARCHAR" />
+    <result column="send_times"     property="sendTimes"   jdbcType="VARCHAR" />
+    <result column="send_frequency" property="sendFrequency" jdbcType="VARCHAR" />
+    <result column="valid_time"     property="validTime"   jdbcType="VARCHAR" />
+    <result column="SEND_DATE"      property="publishDate" jdbcType="DATE" />
+    <result column="PUSH_DATE"      property="pushDate"    jdbcType="DATE" />
+  </resultMap>
+  
+  <!-- 分页查询突发信息 -->
+  <select id="findByParams" resultMap="BaseResultMap" parameterType="java.util.Map">
+	SELECT ID,
+	       TITLE,
+	       MESSAGE_ORIGIN,
+	       CONTENT,
+	       send_times,
+	       send_frequency,
+	       valid_time,
+	       SEND_DATE
+	  FROM T_PRORUPTION_MESSAGE
+     WHERE REMOVE = '0'
+     <if test="startTime != null">
+       AND SEND_DATE &gt;= #{startTime}
+     </if>
+     <if test="endTime != null">
+       AND SEND_DATE &lt;= #{endTime}
+     </if>
+     ORDER BY UPDATE_TIME DESC
+  </select>
+  
+  <update id="update" parameterType="com.c503.sc.jxwl.vehiclemonitor.bean.EmergencyEntity">
+    UPDATE T_PRORUPTION_MESSAGE SET
+      TITLE          = #{title,jdbcType=VARCHAR},
+      <!-- SEND_DATE      = #{publishDate,jdbcType=DATE}, -->
+      send_times     = #{sendTimes,jdbcType=VARCHAR},
+	  send_frequency = #{sendFrequency,jdbcType=VARCHAR},
+	  valid_time     = #{validTime,jdbcType=VARCHAR},
+      MESSAGE_ORIGIN = #{source,jdbcType=VARCHAR},
+      <!-- PUSH_DATE      = #{pushDate,jdbcType=DATE}, -->
+      CONTENT        = #{content,jdbcType=VARCHAR},
+      REMOVE = #{remove,jdbcType=CHAR},
+      UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
+    WHERE ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 查询突发信息详情 -->
+  <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	SELECT TITLE,
+		   CONTENT,
+		   MESSAGE_ORIGIN,
+	       SEND_DATE,
+	       send_times,
+	       send_frequency,
+	       valid_time,
+	       PUSH_DATE
+	  FROM T_PRORUPTION_MESSAGE
+	 WHERE ID = #{id}
+	 and remove='0'
+  </select>
+  
+	<!-- 逻辑删除-->
+  <update id="delete" parameterType="com.c503.sc.jxwl.vehiclemonitor.bean.EmergencyEntity">
+      UPDATE T_PRORUPTION_MESSAGE SET
+      UPDATE_BY   = #{updateBy,jdbcType=VARCHAR},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      REMOVE = '1'
+      where ID = #{id}
+  </update>
+  
+  <insert id="save" parameterType="com.c503.sc.jxwl.vehiclemonitor.bean.EmergencyEntity" >
+    INSERT INTO T_PRORUPTION_MESSAGE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="title != null" >
+        TITLE,
+      </if>
+      <if test="content != null" >
+        CONTENT,
+      </if>
+      <if test="source != null" >
+        MESSAGE_ORIGIN,
+      </if>
+      <if test="sendTimes != null" >
+        send_times,
+      </if>
+      <if test="sendFrequency != null" >
+        send_frequency,
+      </if>
+      <if test="validTime != null" >
+        valid_time,
+      </if>
+      <if test="publishDate != null" >
+        SEND_DATE,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="updateBy != null" >
+        UPDATE_BY,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="remove != null" >
+        REMOVE,
+      </if>
+      <if test="pushDate != null" >
+        PUSH_DATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+     <if test="source != null" >
+        #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="sendTimes != null" >
+        #{sendTimes,jdbcType=VARCHAR},
+      </if>
+      <if test="sendFrequency != null" >
+        #{sendFrequency,jdbcType=VARCHAR},
+      </if>
+      <if test="validTime != null" >
+        #{validTime,jdbcType=VARCHAR},
+      </if>
+      <if test="publishDate != null" >
+        #{publishDate,jdbcType=DATE},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remove != null" >
+        #{remove,jdbcType=CHAR},
+      </if>
+      <if test="pushDate != null" >
+        #{pushDate,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  
+  
+</mapper>

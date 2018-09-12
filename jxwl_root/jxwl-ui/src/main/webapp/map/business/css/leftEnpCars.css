@@ -1,0 +1,135 @@
+/* 左侧企业、车辆样式  */
+ul.list-groups-busness {
+	font-family: '微软雅黑 Regular', '微软雅黑';
+}
+/*加号*/
+.rows-handle {
+	text-align: center;
+	margin-left: 40px;
+}
+
+.rows-handle>label {
+	margin: 0;
+	width: 22px;
+	line-height: 22px;
+	font-size: 18px;
+	font-weight: 100;
+	border: 1px solid #5397C4;
+}
+/*公司列表*/
+ul.list-groups-busness {
+	padding: 0;
+	font-size: 14px;
+}
+
+.lists-busness,.list-groups-busness .collapse {
+	background-color: #06193A;
+	line-height: 40px;
+}
+
+.lists-busness[aria-expanded='true'],.list-groups-busness>.collapse.in {
+	background-color: #084D7A;
+}
+
+.lists-busness:hover {
+	background-color: #084D7A;
+}
+
+.lists-busness:focus {
+	border: 1px solid #084D7A;
+}
+/*a标签统一处理*/
+.busnessName,.countCar,.status {
+	color: white;
+	text-decoration: none;
+}
+
+.busnessName:hover,.countCar:hover,.status:hover {
+	color: white;
+	text-decoration: none;
+}
+/*公司名称*/
+.busnessName,.busnessName:hover {
+	color: rgb(161, 162, 164);
+	margin-left: 3px;
+}
+
+.list-subgroup-cars {
+    padding: 0;
+}
+
+/*数量*/
+.countCar {
+	float: right;
+	margin-right: 5px;
+	display: none;
+}
+/*展开时显示数量*/
+.lists-busness[aria-expanded='true']>.countCar {
+	display: inline;
+}
+
+.lists-busness[aria-expanded='true']>.busnessName {
+	color: white;
+}
+
+.lists-busness[aria-expanded='true']>.rows-handle>label {
+	background-color: #06193A;
+}
+/*车*/
+li.list-car {
+	padding-left: 50px;
+}
+
+.car-backgroud:hover {
+	background-color: rgb(6, 25, 58);
+}
+
+
+.status {
+	float: right;
+	margin-right: 10px;
+}
+
+.status.live {
+	color: #528058;
+	cursor:pointer;
+}
+
+.following {
+	float: right;
+	margin-right: 10px;
+	cursor:pointer;
+}
+
+ul.list-groups-busness {
+	display: block;
+	max-height: calc(100vh - 500px);
+	overflow-y: auto;
+}
+
+/* 点名 */
+.rollCall { 
+        float: right; 
+        margin-right: 10px; 
+        cursor:pointer; 
+}
+
+
+
+
+/* 滚动条宽度 */
+ul.list-groups-busness::-webkit-scrollbar {
+	width: 10px;
+}
+/* 滚动条拖动块 */
+ul.list-groups-busness::-webkit-scrollbar-thumb {
+	background-color: white;
+	border-radius: 3px;
+}
+/* 滚动条*/
+ul.list-groups-busness::-webkit-scrollbar {
+	margin-right: 50px;
+	background-color: #B4B4B4;
+	border-radius: 3px;
+}

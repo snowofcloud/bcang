@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>报警管理</title>
+<link rel="stylesheet"
+	href="../../js/lib/bootstrap-3.3.4/css/bootstrap.css" />
+<link rel="stylesheet" href="../../js/lib/jquery/css/jquery-ui.css" />
+<link rel="stylesheet" href="../../js/lib/jqGrid/ui.jqgrid.css" />
+<link rel="stylesheet" href="../../css/module/module.css" />
+<link rel="stylesheet" href="../../js/lib/uploadFile/Huploadify.css" />
+<link rel="stylesheet" href="../../map/base/ol3.13.1/ol.css">
+<link rel="stylesheet" href="../../css/view/carMonitor/inforManage.css" />
+<!-- 媒体查询，只能放在最后 -->
+<link rel="stylesheet" href="../../css/view/media.css"/>
+</head>
+<body>
+	<div class="right-content">
+		<div role="tabpanel" class="">
+			<!-- Nav tabs -->
+			<ul class="nav nav-tabs" role="tablist" id="inforMag-tabs" data-module="alarmManage">
+				<li role="presentation" class="active"><a href="#alarmManage"
+					aria-controls="alarmManage" role="tab" data-toggle="tab" data-module-name="alarmManage">报警管理</a>
+				</li>
+				<!-- <li role="presentation">
+                <a href="#blacklistManage" aria-controls="blacklistManage" role="tab" data-toggle="tab">黑名单管理</a>
+            </li> -->
+			</ul>
+			<!-- Tab panes -->
+			<div class="tab-content">
+				<!--报警管理-->
+				<div role="tabpanel" class="tab-pane active" id="alarmManage">
+					<!--搜索栏区域展示-->
+					<div class="searchBox" id="alarmManage-search">
+							<div class="line-searchBox">
+								<div class="item-searchBox col-xs-3">
+									<label class="horizontal-span" for="">处理状态</label> <select
+										class="form-control" name="" id="dealStatus-search-name">
+										<option value="">全部</option>
+									</select>
+								</div>
+								<div class="item-searchBox col-xs-3">
+									<label class="horizontal-span">车牌号</label> 
+									<input name="" id="vehicleNo-search-name" maxlength="200" type="text" class="form-control">
+								</div>
+								
+								<div class="item-searchBox col-xs-4">
+									<button type="button" class="btn btn-lemon" id="alarmManage-searchBtn" data-func="alarmManage-findByPage">
+										<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;查询
+									</button>
+									&nbsp;&nbsp;
+									<button type="button" class="btn btn-success" id="alarmManage-before-setBtn" data-func="alarmManage-save">
+										<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;报警设置
+									</button>
+									&nbsp;&nbsp;
+								</div>
+							</div>
+							<div class="line-searchBox">
+								<div class="item-searchBox col-xs-7">
+										<label class="horizontal-span">报警时间</label> 
+										<input type="text"	class="form-control Wdate" id="serach_startTime"
+											onclick="WdatePicker({dateFmt:'yyyy-MM-dd', maxDate:'#F{$dp.$D(\'serach_endTime\')}'})"
+											readonly="readonly"> 
+											<span class="split-Wdate left-span">&nbsp;&nbsp;到&nbsp;&nbsp;</span>
+										<input type="text" class="form-control Wdate" id="serach_endTime" 
+											onclick="WdatePicker({dateFmt:'yyyy-MM-dd', minDate:'#F{$dp.$D(\'serach_startTime\')}'})"
+											readonly="readonly">
+								</div>
+							</div>
+					</div>
+					<!--表格展示-->
+					<table id="alarmManageTable"></table>
+					<div id="alarmManagePager"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--报警设置弹框-->
+	<div class="panel panel-gray-sm" id="alarmManage-panel">
+		<div class="panel-heading">
+			<span class="panel-title">报警设置</span>
+		</div>
+		<form id="alarmManage-form">
+			<div class="panel-body">
+				<div class="panel-body-content verify-park-info">
+					<div class="row">
+						<input type="text" class="form-control hidden" name="id">
+						<div class="col-xs-4">
+							<label class="must" for="overSpeedValue">超速报警速度阈值</label>
+						</div>
+						<div class="col-xs-4">
+							<input type="text" name="overSpeedValue" class="form-control saveInput" id="overSpeedValue"
+								maxlength="10" pattern="^(([1-9]\d{0,6}(\.\d{0,2})?)||(0\.\d{0,2})||^(0{1}))$" error-msg="请输入10位以内,含2位小数点的正数" required/>
+						</div>
+						<div class="col-xs-2">
+							<label>公里/小时</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-4">
+							<label class="must" for="speedContinueValue">超速持续时间阈值</label>
+						</div>
+						<div class="col-xs-4">
+							<input type="text" name="speedContinueValue" class="form-control saveInput" id="speedContinueValue"
+								maxlength="10" pattern="^(([1-9]\d{0,6}(\.\d{0,2})?)||(0\.\d{0,2})||^(0{1}))$" error-msg="请输入10位以内,含2位小数点的正数" required/>
+						</div>
+						<div class="col-xs-1">
+							<label>秒</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-4">
+							<label class="must" for="fatigueDriveValue">疲劳驾驶时间阈值</label>
+						</div>
+						<div class="col-xs-4">
+							<input type="text" name="fatigueDriveValue" class="form-control saveInput" id="fatigueDriveValue"
+								maxlength="10" pattern="^(([1-9]\d{0,6}(\.\d{0,2})?)||(0\.\d{0,2})||^(0{1}))$" error-msg="请输入10位以内,含2位小数点的正数" required/>
+						</div>
+						<div class="col-xs-1">
+							<label>小时</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-4">
+							<label class="must" for="overtimeParkValue">超时停车报警阈值</label>
+						</div>
+						<div class="col-xs-4">
+							<input type="text" name="overtimeParkValue" class="form-control saveInput" id="overtimeParkValue"
+								maxlength="10" pattern="^(([1-9]\d{0,6}(\.\d{0,2})?)||(0\.\d{0,2})||^(0{1}))$" error-msg="请输入10位以内,含2位小数点的正数" required/>
+						</div>
+						<div class="col-xs-1">
+							<label>分钟</label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel-footer">
+				<button type="submit" class="btn btn-cyan" id="alarmManage-setBtn">确定</button>
+				<button type="reset" class="btn btn-border cancel">取消</button>
+			</div>
+		</form>
+	</div>
+
+	<!--报警详情弹框-->
+	<div class="panel panel-gray-sm" id="alarmDetails-panel">
+		<div class="panel-heading">
+			<span class="panel-title">报警详情</span>
+		</div>
+		<form id="alarmDetails-form">
+			<div class="panel-body">
+				<div class="panel-body-content">
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-5">
+								<label>报警记录编号</label>
+							</div>
+							<div class="col-xs-7">
+								<input type="text" name="alarmNo" class="form-control saveInput"
+									id="alarmNo-add" maxlength="100" readonly/> <span
+									class="look-formPanel hidden hidden" name="alarmNo"></span>
+							</div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-5">
+								<label>终端ID</label>
+							</div>
+							<div class="col-xs-7">
+								<input type="text" name="terminalId"
+									class="form-control saveInput" id="terminalId-add"
+									maxlength="100"  readonly/> <span class="look-formPanel hidden"
+									name="terminalId"></span>
+							</div>
+						</div>
+					</div>
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-5">
+								<label>报警类型</label>
+							</div>
+							<div class="col-xs-7">
+								<input type="text" class="form-control saveInput" name="alarmType"
+									id="alarmManage-type-name" maxlength="100" readonly/>
+								 <span class="look-formPanel hidden" name="alarmType"></span>
+							</div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-5">
+								<label>车牌号</label>
+							</div>
+							<div class="col-xs-7">
+								<input type="text" name="carrierName" class="form-control saveInput" 
+									id="licencePlateNo-add" maxlength="100" readonly/> 
+								<span class="look-formPanel hidden" name="carrierName"></span>
+							</div>
+						</div>
+					</div>
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-5">
+								<label>驾驶员姓名</label>
+							</div>
+							<div class="col-xs-7">
+								<input type="text" name="driver" class="form-control saveInput"
+									id="driver-add" maxlength="100" readonly /> <span
+									class="look-formPanel hidden" name="driver"></span>
+							</div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-5">
+								<label>运单编号</label>
+							</div>
+							<div class="col-xs-7">
+								<input type="text" name="waybillNo"
+									class="form-control saveInput" id="waybillNo-add"
+									maxlength="100" readonly/> <span class="look-formPanel hidden"
+									name="waybillNo"></span>
+							</div>
+						</div>
+					</div>
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-5"><label>联系方式</label></div>
+							<div class="col-xs-7">
+								<input type="text" name="telephone" class="form-control saveInput" id="telephone-add"
+									pattern="^1\d{10}$|^((0\d{2,3}-?)|(\(0\d{2,3}\))?)[1-9]\d{4,7}(-\d{1,4})?$|^\d{1,5}$"
+									error-msg="请输入手机或座机号码" maxlength="20" placeholder="请输入手机或座机号码" readonly/>
+								<span class="look-formPanel" name="telephone"></span>
+							</div>
+						</div>
+						<div class="col-xs-6" id="alarmDealStatusDiv">
+							<div class="col-xs-5">
+								<label>处理状态</label>
+							</div>
+							<div class="col-xs-7">
+								<text class="form-control" name="alarmDealStatus"
+									id="alarmDealStatus_add" readonly>
+								</text> <span class="look-formPanel hidden" name="alarmDealStatus"></span>
+							</div>
+						</div>
+					</div>
+					<div class="row twoSpan" id="showForDetail">
+						<div class="col-xs-6">
+							<div class="col-xs-5">
+								<label>报警时间</label>
+							</div>
+							<div class="col-xs-7">
+						 		<span class="look-formPanel hidden" name="alarmDate"></span>
+							</div>
+						</div>
+						<div class="col-xs-6">
+						</div>
+					</div>
+					<div class="row" style="margin-left: 20px">
+						<div class="col-xs-2">
+							<label>报警简述</label>
+						</div>
+						<div class="col-xs-9">
+							<input type="text" name="alarmDetails" 
+								class="form-control saveInput alarm-input"
+								id="alarmDetails-add" maxlength="100" readonly/> <span
+								class="look-formPanel hidden" name="alarmDetails"></span>
+						</div>
+					</div>
+					<div class="row" style="margin-left: 20px" id="handleSituation">
+						<div class="col-xs-2">
+							<label class="must" for="alarmRegisterHandle-add">处理情况</label>
+						</div>
+						<div class="col-xs-9">
+							<textarea type="text" name="alarmRegisterHandle" 
+								class="form-control saveInput alarm-input"
+								id="alarmRegisterHandle-add" maxlength="1000" required></textarea>
+							<span class="look-formPanel hidden" name="alarmRegisterHandle"></span>
+						</div>
+					</div>
+				</div>
+				<div class="panel-footer">
+					<button type="submit" class="btn btn-cyan" id="alarmManage-dealBtn">确定</button>
+					<button type="reset" class="btn btn-border cancel">取消</button>
+				</div>
+			</div>
+		</form>
+	</div>
+
+
+	<!--js引用-->
+	<script src="../../js/loadScript.js"></script>
+	<script src="../../map/JXWLMapJs.js"></script>
+    <script src="../../js/module/topMenu.js"></script>
+	<script src="../../js/view/carMonitor/alarmManage.js"></script>
+</body>
+</html>

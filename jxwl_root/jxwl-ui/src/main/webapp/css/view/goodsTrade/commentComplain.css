@@ -1,0 +1,30 @@
+@charset "UTF-8";
+
+/* 评分距离 */
+.comment-margin-top {
+	margin-top: 6px;;
+}
+
+/**评价投诉对象右边距离*/
+.comment-complain {
+	margin-right: 15px;
+}
+
+#up_score div[title="Clear"] {
+	float: right;
+	margin-top: 12px;
+	margin-right: 305px;
+}
+
+
+/**表格星星显示*/
+.ui-jqgrid tr.jqgrow td[aria-describedby="evaluate_table_score"] {
+	font-weight: normal;
+	overflow: hidden;
+	white-space: nowrap;
+	padding: 0;
+	height: 45px /*23px 统一修改样式(2016-6-23)*/;
+	border-bottom-width: 1px;
+	border-bottom-color: rgb(39, 78, 124) /*#ddd 统一修改样式(2016-6-23)*/;
+	border-bottom-style: solid;
+}

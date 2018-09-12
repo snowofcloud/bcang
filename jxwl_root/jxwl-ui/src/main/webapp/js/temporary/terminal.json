@@ -1,0 +1,14 @@
+{
+  "code": 1,
+  "data": null,
+  "msg": "查询成功",
+  "num": 10,
+  "page": 1,
+  "records": 34,
+  "rows" : [
+     {"id":"1s71c3f94aae4b4bab466a8e4623f999",  "terminalSerialID":"001", "carNo":"ZD001", "carrierName":"川A0507", "terregistestate":"1", "lastUpgradeDate":"103001001", "terminalstate":"0"},
+     {"id":"1s71c3f94aae4b4bab466a8e4623f398",  "terminalSerialID":"002", "carNo":"ZD002", "carrierName":"川A0506", "terregistestate":"0", "lastUpgradeDate":"103001002", "terminalstate":"1"},
+     {"id":"1s71c3f94aae4b4bab466a8e4623f396",  "terminalSerialID":"003", "carNo":"ZD003", "carrierName":"川A0505", "terregistestate":"1", "lastUpgradeDate":"103001003", "terminalstate":"2"}
+  ],
+  "total": 2
+}

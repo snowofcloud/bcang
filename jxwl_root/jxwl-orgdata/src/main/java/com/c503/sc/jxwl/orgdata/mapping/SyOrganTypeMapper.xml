@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.c503.sc.jxwl.orgdata.dao.ISysOrganTypeDao" >
+  <resultMap id="BaseResultMap" type="com.c503.sc.jxwl.orgdata.bean.SysOrganTypeEntity" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="PID" property="pid" jdbcType="VARCHAR" />
+    <result column="SYS_ID" property="sysId" jdbcType="VARCHAR" />
+    <result column="CODE" property="code" jdbcType="VARCHAR" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="ORGAN_TYPE_ID" property="organTypeId" jdbcType="VARCHAR" />
+    
+    <result column="ALIAS" property="alias" jdbcType="VARCHAR" />
+    <result column="ORDERS" property="orders" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+     <result column="RAEAID" property="raeaId" jdbcType="VARCHAR" />
+    
+     <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_BY" property="updateBy" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="REMOVE" property="remove" jdbcType="CHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+		ID, PID,  SYS_ID, CODE, NAME,
+		ORGAN_TYPE_ID,STATUS,ORDERS,ALIAS
+	</sql>
+
+	<!-- 新增一条公文记录 ok -->
+	<insert id="save"
+		parameterType="com.c503.sc.jxwl.orgdata.bean.SysOrganTypeEntity">
+		insert into t_sys_organization
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				ID,
+			</if>
+			<if test="code != null">
+				CODE,
+			</if>
+			<if test="pid != null">
+				PID,
+			</if>
+			<if test="sysId != null">
+				SYS_ID,
+			</if>
+			<if test="name != null">
+				NAME,
+			</if>
+			<if test="organTypeId != null">
+				ORGAN_TYPE_ID,
+			</if>
+			
+			<if test="alias != null">
+				ALIAS,
+			</if>
+			<if test="orders != null">
+				ORDERS,
+			</if>
+			<if test="status != null">
+				STATUS,
+			</if>
+			<if test="raeaId != null">
+				RAEAID,
+			</if>
+			
+			<if test="createBy != null">
+				CREATE_BY,
+			</if>
+			<if test="createTime != null">
+				CREATE_TIME,
+			</if>
+			<if test="updateBy != null">
+				UPDATE_BY,
+			</if>
+			<if test="updateTime != null">
+				UPDATE_TIME,
+			</if>
+			<if test="remove != null">
+				REMOVE,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="code != null">
+				#{code,jdbcType=VARCHAR},
+			</if>
+			<if test="pid != null">
+				#{pid,jdbcType=VARCHAR},
+			</if>
+			<if test="sysId != null ">
+				 #{sysId,jdbcType=VARCHAR},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="organTypeId != null">
+				#{organTypeId,jdbcType=VARCHAR},
+			</if>
+			
+			<if test="alias != null">
+				#{alias,jdbcType=VARCHAR},
+			</if>
+			<if test="orders != null">
+				#{orders,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=VARCHAR},
+			</if>
+			<if test="raeaId != null">
+				#{raeaId,jdbcType=VARCHAR},
+			</if>
+			
+			<if test="createBy != null">
+				#{createBy,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateBy != null">
+				#{updateBy,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remove != null">
+				#{remove,jdbcType=CHAR},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 逻辑删除公文，支持删除多个删除ok -->
+	<update id="delete" parameterType="java.util.Map">
+		update t_sys_organization
+		     UPDATE_BY   = #{updateBy,jdbcType=VARCHAR},
+	        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+	        REMOVE      = #{remove}
+	    <where>
+	      <foreach collection="ids" item="item" open="id in (" close=")" separator=",">
+	        #{item}
+	      </foreach>
+	    </where>
+	</update>
+
+	<!-- 修改指定的一条公文信息记录 ok -->
+	<update id="updateInfo"
+		parameterType="com.c503.sc.jxwl.orgdata.bean.SysOrganTypeEntity">
+		update t_sys_organization
+		<set>
+		<if test="code != null ">
+				CODE = #{code,jdbcType=VARCHAR},
+			</if>
+		<if test="pid != null ">
+				PID = #{pid,jdbcType=VARCHAR},
+			</if>
+			<if test="sysId != null ">
+				SYS_ID = #{sysId,jdbcType=VARCHAR},
+			</if>
+			<if test="name != null">
+				NAME=#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="organTypeId != null ">
+				ORGAN_TYPE_ID = #{organTypeId,jdbcType=VARCHAR},
+			</if>
+				<if test="alias != null ">
+				ALIAS = #{alias,jdbcType=VARCHAR},
+			</if>
+			<if test="orders != null ">
+				ORDERS = #{orders,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				STATUS = #{status,jdbcType=VARCHAR},
+			</if>
+			<if test="raeaId != null ">
+				RAEAID = #{raeaId,jdbcType=VARCHAR},
+			</if>
+			<if test="createBy != null ">
+				CREATE_BY = #{createBy,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateBy != null ">
+				UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null ">
+				UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remove != null ">
+				REMOVE = #{remove,jdbcType=CHAR},
+			</if>
+		</set>
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+
+	<!--根据ID来查询一条公文记录 -->
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select
+		<include refid="Base_Column_List" />
+		from t_sys_organization
+		where id = #{id,jdbcType=VARCHAR}
+		AND remove =
+		#{remove,jdbcType=VARCHAR}
+	</select>
+
+	<!--根据orgId 来获取企业法人代码 -->
+	<select id="findEnCodeByOrgId"  parameterType="java.util.Map" resultType="java.lang.String">
+		select
+		code
+		from t_sys_organization
+		where ID = #{orgId,jdbcType=VARCHAR}
+		AND remove
+		=
+		#{remove,jdbcType=VARCHAR}
+	</select>
+
+	<!--根据orgId 来获取企业法人代码 -->
+	<select id="findUserRoleByUserId"  parameterType="java.lang.String"  resultType = "java.lang.String">
+		select
+		ROLE_ID
+		from t_sys_user_rel_role
+		where USER_ID = #{userId,jdbcType=VARCHAR}
+	</select>
+	<!--根据orgId 来获取企业法人代码 -->
+	<select id="findUserRoleNameByUserId"  parameterType="java.lang.String"  resultType = "java.lang.Object">
+		select
+		td.NAME
+		from t_sys_user_rel_role tc LEFT JOIN t_sys_role td on tc.ROLE_ID = td.ID
+		where tc.USER_ID = #{userId,jdbcType=VARCHAR}
+	</select>
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" default-autowire="no"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+
+	<bean id="messageConsumer" class="com.c503.sc.jxwl.zcpt.consumer.MessageConsumer">
+	</bean>
+
+	<bean id="dse" class="com.c503.sc.jxwl.zcpt.init.DataServiceEngine">
+		<property name="messageConsumer">
+			<ref bean="messageConsumer" />
+		</property>
+		<property name="realLocationThread" ref="realLocationThread"/>
+		<property name="administrativeAreaAcrossThread" ref="administrativeAreaAcrossThread"/>
+		<property name="lineAlarmThread" ref="lineAlarmThread"/>
+		<property name="limitAreaAlarmThread" ref="limitAreaAlarmThread"/>
+		<property name="alarmHandleThread" ref="alarmHandleThread"/>
+	</bean>
+	<bean id="realLocationThread" class="com.c503.sc.jxwl.zcpt.thread.RealLocationThread">
+	<property name="dangerVehicleService" ref="dangerVehicleService"/>
+	</bean>
+	<bean id="administrativeAreaAcrossThread" class="com.c503.sc.jxwl.zcpt.thread.AdministrativeAreaAcrossThread">
+	<property name="acrossLogService" ref="acrossLogService"/>
+	</bean>
+	<bean id="lineAlarmThread" class="com.c503.sc.jxwl.zcpt.thread.LineAlarmThread">
+	<property name="alarmManageService" ref="alarmManageService"/>
+	</bean>
+	<bean id="limitAreaAlarmThread" class="com.c503.sc.jxwl.zcpt.thread.LimitAreaAlarmThread">
+	<property name="alarmManageService" ref="alarmManageService"/>
+	</bean>
+	<bean id="alarmHandleThread" class="com.c503.sc.jxwl.zcpt.thread.AlarmHandleThread">
+	<property name="alarmManageService" ref="alarmManageService"/>
+	</bean>
+</beans>

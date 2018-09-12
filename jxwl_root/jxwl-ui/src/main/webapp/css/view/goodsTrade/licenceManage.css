@@ -1,0 +1,92 @@
+@charset "UTF-8";
+
+.img-priview:after {
+	content: url(/JXWL/images/icon/previewIcon.png);
+	vertical-align: middle;
+}
+
+.rejectContent {
+	background-color: rgba(127, 132, 147, 0.46);
+	height: 100px;
+	width: 280px;
+}
+
+@charset "UTF-8";
+
+.fileDetails{
+	  margin-top: 6px;
+}
+
+
+/*资质到期提醒二级Tab标签样式*/
+#warn-tabs {
+	background-color: #0F4576;
+	border-bottom: 1px solid #0D5BB2;
+}
+
+#warn-tabs li {
+	margin: 10px;
+	background-color: #0F4576;
+	border: 1px solid #83F7F5;
+}
+
+#warn-tabs a {
+	color: #83F7F5;
+	font-size: 15px;
+	padding-left: 26px;
+	padding-right: 16px;
+	padding-top: 6px;
+	padding-bottom: 6px;
+}
+
+.subtitleIco {
+	background-color: rgb(157, 199, 55);
+	width: 10px;
+	height: 32px;
+	float: left;
+}
+
+.rejectContent {
+	background-color: rgba(127, 132, 147, 0.46);
+}
+
+.enterpriseWarnCircle,.carWarnCircle,.personWarnCircle {
+	width: 22px;
+	height: 22px;
+	border-radius: 11px;
+	position: absolute;
+	left: 805px;
+	top: 220px;
+	background: #90BB2D;
+}
+
+.enterpriseWarnCircle {
+	left: 371px;
+	top: 222px;
+}
+
+.carWarnCircle {
+	left: 510px;
+	top: 222px;
+}
+
+.personWarnCircle {
+	left: 650px;
+	top: 222px;
+}
+
+.circleTwo {
+	left: 800px;
+}
+
+.expired {
+	color: red;
+}
+
+.amount {
+	position: relative;
+	left: 6px;
+}
+.btn-lemonLM {
+	margin-left:20px;
+}

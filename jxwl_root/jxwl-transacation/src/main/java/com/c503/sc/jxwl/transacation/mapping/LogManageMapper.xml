@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.c503.sc.jxwl.transacation.dao.ILogManageDao" >
+  <resultMap id="BaseResultMap" type="com.c503.sc.jxwl.transacation.bean.LogManage" >
+    <id     column="ID"               property="id"              jdbcType="VARCHAR" />
+    <result column="ORDER_ID"      property="orderId"      jdbcType="VARCHAR" />
+    <result column="CORPORATE_NO"         property="corporateNo"         jdbcType="VARCHAR" />
+    <result column="TRADE_STATUS"      property="tradeStatus"      jdbcType="VARCHAR" />
+    <result column="REMIND_LOGISTICS"   property="remindLogistics"   jdbcType="CHAR" />
+    <result column="REMIND_CHEMICAL"   property="remindChemical"   jdbcType="CHAR" />
+    <result column="RECORD_TIME"       property="recordTime"       jdbcType="TIMESTAMP" />
+    <result column="CONTENT"    property="content"    jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID, ORDER_ID, CORPORATE_NO, TRADE_STATUS, REMIND_LOGISTICS, REMIND_CHEMICAL, RECORD_TIME, CONTENT
+  </sql>
+  
+  <sql id="Base_Column_List2" >
+    L.ID,  L.ORDER_ID,  L.CORPORATE_NO,  L.TRADE_STATUS,  L.REMIND_LOGISTICS, L.REMIND_CHEMICAL, L.RECORD_TIME,  L.CONTENT,
+    S.ORDER_NO orderNo, ESL2.ENTERPRISE_NAME hgEnterpriseName, ESL.ENTERPRISE_NAME wlEnterpriseName
+  </sql>
+  
+  <!-- 详情 -->
+  <select id="findById" resultMap="BaseResultMap" parameterType="String" >
+     select 
+     <include refid="Base_Column_List2" />
+      from t_log_manage L 
+    LEFT JOIN T_SOURCE_GOODS S ON L.ORDER_ID = S.ID
+    LEFT JOIN T_ENTERPRISE E ON L.CORPORATE_NO = E.CORPORATE_NO
+    LEFT JOIN  (SELECT DISTINCT ENTERPRISE_NAME, T_ENTERPRISE.CORPORATE_NO
+          FROM
+        T_ENTERPRISE,
+        T_SOURCE_GOODS,
+        T_log_manage
+      WHERE
+            T_ENTERPRISE.CORPORATE_NO = T_SOURCE_GOODS.WL_CORPORATE_NO
+              AND T_log_manage.Order_Id = T_SOURCE_GOODS. ID) ESL 
+      ON ESL.CORPORATE_NO =  S.WL_CORPORATE_NO
+      LEFT JOIN (SELECT DISTINCT ENTERPRISE_NAME, T_ENTERPRISE.CORPORATE_NO
+            FROM
+        T_ENTERPRISE,
+        T_SOURCE_GOODS,
+        T_log_manage
+        WHERE
+              T_ENTERPRISE.CORPORATE_NO = T_SOURCE_GOODS.HG_CORPORATE_NO
+              AND T_log_manage.Order_Id = T_SOURCE_GOODS. ID) ESL2
+      ON ESL2.CORPORATE_NO =  S.HG_CORPORATE_NO
+	       WHERE 
+	  L.ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 分页查询 -->  
+  <select id="findByParams" parameterType="map" resultMap="BaseResultMap">
+  	select
+	<include refid="Base_Column_List2" />
+	from t_log_manage L 
+    LEFT JOIN T_SOURCE_GOODS S ON L.ORDER_ID = S.ID
+    LEFT JOIN T_ENTERPRISE E ON L.CORPORATE_NO = E.CORPORATE_NO
+    LEFT JOIN  (SELECT DISTINCT ENTERPRISE_NAME, T_ENTERPRISE.CORPORATE_NO
+          FROM
+        T_ENTERPRISE,
+        T_SOURCE_GOODS,
+        T_LOG_MANAGE
+      WHERE
+            T_ENTERPRISE.CORPORATE_NO = T_SOURCE_GOODS.WL_CORPORATE_NO
+              AND T_LOG_MANAGE.ORDER_ID = T_SOURCE_GOODS. ID) ESL 
+      ON ESL.CORPORATE_NO =  S.WL_CORPORATE_NO
+    LEFT JOIN (SELECT DISTINCT ENTERPRISE_NAME, T_ENTERPRISE.CORPORATE_NO
+            FROM
+        T_ENTERPRISE,
+        T_SOURCE_GOODS,
+        T_LOG_MANAGE
+        WHERE
+              T_ENTERPRISE.CORPORATE_NO = T_SOURCE_GOODS.HG_CORPORATE_NO
+              AND T_LOG_MANAGE.ORDER_ID = T_SOURCE_GOODS. ID) ESL2
+      ON ESL2.CORPORATE_NO =  S.HG_CORPORATE_NO
+	<where>
+	  <!-- <if test="corporateNo != null and corporateNo != ''">
+		AND L.CORPORATE_NO = #{corporateNo,jdbcType=VARCHAR}
+	  </if> -->
+	  <if test="remindLogistics != null and remindLogistics != ''">
+		AND L.REMIND_LOGISTICS = #{remindLogistics,jdbcType=CHAR}
+		AND S.WL_CORPORATE_NO = #{corporateNo,jdbcType=CHAR}
+	  </if>
+	  <if test="remindChemical != null and remindChemical != ''">
+		AND L.REMIND_CHEMICAL = #{remindChemical,jdbcType=CHAR}
+		AND S.HG_CORPORATE_NO = #{corporateNo,jdbcType=CHAR}
+	  </if>
+	  <if test="orderNo != null and orderNo != ''">
+		<!-- AND S.ORDER_NO = #{orderNo,jdbcType=VARCHAR} -->
+		 AND S.ORDER_NO LIKE CONCAT(CONCAT('%',#{orderNo,jdbcType=VARCHAR}),'%')
+	  </if>
+	  <if test="hgEnterpriseName != null and hgEnterpriseName != ''">
+	  	<!-- 后台获取的 hgEnterpriseName和ESL2.ENTERPRISE_NAME不严格匹配导致查询结果为0条，改为模糊查询-->
+		 AND ESL2.ENTERPRISE_NAME LIKE CONCAT(CONCAT('%',#{hgEnterpriseName,jdbcType=VARCHAR}),'%')
+	  </if>
+	  <if test="wlEnterpriseName != null and wlEnterpriseName !=''">
+	  	<!-- 后台获取的 wlEnterpriseName和ESL.ENTERPRISE_NAME不严格匹配导致查询结果为0条，改为模糊查询-->
+	  	AND ESL.ENTERPRISE_NAME LIKE CONCAT(CONCAT('%',#{wlEnterpriseName,jdbcType=VARCHAR}),'%')
+	  </if>
+	</where>
+	ORDER BY L.RECORD_TIME DESC
+  </select>
+  
+  <!-- 批量更新提醒状态 -->
+	<update id="updateBatch" parameterType="java.util.List">
+	     <foreach collection="list" item="item" open="begin" close=";end;" separator=";">
+			UPDATE t_log_manage
+			<set>
+		      <if test="item.remindLogistics != null" >
+		        REMIND_LOGISTICS = #{item.remindLogistics,jdbcType=CHAR},
+		      </if>
+		      <if test="item.remindChemical != null" >
+		        REMIND_CHEMICAL = #{item.remindChemical,jdbcType=CHAR},
+		      </if>
+			</set>
+			WHERE ID=#{item.id}
+		</foreach>
+	</update>
+  
+  <insert id="saveLog" parameterType="com.c503.sc.jxwl.transacation.bean.LogManage" >
+    insert into t_log_manage
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="orderId != null" >
+        ORDER_ID,
+      </if>
+      <if test="corporateNo != null" >
+        CORPORATE_NO,
+      </if>
+      <if test="tradeStatus != null" >
+        TRADE_STATUS,
+      </if>
+      <if test="remindLogistics != null" >
+        REMIND_LOGISTICS,
+      </if>
+      <if test="remindChemical != null" >
+        REMIND_CHEMICAL,
+      </if>
+      <if test="recordTime != null" >
+        RECORD_TIME,
+      </if>
+      <if test="content != null" >
+        CONTENT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="orderId != null" >
+        #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="corporateNo != null" >
+        #{corporateNo,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeStatus != null" >
+        #{tradeStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="remindLogistics != null" >
+        #{remindLogistics,jdbcType=CHAR},
+      </if>
+      <if test="remindChemical != null" >
+        #{remindChemical,jdbcType=CHAR},
+      </if>
+      <if test="recordTime != null" >
+        #{recordTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+</mapper>

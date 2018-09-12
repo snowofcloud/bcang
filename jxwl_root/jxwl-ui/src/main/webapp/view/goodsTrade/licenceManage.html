@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>资质备案管理</title>
+<link rel="stylesheet"
+	href="../../js/lib/bootstrap-3.3.4/css/bootstrap.css" />
+<link rel="stylesheet" href="../../js/lib/jquery/css/jquery-ui.css" />
+<link rel="stylesheet" href="../../js/lib/jqGrid/ui.jqgrid.css" />
+<link rel="stylesheet" href="../../css/module/module.css" />
+<link rel="stylesheet" href="../../js/lib/uploadFile/Huploadify.css" />
+<link rel="stylesheet" href="../../css/view/goodsTrade/licenceManage.css" />
+<!-- 媒体查询，只能放在最后 -->
+<link rel="stylesheet" href="../../css/view/media.css"/>
+</head>
+<body>
+	<div class="right-content">
+		<div role="tabpanel" class="">
+			<!-- Nav tabs -->
+			<ul class="nav nav-tabs" role="tablist" id="licenceManage-tabs">
+				<li role="presentation" class="active" id="enterpriseTabLi"
+					data-module="enterpriseLicenceInfo"><a href="#enterprise"
+					aria-controls="enterprise" role="tab" data-toggle="tab"
+					data-module-name="enterpriseLicenceInfo">企业资质信息</a></li>
+				<li role="presentation" data-module="carLicenceInfo" id="carTabLi"><a
+					href="#car" aria-controls="car" role="tab" data-toggle="tab"
+					data-module-name="carLicenceInfo">车辆资质信息</a></li>
+				<li role="presentation" data-module="personLicenceInfo"
+					id="personTabLi"><a href="#person" aria-controls="person"
+					role="tab" data-toggle="tab" data-module-name="personLicenceInfo">人员资质信息</a>
+				</li>
+				<li role="presentation" data-module="enterpriseWarn" id="warnTabLi">
+					<a href="#warn" aria-controls="warn" role="tab" data-toggle="tab">证件到期提醒</a>
+				</li>
+
+			</ul>
+			<!-- Tab panes -->
+			<div class="tab-content" id="tabContent">
+				<!--企业资质信息-->
+				<div role="tabpanel" class="tab-pane active" id="enterprise"
+					data-module="enterpriseLicenceInfo">
+					<!--搜索栏区域-->
+					<div class="searchBox">
+						<div class="line-searchBox" id="enterprise-search">
+							<div class="item-searchBox col-xs-3">
+								<label class="horizontal-span">企业名称</label> <input
+									name="corporateName-Code" id="enterpriseName-search"
+									type="text" class="form-control" placeholder="企业名称/法人代码"
+									maxlength="200">
+							</div>
+							<div class="item-searchBox col-xs-3">
+								<label class="horizontal-span" for="">审核状态</label> <select
+									class="form-control" id="enterpriseStatus-search">
+									<option value="">全部</option>
+									<option value="151001001">待审核</option>
+									<option value="151001002">未通过</option>
+									<option value="151001003">通过</option>
+									<option value="151001004">已注销</option>
+								</select>
+							</div>
+							<div class="item-searchBox col-xs-3">
+								<button type="button" class="btn btn-lemon"
+									id="enterprise-searchBtn"
+									data-func="enterpriseLicenceInfo-findByPage">
+									<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;查询
+								</button>
+								<button type="button" class="btn btn-lemon btn-lemonLM"
+									id="peccant-searchBtn1" data-func="enterpriseLicenceInfo-breakRule">
+									<span class="glyphicon"></span>违章查询
+								</button>
+								<button type="button" class="btn btn-success btn-lemonLM"
+									id="enterpriseUpload-addBtn"
+									data-func="enterpriseLicenceInfo-save">
+									<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;上传
+								</button>
+							</div>
+						</div>
+					</div>
+					<!--表格展示-->
+					<table id="enterpriseTable"></table>
+					<div id="enterprisePager"></div>
+				</div>
+
+
+				<!--车辆资质信息-->
+				<div role="tabpanel" class="tab-pane" id="car"
+					data-module="carLicenceInfo">
+					<!--搜索栏区域-->
+					<div class="searchBox">
+						<div class="line-searchBox" id="car-search">
+							<div class="item-searchBox col-xs-3">
+								<label class="horizontal-span">企业名称</label> <input
+									name="corporateName-Code" id="enterpriseName-search"
+									type="text" class="form-control" placeholder="企业名称/法人代码"
+									maxlength="200">
+							</div>
+
+							<div class="item-searchBox col-xs-3">
+								<label class="horizontal-span">车牌号</label> <input
+									name="vehicleName" id="carNo-search" type="text"
+									class="form-control" placeholder="车牌号"
+									maxlength="10">
+							</div>
+							<div class="item-searchBox col-xs-3">
+								<label class="horizontal-span" for="">审核状态</label> <select
+									class="form-control" id="carStatus-search">
+									<option value="">全部</option>
+									<option value="151001001">待审核</option>
+									<option value="151001002">未通过</option>
+									<option value="151001003">通过</option>
+									<option value="151001004">已注销</option>
+								</select>
+							</div>
+							<div class="item-searchBox col-xs-3">
+								<button type="button" class="btn btn-lemon" id="car-searchBtn"
+									data-func="carLicenceInfo-findByPage">
+									<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;查询
+								</button>
+								<button type="button" class="btn btn-lemon btn-lemonLM"
+									id="peccant-searchBtn2" data-func="enterpriseLicenceInfo-breakRule">
+									<span class="glyphicon"></span>违章查询
+								</button>
+								<button type="button" class="btn btn-success btn-lemonLM"
+									id="carUpload-addBtn" data-func="carLicenceInfo-save">
+									<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;上传
+								</button>
+							</div>
+						</div>
+					</div>
+					<!--表格展示-->
+					<table id="carTable"></table>
+					<div id="carPager"></div>
+				</div>
+
+				<!--人员资质信息-->
+				<div role="tabpanel" class="tab-pane" id="person"
+					data-module="personLicenceInfo">
+					<!--搜索栏区域-->
+					<div class="searchBox">
+						<div class="line-searchBox" id="person-search">
+							<div class="item-searchBox col-xs-3">
+								<label class="horizontal-span">企业名称</label> <input
+									name="corporateName-Code" id="enterpriseName-search"
+									type="text" class="form-control" placeholder="企业名称/法人代码"
+									maxlength="200">
+							</div>
+
+							<div class="item-searchBox col-xs-3">
+								<label class="horizontal-span">姓名</label> <input
+									name="personName" id="personName-search" type="text"
+									class="form-control" placeholder="姓名"
+									maxlength="20">
+							</div>
+							<div class="item-searchBox col-xs-3">
+								<label class="horizontal-span" for="">审核状态</label> <select
+									class="form-control" id="personStatus-search">
+									<option value="">全部</option>
+									<option value="151001001">待审核</option>
+									<option value="151001002">未通过</option>
+									<option value="151001003">通过</option>
+									<option value="151001004">已注销</option>
+								</select>
+							</div>
+							<div class="item-searchBox col-xs-3">
+								<button type="button" class="btn btn-lemon"
+									id="person-searchBtn" data-func="personLicenceInfo-findByPage">
+									<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;查询
+								</button>
+								
+								<button type="button" class="btn btn-lemon btn-lemonLM"
+									id="peccant-searchBtn3" data-func="enterpriseLicenceInfo-breakRule">
+									<span class="glyphicon"></span>违章查询
+								</button>
+								<button type="button" class="btn btn-success btn-lemonLM"
+									id="personUpload-addBtn" data-func="personLicenceInfo-save">
+									<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;上传
+								</button>
+							</div>
+						</div>
+					</div>
+					<!--表格展示-->
+					<table id="personTable"></table>
+					<div id="personPager"></div>
+				</div>
+
+				<!--证件到期提醒-->
+				<div role="tabpanel" class="tab-pane" id="warn"
+					data-module="enterpriseWarn">
+
+					<!-- Nav tabs -->
+
+					<ul class="nav nav-tabs" role="tablist" id="warn-tabs">
+						<li role="presentation" class="active"
+							data-module="enterpriseWarn"><a href="#enterpriseWarn"
+							aria-controls="enterpriseWarn" role="tab" data-toggle="tab"
+							data-module-name="enterpriseWarn">企业资质</a></li>
+						<li role="presentation" data-module="carWarn"><a
+							href="#carWarn" aria-controls="carWarn" role="tab"
+							data-toggle="tab" data-module-name="carWarn">车辆资质</a></li>
+						<li role="presentation" data-module="personWarn"><a
+							href="#personWarn" aria-controls="personWarn" role="tab"
+							data-toggle="tab" data-module-name="personWarn">人员资质</a>
+						</li>
+					</ul>
+
+					<div class="enterpriseWarnCircle" id="enterpriseWarnCircle"
+						data-module="enterpriseWarn" data-func="enterpriseWarn-statistics">
+						<label class="amount" id="enterpriseWarnAmount">0</label>
+					</div>
+
+					<div class="carWarnCircle" id="carWarnCircle"
+						data-module="carWarn" data-func="carWarn-statistics">
+						<label class="amount" id="carWarnAmount">0</label>
+					</div>
+
+					<div class="personWarnCircle" id="personWarnCircle"
+						data-module="personWarn" data-func="personWarn-statistics">
+						<label class="amount" id="personWarnAmount">0</label>
+					</div>
+
+
+					<div class="tab-content">
+						<!--企业资质信息提醒-->
+						<div role="tabpanel" class="tab-pane active" id="enterpriseWarn"
+							data-module="enterpriseWarn">
+							<div class="searchBox">
+								<div class="line-searchBox" id="enterpriseWarn-search">
+									<div class="item-searchBox col-xs-3">
+										<label class="horizontal-span">企业名称</label> <input name=""
+											id="enterpriseWarnName-search" type="text" class="form-control"
+											placeholder="企业名称/法人代码"
+											maxlength="200">
+									</div>
+									<div class="item-searchBox col-xs-3">
+										<label class="horizontal-span" for="">证件状态</label> <select
+											class="form-control" id="enterpriseWarnStatus-search">
+											<option value="">全部</option>
+											<option value="0">已过期</option>
+											<option value="1">即将到期</option>
+										</select>
+									</div>
+									<div class="item-searchBox col-xs-3">
+										<button type="button" class="btn btn-lemon"
+											id="enterpriseWarn-searchBtn"
+											data-func="enterpriseWarn-findByPage">
+											<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;查询
+										</button>
+									</div>
+								</div>
+							</div>
+							<!--表格展示-->
+							<table id="enterpriseWarnTable"></table>
+							<div id="enterpriseWarnPager"></div>
+						</div>
+
+						<!--车辆资质信息提醒-->
+						<div role="tabpanel" class="tab-pane" id="carWarn"
+							data-module="carWarn">
+							<div class="searchBox">
+								<div class="line-searchBox" id="carWarn-search">
+									<div class="item-searchBox col-xs-3">
+										<label class="horizontal-span">车牌号</label> <input name=""
+											id="carWarnName-search" type="text" class="form-control"
+											placeholder="车牌号"
+											maxlength="20">
+									</div>
+									<div class="item-searchBox col-xs-3">
+										<label class="horizontal-span" for="">证件状态</label> <select
+											class="form-control" id="carWarnStatus-search">
+											<option value="">全部</option>
+											<option value="0">已过期</option>
+											<option value="1">即将到期</option>
+										</select>
+									</div>
+									<div class="item-searchBox col-xs-3">
+										<button type="button" class="btn btn-lemon"
+											id="carWarn-searchBtn" data-func="carWarn-findByPage">
+											<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;查询
+										</button>
+									</div>
+								</div>
+							</div>
+							<!--表格展示-->
+							<table id="carWarnTable"></table>
+							<div id="carWarnPager"></div>
+						</div>
+
+
+						<!--人员资质信息提醒-->
+						<div role="tabpanel" class="tab-pane" id="personWarn"
+							data-module="personWarn">
+							<div class="searchBox">
+								<div class="line-searchBox" id="personWarn-search">
+									<div class="item-searchBox col-xs-3">
+										<label class="horizontal-span">姓名</label> <input name=""
+											id="personWarnPersonName-search" type="text" class="form-control"
+											placeholder="姓名"
+											maxlength="200">
+									</div>
+									<div class="item-searchBox col-xs-3">
+										<label class="horizontal-span" for="">证件状态</label> <select
+											class="form-control" id="personWarnStatus-search">
+											<option value="">全部</option>
+											<option value="0">已过期</option>
+											<option value="1">即将到期</option>
+										</select>
+									</div>
+									<div class="item-searchBox col-xs-3">
+										<button type="button" class="btn btn-lemon"
+											id="personWarn-searchBtn" data-func="personWarn-findByPage">
+											<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;查询
+										</button>
+									</div>
+								</div>
+							</div>
+							<!--表格展示-->
+							<table id="personWarnTable"></table>
+							<div id="personWarnPager"></div>
+						</div>
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+
+
+		<!--预览企业信息图片弹框-->
+		<div class="panel panel-gray-md" id="preview-panel"
+			style="z-index: 2600;width: 628px;">
+			<div class="panel-heading">
+				<span class="panel-title">图片预览</span>
+			</div>
+			<form id="preview-form">
+				<div class="panel-body">
+					<div class="panel-body-content">
+						<div class="imgContent">
+							<img id="previewFile"></img>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<!-- 企业资质弹框-->
+		<div class="panel panel-gray-bxs" id="enterprisePanel">
+			<div class="panel-heading">
+				<span class="panel-title">企业资质上传</span>
+			</div>
+			<form id="enterpriseForm">
+				<div class="panel-body">
+					<div class="panel-body-content">
+						<div class="row hidden">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="id">id</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="id"></span> <input
+									type="text" class="form-control saveInput must" name="id"
+									id="id" maxlength="200" required />
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="enterpriseName">企业名称</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="enterpriseName"></span>
+								<input type="text" class="form-control saveInput must"
+									name="enterpriseName" id="enterpriseName" maxlength="200"
+									placeholder="请输入1~200个字符" required maxlength="200"/>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="enterpriseLicenceName">资质名称</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="licenceName" id="enterpriseLicenceName"></span>
+								<input type="text" class="form-control saveInput must" placeholder="请输入1~200个字符"
+									name="licenceName" id="enterpriseLicenceName" maxlength="200" required />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="enterpriseLicenceIssuingAuthority">发证机关</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="licenceIssuingAuthority"
+									id="enterpriseLicenceIssuingAuthority"></span> <input type="text"
+									class="form-control saveInput must" placeholder="请输入1~200个字符"
+									name="licenceIssuingAuthority" id="enterpriseLicenceIssuingAuthority"
+									maxlength="200" required />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="enterpriseExpireDate">证件到期时间</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="expireDate" id="expireDate"></span>
+								<input type="text" class="Wdate form-control  saveInput must"
+									name="expireDate" id="enterpriseExpireDate" placeholder="请选择到期时间"
+									onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})"
+									style="background-color: rgba(127, 132, 147, 0.46);" required readonly/>
+							</div>
+						</div>
+
+						
+						<div class="row">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="enterpriseBlackStatus">是否在黑名单</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="blackStatus" id="enterpriseblackStatus"></span>
+								<input type="text" class="form-control saveInput "
+									name="blackStatus" id="enterpriseBlackStatus" maxlength="200" required readonly="readonly"/>
+							</div>
+						</div>
+						<!-- <div class="row">
+							<div class="col-xs-4">
+								<label class="must mustFlag"  class="">附件</label>
+							</div>
+							<div class="col-xs-7" id="fileEnterprise">
+								<div id="fileUploadEnterprise"></div>
+								<small>请上传png/jpeg/bmp/jpg类型的文件，文件个数不超过5个，大小不超过10M</small> <input
+									id="fileUpEnterprise" type="hidden" name="fileIds" class="form-control" required>
+							</div>
+							<div class="col-xs-7 fileDetails" id="fileUploadEnterprise_see">
+								<div id="detailEnterpriseFiles_see"></div>
+							</div>
+					    </div> -->
+					    <div class="row noie9filesmuliple" id="">
+		                    <div class="col-xs-4"><label class="must mustFlag">附件</label></div>
+		                    <div class="col-xs-7" id="fileEnterprise">
+		                        <div id="fileUploadEnterprise"></div>
+		                        <small>请上传png/jpeg/bmp/jpg类型的文件，大小不超过10M</small>
+		                    </div>
+		                </div>
+		                
+		                <input id="fileUpEnterprise" type="hidden" name="fileIds" required><!-- 新增时，附件集合存放在这个隐藏域中 -->
+						
+						<div class="row ie9filesmuliplebox" id="">
+		                 	<div class="col-xs-4"><label class="must mustFlag">附件</label></div>
+		                 	<div class="col-xs-7" id="ie9_fileEnterprise">
+		                 		<ul id="showFileListMul_1" class="iegetfiles"></ul> <!-- 详情展示和编辑时，附件id集合存放在ul下的li中，li元素由iframe加载时生成，隐藏域中 -->
+		                 		<small>请上传png/jpeg/bmp/jpg类型的文件，大小不超过10M</small>
+		                 	</div>
+		                </div>
+					    <div class="col-xs-7 fileDetails" id="fileUploadEnterprise_see">  
+							<div id="detailEnterpriseFiles_see"></div>   
+						</div>
+						
+						<div class="row forDetail">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="verifyStatus">审核状态</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="verifyStatus"
+									id="verifyStatus"></span> <input type="text"
+									class="form-control saveInput must" name="verifyStatus"
+									id="verifyStatus" maxlength="200" required />
+							</div>
+						</div>
+						<div class="row hidden forRejectReason">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="rejectReason">未通过原因</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="rejectReason"
+									id="rejectReason"></span> <input type="text saveInput must "
+									class="form-control saveInput must" name="rejectReason" placeholder="请输入1~1000个字符"
+									id="rejectReason" maxlength="1000" required />
+							</div>
+						</div>
+						<div class="forVerify">
+							<div class="moduleLine">审核</div>
+							<div class="row">
+								<div class="col-xs-4">
+									<label class="must mustFlag" for="accountVerify_verifyStatus">审核状态</label>
+								</div>
+								<div class="col-xs-7" style="line-height: 34px;">
+									<input type="radio" name="enterpriseRadio" value='通过'
+										checked="checked" id="151001003">通过 <input
+										type="radio" name="enterpriseRadio" value="未通过" id="151001002">未通过
+								</div>
+							</div>
+							<div class="row hidden" id="rejectRadio">
+								<div class="col-xs-4">
+									<label class="must mustFlag" for="accountVerify_rejectReason">未通过原因</label>
+								</div>
+								<div class="col-xs-7">
+									<textarea name="rejectContent"
+										style="height: 100px; width: 280px;" id="enterpriseContent"
+										class=" form-control rejectContent" data-min="1"
+										maxlength="1000" required>
+							   		</textarea>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="panel-footer">
+					<button type="submit" class="btn btn-cyan">确定</button>
+					<button type="reset" class="btn btn-border cancel">取消</button>
+				</div>
+			</form>
+			<!-- 避免上传的文件跳转到其他页面 -->
+	        <iframe style="display:none" name="multipatFile_1" id="fileIframe_1"></iframe>
+		    <form class="ie9filesmuliplebox" target="multipatFile_1" id="" action="/JXWL/rest/licenceInfo/uploadFile" 
+		    			enctype="multipart/form-data" method="POST" style="position:absolute;top:282px;left:151px;">
+				<div class="iefileChoicebutton">选择文件
+					<input class="ieuploadsfile" type="file" id="ieuploadsfile_1" name="file"/>
+				</div>
+				<input type="submit" value="提交" id="iefilesubmit_1" style="display:none"/>
+			</form>
+		</div>
+
+
+		<!-- 车辆资质弹框-->
+		<div class="panel panel-gray-bxs" id="carPanel">
+			<div class="panel-heading">
+				<span class="panel-title">车辆资质上传</span>
+			</div>
+			<form id="carForm">
+				<div class="panel-body">
+					<div class="panel-body-content">
+						<div class="row hidden">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="id">id</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="id"></span> <input
+									type="text" class="form-control saveInput must" name="id"
+									id="id" maxlength="200" required />
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="carLicencePlateNo">车牌号</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="licencePlateNo"></span>
+								<input type="text" class="form-control saveInput must"
+									name="licencePlateNo" id="carLicencePlateNo"
+									pattern="^[\u4e00-\u9fa5]{1}[A-Z]{1}[A-Z_0-9]{5}$"
+									 maxlength="200" placeholder="请输入车牌号"
+									 required >
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="enterpriseName">所属企业</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="enterpriseName"></span>
+								<input type="text" class="form-control saveInput must"
+									name="enterpriseName" id="enterpriseName" maxlength="200" placeholder="请输入1~200个字符"
+									required />
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="carLicenceName">资质名称</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="licenceName" id="licenceName"></span>
+								<input type="text" class="form-control saveInput must"
+									name="licenceName" id="carLicenceName" maxlength="200"  placeholder="请输入1~200个字符" required />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="carLicenceIssuingAuthority">发证机关</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="licenceIssuingAuthority"
+									id="licenceIssuingAuthority"></span> <input type="text"
+									class="form-control saveInput must" placeholder="请输入1~200个字符"
+									name="licenceIssuingAuthority" id="carLicenceIssuingAuthority"
+									maxlength="200" required />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="carExpireDate">证件到期时间</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="expireDate" id="expireDate"></span>
+								<input type="text" class="Wdate form-control  saveInput must"
+									name="expireDate" id="carExpireDate" placeholder="请选择到期时间"
+									onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})"
+									style="background-color: rgba(127, 132, 147, 0.46);" required readonly />
+							</div>
+						</div>
+
+						
+
+						<div class="row">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="blackStatus">是否在黑名单</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="blackStatus" id="blackStatus"></span>
+								<input type="text" class="form-control saveInput must"
+									name="blackStatus" id="carBlackStatus" maxlength="200" required readonly="readonly"/>
+							</div>
+						</div>
+						
+						<!-- <div class="row">
+							<div class="col-xs-4">
+								<label  class="must mustFlag"  class="">附件</label>
+							</div>
+							<div class="col-xs-7" id="fileCar">
+								<div id="fileUploadCar"></div>
+								<small>请上传png/jpeg/bmp/jpg类型的文件，文件个数不超过5个，大小不超过10M</small> <input
+									id="fileUpCar" type="hidden" name="fileIds" class="form-control">
+							</div>
+							<div class="col-xs-7 fileDetails" id="fileUploadCar_see">
+								<div id="detailCarFiles_see"></div>
+							</div>
+					    </div> -->
+					    
+				    	<div class="row noie9filesmuliple" id="">
+		                    <div class="col-xs-4"><label>附件</label></div>
+		                    <div class="col-xs-7" id="fileCar">
+		                        <div id="fileUploadCar"></div>
+		                        <small>请上传png/jpeg/bmp/jpg类型的文件，大小不超过10M</small>
+		                    </div>
+		                </div>
+		                
+		                <input id="fileUpCar" type="hidden" name="fileIds"><!-- 新增时，附件集合存放在这个隐藏域中 -->
+		                
+						<div class="row ie9filesmuliplebox" id="">
+		                 	<div class="col-xs-4"><label>附件</label></div>
+		                 	<div class="col-xs-7" id="ie9_fileCar">
+		                 		<ul id="showFileListMul_2" class="iegetfiles"></ul> <!-- 详情展示和编辑时，附件id集合存放在ul下的li中，li元素由iframe加载时生成，隐藏域中 -->
+		                 		<small>请上传png/jpeg/bmp/jpg类型的文件，大小不超过10M</small>
+		                 	</div>
+		                </div>
+		                <div class="col-xs-7 fileDetails" id="fileUploadCar_see">  
+							<div id="detailCarFiles_see"></div>   
+						</div>
+						<!-- <div class="row">
+							<div class="col-xs-4">
+								<label class="" for="licenceRela">资质附件</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="licenceRela" id="licenceRela"></span>
+								<input type="text" class="form-control saveInput "
+									name="licenceRela" id="licenceRela" maxlength="200" />
+							</div>
+						</div> -->
+						
+						<div class="row forDetail">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="verifyStatus">审核状态</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="verifyStatus"
+									id="verifyStatus"></span> <input type="text"
+									class="form-control saveInput must" name="verifyStatus"
+									id="verifyStatus" maxlength="200" required />
+							</div>
+						</div>
+
+						<div class="row hidden forRejectReason">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="rejectReason">未通过原因</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="rejectReason"
+									id="rejectReason"></span> <input type="text saveInput must "
+									class="form-control saveInput must" name="rejectReason" placeholder="请输入1~1000个字符"
+									id="rejectReason" maxlength="1000" required />
+							</div>
+						</div>
+
+						<div class="forVerify">
+							<div class="moduleLine">审核</div>
+							<div class="row">
+								<div class="col-xs-4">
+									<label class="must mustFlag" for="accountVerify_verifyStatus">审核状态</label>
+								</div>
+								<div class="col-xs-7" style="line-height: 34px;">
+									<input type="radio" name="carRadio" value='通过'
+										checked="checked" id="151001003">通过 <input
+										type="radio" name="carRadio" value="未通过" id="151001002">未通过
+								</div>
+							</div>
+							<div class="row hidden" id="rejectRadio">
+								<div class="col-xs-4">
+									<label class="must mustFlag" for="accountVerify_rejectReason">未通过原因</label>
+								</div>
+								<div class="col-xs-7">
+									<textarea name="rejectContent"
+										style="height: 100px; width: 280px;" id="carContent"
+										class=" form-control rejectContent" data-min="1" placeholder="请输入1~1000个字符"
+										maxlength="1000" required>
+							   </textarea>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+				<div class="panel-footer">
+					<button type="submit" class="btn btn-cyan">确定</button>
+					<button type="reset" class="btn btn-border cancel">取消</button>
+				</div>
+			</form>
+			<!-- 避免上传的文件跳转到其他页面 -->
+	        <iframe style="display:none" name="multipatFile_2" id="fileIframe_2"></iframe>
+		    <form class="ie9filesmuliplebox" target="multipatFile_2" id="" action="/JXWL/rest/licenceInfo/uploadFile" 
+		    			enctype="multipart/form-data" method="POST" style="position:absolute;top:325px;left:151px;">
+				<div class="iefileChoicebutton">选择文件
+					<input class="ieuploadsfile" type="file" id="ieuploadsfile_2" name="file"/>
+				</div>
+				<input type="submit" value="提交" id="iefilesubmit_2" style="display:none"/>
+			</form>
+		</div>
+
+
+
+		<!-- 人员资质弹框 -->
+		<div class="panel panel-gray-sm" id="personPanel" style="width:675px">
+			<div class="panel-heading">
+				<span class="panel-title">人员资质上传</span>
+			</div>
+			<form id="personForm">
+				<div class="panel-body">
+					<div class="panel-body-content">
+						<div class="row hidden">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="id">id</label>
+							</div>
+							<div class="col-xs-8">
+								<span class="look-formPanel" name="id"></span> <input
+									type="text" class="form-control saveInput must" name="id" placeholder="请输入1~200个字符"
+									id="id" maxlength="200" required />
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-3">
+								<label class="must mustFlag" for="personName">姓名</label>
+							</div>
+							<div class="col-xs-8">
+								<span class="look-formPanel" name="personName"></span>
+								<input type="text" class="form-control saveInput must" placeholder="请输入1~200个字符 " name="personName" id="personNameOne" maxlength="200" required />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-3">
+								<label class="must mustFlag" for="personIdentificationCardNo">身份证号</label>
+							</div>
+							<div class="col-xs-8">
+								<span class="look-formPanel" name="identificationCardNo"></span>
+								<input type="text" class="form-control saveInput must" placeholder="请输入1~200个字符"
+									name="identificationCardNo" id="personIdentificationCardNo"
+									maxlength="200" required readonly="readonly"/>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-3">
+								<label class="must mustFlag" for="enterpriseName">所属企业</label>
+							</div>
+							<div class="col-xs-8">
+								<span class="look-formPanel" name="enterpriseName"></span>
+								<input type="text" class="form-control saveInput must" placeholder="请输入1~200个字符"
+									name="enterpriseName" id="enterpriseName" maxlength="200"
+									required />
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-3">
+								<label class="must mustFlag" for="personLicenceName">资质名称</label>
+							</div>
+							<div class="col-xs-8">
+								<span class="look-formPanel" name="licenceName" id="licenceName"></span>
+								<input type="text" class="form-control saveInput must" placeholder="请输入1~200个字符"
+									name="licenceName" id="personLicenceName" maxlength="200" required />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-3">
+								<label class="must mustFlag" for="personLicenceIssuingAuthority">发证机关</label>
+							</div>
+							<div class="col-xs-8">
+								<span class="look-formPanel" name="licenceIssuingAuthority"
+									id="licenceIssuingAuthority"></span> <input type="text"
+									class="form-control saveInput must" placeholder="请输入1~200个字符"
+									name="licenceIssuingAuthority" id="personLicenceIssuingAuthority"
+									maxlength="200" required />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-3">
+								<label class="must mustFlag" for="personOccupationType">从业人员类型</label>
+							</div>
+							<div class="col-xs-3">
+								<span class="look-formPanel" name="occupationPersonType" id=""></span>
+								<input type="text" class="form-control saveInput must"
+									name="occupationPersonType" id="personOccupationType" maxlength="200" required  readonly ="readonly" />
+							</div>
+							<div class="col-xs-2">
+								<label class="must mustFlag" for="expireDate">证件到期时间</label>
+							</div>
+							<div class="col-xs-3">
+								<span class="look-formPanel" name="expireDate" id="expireDate"></span>
+								<input type="text" class="Wdate form-control  saveInput must"
+									name="expireDate" id="expireDate" placeholder="请选择到期时间"
+									onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})"
+									style="background-color: rgba(127, 132, 147, 0.46);" required readonly/>
+							</div>
+						</div>
+
+						
+
+						<div class="row">
+							<div class="col-xs-3">
+								<label class="must mustFlag" for="blackStatus">是否在黑名单</label>
+							</div>
+							<div class="col-xs-8">
+								<span class="look-formPanel" name="blackStatus" id=""></span>
+								<input type="text" class="form-control saveInput must"
+									name="blackStatus" id="personBlackStatus" maxlength="200" required  readonly="readonly"/>
+							</div>
+						</div>
+						
+						
+						<!-- <div class="row">
+							<div class="col-xs-3">
+								<label class="must mustFlag"  class="">附件</label>
+							</div>
+							<div class="col-xs-8" id="filePerson">
+								<div id="fileUploadPerson"></div>
+								<small>请上传png/jpeg/bmp/jpg类型的文件，文件个数不超过5个，大小不超过10M</small> <input
+									id="fileUpPerson" type="hidden" name="fileIds" class="form-control">
+							</div>
+							<div class="col-xs-7 fileDetails" id="fileUploadPerson_see">
+								<div id="detailPersonFiles_see"></div>
+							</div>
+					    </div> -->
+					    <div class="row noie9filesmuliple" id="">
+		                    <div class="col-xs-3"><label>附件</label></div>
+		                    <div class="col-xs-8" id="filePerson">
+		                        <div id="fileUploadPerson"></div>
+		                        <small>请上传png/jpeg/bmp/jpg类型的文件，大小不超过10M</small>
+		                    </div>
+		                </div>
+		                
+		                <input id="fileUpPerson" type="hidden" name="fileIds"><!-- 新增时，附件集合存放在这个隐藏域中 -->
+		                
+						<div class="row ie9filesmuliplebox" id="">
+		                 	<div class="col-xs-3"><label>附件</label></div>
+		                 	<div class="col-xs-8" id="ie9_filePerson">
+		                 		<ul id="showFileListMul_3" class="iegetfiles"></ul> <!-- 详情展示和编辑时，附件id集合存放在ul下的li中，li元素由iframe加载时生成，隐藏域中 -->
+		                 		<small>请上传png/jpeg/bmp/jpg类型的文件，大小不超过10M</small>
+		                 	</div>
+		                </div>
+						<div class="col-xs-8 fileDetails" id="fileUploadPerson_see">  
+							<div id="detailPersonFiles_see"></div>   
+						</div>
+						<!-- <div class="row">
+							<div class="col-xs-3">
+								<label class="" for="licenceRela">资质附件</label>
+							</div>
+							<div class="col-xs-8">
+								<span class="look-formPanel" name="licenceRela" id="licenceRela"></span>
+								<input type="text" class="form-control saveInput "
+									name="licenceRela" id="licenceRela" maxlength="200" />
+							</div>
+						</div> -->
+						
+						<div class="row forDetail">
+							<div class="col-xs-3">
+								<label class="must mustFlag" for="verifyStatus">审核状态</label>
+							</div>
+							<div class="col-xs-8">
+								<span class="look-formPanel" name="verifyStatus"
+									id="verifyStatus"></span> <input type="text"
+									class="form-control saveInput must" name="verifyStatus"
+									id="verifyStatus" maxlength="200" required />
+							</div>
+						</div>
+
+						<div class="row hidden forRejectReason">
+							<div class="col-xs-3">
+								<label class="must mustFlag" for="rejectReason">未通过原因</label>
+							</div>
+							<div class="col-xs-8">
+								<span class="look-formPanel" name="rejectReason" 
+									id="rejectReason"></span> <input type="text saveInput must "
+									class="form-control saveInput must" name="rejectReason" placeholder="请输入1~1000个字符"
+									id="rejectReason" maxlength="1000" required />
+							</div>
+						</div>
+
+						<div class="forVerify">
+							<div class="moduleLine">审核</div>
+							<div class="row">
+								<div class="col-xs-3">
+									<label class="must mustFlag" for="accountVerify_verifyStatus">审核状态</label>
+								</div>
+								<div class="col-xs-8" style="line-height: 34px;">
+									<input type="radio" name="personRadio" value='通过'
+										checked="checked" id="151001003">通过 <input
+										type="radio" name="personRadio" value="未通过" id="151001002">未通过
+								</div>
+							</div>
+							<div class="row hidden" id="rejectRadio">
+								<div class="col-xs-3">
+									<label class="must mustFlag" for="accountVerify_rejectReason">未通过原因</label>
+								</div>
+								<div class="col-xs-8">
+									<textarea name="rejectContent"
+										style="height: 100px; width: 280px;" id="personContent"
+										class=" form-control rejectContent" data-min="1" placeholder="请输入1~1000个字符"
+										maxlength="1000" required>
+							   </textarea>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+				<div class="panel-footer">
+					<button type="submit" class="btn btn-cyan">确定</button>
+					<button type="reset" class="btn btn-border cancel">取消</button>
+				</div>
+			</form>
+			<!-- 避免上传的文件跳转到其他页面 -->
+	        <iframe style="display:none" name="multipatFile_3" id="fileIframe_3"></iframe>
+		    <form class="ie9filesmuliplebox" target="multipatFile_3" id="" action="/JXWL/rest/licenceInfo/uploadFile" 
+		    			enctype="multipart/form-data" method="POST" style="position:absolute;top:368px;left:171px;">
+				<div class="iefileChoicebutton">选择文件
+					<input class="ieuploadsfile" type="file" id="ieuploadsfile_3" name="file"/>
+				</div>
+				<input type="submit" value="提交" id="iefilesubmit_3" style="display:none"/>
+			</form>
+		</div>
+
+
+		<!-- 企业到期提醒弹框-->
+		<div class="panel panel-gray-bxs" id="enterpriseWarnPanel">
+			<div class="panel-heading">
+				<span class="panel-title">企业资质上传</span>
+			</div>
+			<form id="enterpriseWarnForm">
+				<div class="panel-body">
+					<div class="panel-body-content">
+						<div class="row hidden">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="id">id</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="id"></span> <input
+									type="text" class="form-control saveInput must" name="id"
+									id="id" maxlength="200" required />
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="enterpriseName">企业名称</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="enterpriseName"></span>
+								<input type="text" class="form-control saveInput must" placeholder="请输入1~200个字符"
+									name="enterpriseName" id="enterpriseName" maxlength="200"
+									required />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="enterpriseWarnLicenceName">资质名称</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="licenceName" id="licenceName"></span>
+								<input type="text" class="form-control saveInput must" placeholder="请输入1~200个字符"
+									name="licenceName" id="enterpriseWarnLicenceName" maxlength="200" required />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="enterpriseWarnLicenceIssuingAuthority">发证机关</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="licenceIssuingAuthority"
+									id="licenceIssuingAuthority"></span> <input type="text"
+									class="form-control saveInput must" placeholder="请输入1~200个字符"
+									name="licenceIssuingAuthority" id="enterpriseWarnLicenceIssuingAuthority"
+									maxlength="200" required />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="enterpriseWarnExpireDate">证件到期时间</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="expireDate" id="expireDate"></span>
+								<input type="text" class="Wdate form-control  saveInput must"
+									name="expireDate" id="enterpriseWarnExpireDate"
+									onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" placeholder="请选择到期时间"
+									style="background-color: rgba(127, 132, 147, 0.46);" required readonly/>
+							</div>
+						</div>
+						
+						
+						<div class="row">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="enterpriseWarnBlackStatus">是否在黑名单</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="blackStatus" id="blackStatus"></span>
+								<input type="text" class="form-control saveInput must"
+									name="blackStatus" id="enterpriseWarnBlackStatus" maxlength="200" required readonly="readonly"/>
+							</div>
+						</div>
+						
+						
+						<!-- <div class="row">
+							<div class="col-xs-4">
+								<label class="">附件</label>
+							</div>
+							<div class="col-xs-7" id="fileEnterpriseWarn">
+								<div id="fileUploadEnterpriseWarn"></div>
+								<small>请上传png/jpeg/bmp/jpg类型的文件，文件个数不超过5个，大小不超过10M</small> <input
+									id="fileUpEnterpriseWarn" type="hidden" name="fileIds" class="form-control">
+							</div>
+							<div class="col-xs-7 fileDetails" id="fileUploadEnterpriseWarn_see">
+								<div id="detailEnterpriseWarnFiles_see"></div>
+							</div>
+					    </div> -->
+					    <div class="row noie9filesmuliple" id="">
+		                    <div class="col-xs-4"><label>附件</label></div>
+		                    <div class="col-xs-7" id="fileEnterpriseWarn">
+		                        <div id="fileUploadEnterpriseWarn"></div>
+		                        <small>请上传png/jpeg/bmp/jpg类型的文件，大小不超过10M</small>
+		                    </div>
+		                </div>
+		                
+		                <input id="fileUpEnterpriseWarn" type="hidden" name="fileIds"><!-- 新增时，附件集合存放在这个隐藏域中 -->
+		                
+						<div class="row ie9filesmuliplebox" id="">
+		                 	<div class="col-xs-4"><label>附件</label></div>
+		                 	<div class="col-xs-7" id="ie9_fileEnterpriseWarn">
+		                 		<ul id="showFileListMul_4" class="iegetfiles"></ul> <!-- 详情展示和编辑时，附件id集合存放在ul下的li中，li元素由iframe加载时生成，隐藏域中 -->
+		                 		<small>请上传png/jpeg/bmp/jpg类型的文件，大小不超过10M</small>
+		                 	</div>
+		                </div>
+		                <div class="col-xs-7 fileDetails" id="fileUploadEnterpriseWarn_see">  
+							<div id="detailEnterpriseWarnFiles_see"></div>   
+						</div>
+						<!-- <div class="row">
+							<div class="col-xs-4">
+								<label class="" for="licenceRela">资质附件</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="licenceRela" id="licenceRela"></span>
+								<input type="text" class="form-control saveInput "
+									name="licenceRela" id="licenceRela" maxlength="200" />
+							</div>
+						</div> -->
+
+					</div>
+				</div>
+				<div class="panel-footer">
+					<button type="submit" class="btn btn-cyan">确定</button>
+					<button type="reset" class="btn btn-border cancel">取消</button>
+				</div>
+			</form>
+			<!-- 避免上传的文件跳转到其他页面 -->
+	        <iframe style="display:none" name="multipatFile_4" id="fileIframe_4"></iframe>
+		    <form class="ie9filesmuliplebox" target="multipatFile_4" id="" action="/JXWL/rest/licenceInfo/uploadFile" 
+		    			enctype="multipart/form-data" method="POST" style="position:absolute;top:282px;left:150px;">
+				<div class="iefileChoicebutton">选择文件
+					<input class="ieuploadsfile" type="file" id="ieuploadsfile_4" name="file"/>
+				</div>
+				<input type="submit" value="提交" id="iefilesubmit_4" style="display:none"/>
+			</form>
+		</div>
+
+		<!-- 车辆到期提醒弹框 -->
+		<div class="panel panel-gray-bxs" id="carWarnPanel">
+			<div class="panel-heading">
+				<span class="panel-title">车辆资质上传</span>
+			</div>
+			<form id="carWarnForm">
+				<div class="panel-body">
+					<div class="panel-body-content">
+						<div class="row hidden">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="id">id</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="id"></span> <input
+									type="text" class="form-control saveInput must" name="id" placeholder="请输入1~200个字符"
+									id="id" maxlength="200" required />
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="carWarnLicencePlateNo">车牌号</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="licencePlateNo"></span>
+								<input type="text" class="form-control saveInput must" placeholder="请输入1~200个字符"
+									name="licencePlateNo" id="carWarnLicencePlateNo" maxlength="200"
+									pattern="^[\u4e00-\u9fa5]{1}[A-Z]{1}[A-Z_0-9]{5}$" required />
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="enterpriseName">所属企业</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="enterpriseName"></span>
+								<input type="text" class="form-control saveInput must" placeholder="请输入1~200个字符"
+									name="enterpriseName" id="enterpriseName" maxlength="200"
+									required />
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="carWarnLicenceName">资质名称</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="licenceName" id="licenceName"></span>
+								<input type="text" class="form-control saveInput must" placeholder="请输入1~200个字符"
+									name="licenceName" id="carWarnLicenceName" maxlength="200" required />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="carWarnLicenceIssuingAuthority">发证机关</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="licenceIssuingAuthority"
+									id="licenceIssuingAuthority"></span> <input type="text"
+									class="form-control saveInput must" placeholder="请输入1~200个字符"
+									name="licenceIssuingAuthority" id="carWarnLicenceIssuingAuthority"
+									maxlength="200" required />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="carWarnExpireDate">证件到期时间</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="expireDate" id="carWarnExpireDate"></span>
+								<input type="text" class="Wdate form-control  saveInput must"
+									name="expireDate" id="expireDate" placeholder="请选择到期时间"
+									onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})"
+									style="background-color: rgba(127, 132, 147, 0.46);" required readonly/>
+							</div>
+						</div>
+						
+						<div class="row">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="carWarnBlackStatus">是否在黑名单</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="blackStatus" id="blackStatus"></span>
+								<input type="text" class="form-control saveInput must"
+									name="blackStatus" id="carWarnBlackStatus" maxlength="200" required readonly ="readonly" />
+							</div>
+						</div>
+						
+						
+						<!-- <div class="row">
+							<div class="col-xs-4">
+								<label class="">附件</label>
+							</div>
+							<div class="col-xs-7" id="fileCarWarn">
+								<div id="fileUploadCarWarn"></div>
+								<small>请上传png/jpeg/bmp/jpg类型的文件，文件个数不超过5个，大小不超过10M</small> <input
+									id="fileUpCarWarn" type="hidden" name="fileIds" class="form-control">
+							</div>
+							<div class="col-xs-7 fileDetails" id="fileUploadCarWarn_see">
+								<div id="detailCarWarnFiles_see"></div>
+							</div>
+					    </div> -->
+						<div class="row noie9filesmuliple" id="">
+		                    <div class="col-xs-4"><label>附件</label></div>
+		                    <div class="col-xs-7" id="fileCarWarn">
+		                        <div id="fileUploadCarWarn"></div>
+		                        <small>请上传png/jpeg/bmp/jpg类型的文件，大小不超过10M</small>
+		                    </div>
+		                </div>
+		                
+		                <input id="fileUpCarWarn" type="hidden" name="fileIds"><!-- 新增时，附件集合存放在这个隐藏域中 -->
+		                
+						<div class="row ie9filesmuliplebox" id="">
+		                 	<div class="col-xs-4"><label>附件</label></div>
+		                 	<div class="col-xs-7" id="ie9_fileCarWarn">
+		                 		<ul id="showFileListMul_5" class="iegetfiles"></ul> <!-- 详情展示和编辑时，附件id集合存放在ul下的li中，li元素由iframe加载时生成，隐藏域中 -->
+		                 		<small>请上传png/jpeg/bmp/jpg类型的文件，大小不超过10M</small>
+		                 	</div>
+		                </div>
+		                <div class="col-xs-7 fileDetails" id="fileUploadCarWarn_see">  
+							<div id="detailCarWarnFiles_see"></div>   
+						</div>
+					<!-- 	<div class="row">
+							<div class="col-xs-4">
+								<label class="" for="licenceRela">资质附件</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="licenceRela" id="licenceRela"></span>
+								<input type="text" class="form-control saveInput "
+									name="licenceRela" id="licenceRela" maxlength="200" />
+							</div>
+						</div> -->
+					</div>
+				</div>
+				<div class="panel-footer">
+					<button type="submit" class="btn btn-cyan">确定</button>
+					<button type="reset" class="btn btn-border cancel">取消</button>
+				</div>
+			</form>
+			<!-- 避免上传的文件跳转到其他页面 -->
+	        <iframe style="display:none" name="multipatFile_5" id="fileIframe_5"></iframe>
+		    <form class="ie9filesmuliplebox" target="multipatFile_5" id="" action="/JXWL/rest/licenceInfo/uploadFile" 
+		    			enctype="multipart/form-data" method="POST" style="position:absolute;top:326px;left:149px;">
+				<div class="iefileChoicebutton">选择文件
+					<input class="ieuploadsfile" type="file" id="ieuploadsfile_5" name="file"/>
+				</div>
+				<input type="submit" value="提交" id="iefilesubmit_5" style="display:none"/>
+			</form>
+		</div>
+
+		<!-- 人员到期提醒弹框 -->
+		<div class="panel panel-gray-sm" id="personWarnPanel">
+			<div class="panel-heading">
+				<span class="panel-title">人员资质上传</span>
+			</div>
+			<form id="personWarnForm">
+				<div class="panel-body">
+					<div class="panel-body-content">
+						<div class="row hidden">
+							<div class="col-xs-3">
+								<label class="must mustFlag" for="id">id</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="id"></span> <input
+									type="text" class="form-control saveInput must" name="id" placeholder="请输入1~200个字符"
+									id="id" maxlength="200" required />
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-3">
+								<label class="must mustFlag" for="personNameWarn">姓名</label>
+							</div>
+							<div class="col-xs-8">
+								<span class="look-formPanel" name="personName"></span>
+								<input type="text" class="form-control saveInput must" placeholder="请输入1~200个字符"
+									name="personName" id="personNameWarn" maxlength="200" required />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-3">
+								<label class="must mustFlag" for="personWarnIdentificationCardNo">身份证号</label>
+							</div>
+							<div class="col-xs-8">
+								<span class="look-formPanel" name="identificationCardNo"></span>
+								<input type="text" class="form-control saveInput must" placeholder="请输入1~200个字符"
+									name="identificationCardNo" id="personWarnIdentificationCardNo"
+									maxlength="200" required readonly="readonly"/>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-3">
+								<label class="must mustFlag" for="enterpriseName">所属企业</label>
+							</div>
+							<div class="col-xs-8">
+								<span class="look-formPanel" name="enterpriseName"></span>
+								<input type="text" class="form-control saveInput must" placeholder="请输入1~200个字符"
+									name="enterpriseName" id="enterpriseName" maxlength="200"
+									required />
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-3">
+								<label class="must mustFlag" for="personWarnLicenceName">资质名称</label>
+							</div>
+							<div class="col-xs-8">
+								<span class="look-formPanel" name="licenceName" id="licenceName"></span>
+								<input type="text" class="form-control saveInput must" placeholder="请输入1~200个字符"
+									name="licenceName" id="personWarnLicenceName" maxlength="200" required />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-3">
+								<label class="must mustFlag" for="personWarnLicenceIssuingAuthority">发证机关</label>
+							</div>
+							<div class="col-xs-8">
+								<span class="look-formPanel" name="licenceIssuingAuthority"
+									id="licenceIssuingAuthority"></span> <input type="text"
+									class="form-control saveInput must" placeholder="请输入1~200个字符"
+									name="licenceIssuingAuthority" id="personWarnLicenceIssuingAuthority"
+									maxlength="200" required />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-3">
+								<label class="must mustFlag" for="personWarnOccupationType">从业人员类型</label>
+							</div>
+							<div class="col-xs-3">
+								<span class="look-formPanel" name="occupationPersonType" id=""></span>
+								<input type="text" class="form-control saveInput must"
+									name="occupationPersonType" id="personWarnOccupationType" maxlength="200" required readonly ="readonly"  />
+							</div>
+							<div class="col-xs-2">
+								<label class="must mustFlag" for="expireDate">证件到期时间</label>
+							</div>
+							<div class="col-xs-3">
+								<span class="look-formPanel" name="expireDate" id="expireDate"></span>
+								<input type="text" class="Wdate form-control  saveInput must"
+									name="expireDate" id="expireDate" placeholder="请选择到期时间"
+									onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})"
+									style="background-color: rgba(127, 132, 147, 0.46);" required readonly/>
+							</div>
+						</div>
+						
+						<div class="row">
+							<div class="col-xs-3">
+								<label class="must mustFlag" for="personWarnBlackStatus">是否在黑名单</label>
+							</div>
+							<div class="col-xs-8">
+								<span class="look-formPanel" name="blackStatus" id="blackStatus"></span>
+								<input type="text" class="form-control saveInput must"
+									name="blackStatus" id="personWarnBlackStatus" maxlength="200" required readonly ="readonly" />
+							</div>
+						</div>
+						
+						<!-- <div class="row">
+							<div class="col-xs-3">
+								<label class="">附件</label>
+							</div>
+							<div class="col-xs-8" id="filePersonWarn">
+								<div id="fileUploadPersonWarn"></div>
+								<small>请上传png/jpeg/bmp/jpg类型的文件，文件个数不超过5个，大小不超过10M</small> <input
+									id="fileUpPersonWarn" type="hidden" name="fileIds" class="form-control">
+							</div>
+							<div class="col-xs-7 fileDetails" id="fileUploadPersonWarn_see">
+								<div id="detailPersonWarnFiles_see"></div>
+							</div>
+					    </div> -->
+						<div class="row noie9filesmuliple" id="">
+		                    <div class="col-xs-3"><label>附件</label></div>
+		                    <div class="col-xs-8" id="filePersonWarn">
+		                        <div id="fileUploadPersonWarn"></div>
+		                        <small>请上传png/jpeg/bmp/jpg类型的文件，大小不超过10M</small>
+		                    </div>
+		                </div>
+		                
+		                <input id="fileUpPersonWarn" type="hidden" name="fileIds"><!-- 新增时，附件集合存放在这个隐藏域中 -->
+		                
+						<div class="row ie9filesmuliplebox" id="">
+		                 	<div class="col-xs-3"><label>附件</label></div>
+		                 	<div class="col-xs-8" id="ie9_filePersonWarn">
+		                 		<ul id="showFileListMul_6" class="iegetfiles"></ul> <!-- 详情展示和编辑时，附件id集合存放在ul下的li中，li元素由iframe加载时生成，隐藏域中 -->
+		                 		<small>请上传png/jpeg/bmp/jpg类型的文件，大小不超过10M</small>
+		                 	</div>
+		                </div>
+		                <div class="col-xs-8 fileDetails" id="fileUploadPersonWarn_see">  
+							<div id="detailPersonWarnFiles_see"></div>   
+						</div>
+						<!-- <div class="row">
+							<div class="col-xs-3">
+								<label class="" for="licenceRela">资质附件</label>
+							</div>
+							<div class="col-xs-8">
+								<span class="look-formPanel" name="licenceRela" id="licenceRela"></span>
+								<input type="text" class="form-control saveInput "
+									name="licenceRela" id="licenceRela" maxlength="200" />
+							</div>
+						</div> -->
+					</div>
+				</div>
+				<div class="panel-footer">
+					<button type="submit" class="btn btn-cyan">确定</button>
+					<button type="reset" class="btn btn-border cancel">取消</button>
+				</div>
+			</form>
+			<!-- 避免上传的文件跳转到其他页面 -->
+	        <iframe style="display:none" name="multipatFile_6" id="fileIframe_6"></iframe>
+		    <form class="ie9filesmuliplebox" target="multipatFile_6" id="" action="/JXWL/rest/licenceInfo/uploadFile" 
+		    			enctype="multipart/form-data" method="POST" style="position:absolute;top:369px;left:152px;">
+				<div class="iefileChoicebutton">选择文件
+					<input class="ieuploadsfile" type="file" id="ieuploadsfile_6" name="file"/>
+				</div>
+				<input type="submit" value="提交" id="iefilesubmit_6" style="display:none"/>
+			</form>
+		</div>
+
+	</div>
+
+		<!--js引用-->
+		<script src="../../js/lib/jquery/jquery-1.11.2.min.js"></script>
+		<script src="../../js/lib/jquery/jquery-ui.min.js"></script>
+		<script src="../../js/lib/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+		<script src="../../js/lib/bootstrap-3.3.4/js/bootstrap-typeahead.js"></script>
+		<script src="../../js/lib/jqGrid/jquery.jqGrid.min.js"></script>
+		<script src="../../js/lib/jqGrid/grid.locale-cn.js"></script>
+		<script src="../../js/lib/datePicker/WdatePicker.js"></script>
+		<script src="../../js/lib/uploadFile/jquery.Huploadify.js"></script>
+		<script src="../../js/module/jquery-html5Validate.js"></script>
+		<script src="../../js/module/message-2.0.0.js"></script>
+		<script src="../../js/module/base.js"></script>
+		<script src="../../js/module/topMenu.js"></script>
+		<script src="../../js/view/goodsTrade/common4Licence.js"></script>
+		<script src="../../js/view/goodsTrade/enterpriseLicence.js"></script>
+		<script src="../../js/view/goodsTrade/carLicence.js"></script>
+		<script src="../../js/view/goodsTrade/personLicence.js"></script>
+		<script src="../../js/view/goodsTrade/licenceWarn.js"></script>
+</body>
+</html>

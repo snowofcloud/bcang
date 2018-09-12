@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.c503.sc.jxwl.transacation.dao.ILicenceInfoDao" >
+  <resultMap id="BaseResultMap" type="com.c503.sc.jxwl.transacation.bean.LicenceEntity" >
+    <id     column="ID"                         property="id"                       jdbcType="VARCHAR" />
+    <result column="ENTERPRISE_NAME"            property="enterpriseName"           jdbcType="VARCHAR" />
+    <result column="CORPORATE_NO"               property="corporateNo"              jdbcType="VARCHAR" />
+    <result column="LICENCE_PLATE_NO"           property="licencePlateNo"           jdbcType="VARCHAR" />
+    <result column="PERSON_NAME"                property="personName"               jdbcType="VARCHAR" />
+    <result column="IDENTIFICATION_CARD_NO"     property="identificationCardNo"     jdbcType="VARCHAR" />
+    <result column="OCCUPATION_PERSON_TYPE"     property="occupationPersonType"     jdbcType="VARCHAR" />
+    <result column="LICENCE_NAME"               property="licenceName"              jdbcType="VARCHAR" />
+    <result column="EXPIRE_DATE"                property="expireDate"               jdbcType="TIMESTAMP" />
+    <result column="LICENCE_ISSUING_AUTHORITY"  property="licenceIssuingAuthority"  jdbcType="VARCHAR" />
+    <result column="BLACK_STATUS"               property="blackStatus"              jdbcType="VARCHAR" />
+    <result column="VERIFY_STATUS"              property="verifyStatus"             jdbcType="VARCHAR" />
+    <result column="REJECT_REASON"              property="rejectReason"             jdbcType="VARCHAR" />
+  </resultMap>
+  
+  
+  
+  <!-- 分页查询 -->  
+  <select id="findByParams" parameterType="map" resultMap="BaseResultMap">	     
+			select TL.ID,
+			       TL.LICENCE_NAME,
+			       TL.LICENCE_PLATE_NO,
+			       TL.EXPIRE_DATE,
+			       TL.LICENCE_ISSUING_AUTHORITY,
+			       TL.VERIFY_STATUS,
+			       TL.REJECT_REASON,
+			       TE.ENTERPRISE_NAME,
+			       TL.IDENTIFICATION_CARD_NO,
+			        <if test ="licenceType  == 'person'.toString()">
+			       TOC.PERSON_NAME,
+			       TOC.OCCUPATION_PERSON_TYPE,
+			       </if>
+			       (CASE
+			         when TB.ID IS NOT NULL THEN
+			          '是'
+			         else
+			          '否'
+			       end) as BLACK_STATUS
+			  from T_LICENCE TL
+			  LEFT JOIN T_ENTERPRISE TE
+			    ON TL.CORPORATE_NO = TE.CORPORATE_NO
+			  <if test ="licenceType  == 'person'.toString()">
+			    LEFT JOIN T_OCCUPATION_PERSON TOC ON TOC.IDENTIFICATION_CARD_NO = TL.IDENTIFICATION_CARD_NO
+                
+			  </if>
+			  LEFT JOIN T_BLACKLIST_MANAGE TB
+			  <choose>
+			      <when test="licenceType  == 'car'.toString()">
+				    ON TL.LICENCE_PLATE_NO = TB.VEHICLE
+				    AND TB.OBJECT_TYPE = '104001003'
+				     AND TB.REMOVE = '0'
+			      </when>
+			      <when test="licenceType  == 'person'.toString()">
+				     ON TL.IDENTIFICATION_CARD_NO = TB.IDENTIFICATION_CARD_NO
+	                 AND TB.OBJECT_TYPE = '104001002'
+	                  AND TB.REMOVE = '0'
+			      </when>
+			      <otherwise>
+				   ON TL.CORPORATE_NO = TB.CORPORATE_NO
+				   AND TB.OBJECT_TYPE = '104001001'
+				    AND TB.REMOVE = '0'
+			      </otherwise>
+	          </choose>   
+			 WHERE TL.REMOVE = '0'
+			 
+			 <!-- 判断访问用户的角色 -->
+			 <if test="corporateNo != null and corporateNo != ''">
+			   AND TL.CORPORATE_NO = #{corporateNo,jdbcType=VARCHAR}
+			 </if>
+			  <!-- 审核状态 -->
+			 <if test="verifyStatus != null and verifyStatus != ''">
+			   AND TL. VERIFY_STATUS = #{verifyStatus,jdbcType=VARCHAR}
+			 </if>
+			 <!-- 查询条件：企业名字或法人代码 -->
+			 <if test="enterpriseName != null and enterpriseName != ''">
+  	          AND  (TE.ENTERPRISE_NAME LIKE '%' || #{enterpriseName} || '%'
+  	           OR  TL.CORPORATE_NO LIKE '%' || #{enterpriseName} || '%')
+  	         </if>
+			 <choose>
+			 	  <!-- 车辆查询 -->
+			      <when test="licenceType  == 'car'.toString()">
+				    AND  TL.LICENCE_PLATE_NO IS NOT NULL
+				      <!-- 查询条件：车牌号 -->
+				    <if test="carNo != null and carNo != ''">
+  	                  AND TL.LICENCE_PLATE_NO LIKE '%' || #{carNo} || '%'
+  	                </if>
+			      </when>
+			      <!-- 人员查询 -->
+			      <when test="licenceType  == 'person'.toString()">
+				    AND  TL.IDENTIFICATION_CARD_NO IS NOT NULL
+				    <!-- 查询条件：人员姓名 -->
+				     <if test="personName != null and personName != ''">
+  	                    AND TOC.PERSON_NAME LIKE '%' || #{personName} || '%'
+  	                </if>
+			      </when>
+			      <otherwise>
+				   AND TL.LICENCE_PLATE_NO IS  NULL
+				   AND TL.IDENTIFICATION_CARD_NO IS NULL
+			      </otherwise>
+	         </choose> 
+			 ORDER BY TL.VERIFY_STATUS ASC,TL.UPDATE_TIME DESC
+  </select>
+  
+  
+  <!-- 详情 -->
+  <select id="findById" resultMap="BaseResultMap" parameterType="map" >
+		   select TL.ID,
+			       TL.LICENCE_NAME,
+			       TL.LICENCE_PLATE_NO,
+			       TL.EXPIRE_DATE,
+			       TL.LICENCE_ISSUING_AUTHORITY,
+			       TL.VERIFY_STATUS,
+			       TL.REJECT_REASON,
+			       TE.ENTERPRISE_NAME,
+			       TL.IDENTIFICATION_CARD_NO,
+			        <if test ="licenceType  == 'person'.toString()">
+			       TOC.PERSON_NAME,
+			       TOC.OCCUPATION_PERSON_TYPE,
+			       </if>
+			       (CASE
+			         when TB.ID IS NOT NULL THEN
+			          '是'
+			         else
+			          '否'
+			       end) as BLACK_STATUS
+			  from T_LICENCE TL
+			  LEFT JOIN T_ENTERPRISE TE
+			    ON TL.CORPORATE_NO = TE.CORPORATE_NO
+		
+			  <if test ="licenceType  == 'person'.toString()">
+			    LEFT JOIN T_OCCUPATION_PERSON TOC ON TOC.IDENTIFICATION_CARD_NO = TL.IDENTIFICATION_CARD_NO
+             
+			  </if>
+			  LEFT JOIN T_BLACKLIST_MANAGE TB
+			  <choose>
+			      <when test="licenceType  == 'car'.toString()">
+				    ON TL.LICENCE_PLATE_NO = TB.VEHICLE
+				    AND TB.OBJECT_TYPE = '104001003'
+				     AND TB.REMOVE = '0'
+			      </when>
+			      <when test="licenceType  == 'person'.toString()">
+				     ON TL.IDENTIFICATION_CARD_NO = TB.IDENTIFICATION_CARD_NO
+	                 AND TB.OBJECT_TYPE = '104001002'
+	                  AND TB.REMOVE = '0'
+			      </when>
+			      <otherwise>
+				   ON TL.CORPORATE_NO = TB.CORPORATE_NO
+				   AND TB.OBJECT_TYPE = '104001001'
+				    AND TB.REMOVE = '0'
+			      </otherwise>
+	          </choose>   
+			 WHERE TL.REMOVE = '0'
+			 <if test="corporateNo != null and corporateNo != ''">
+			   AND TL.CORPORATE_NO = #{corporateNo,jdbcType=VARCHAR}
+			 </if>
+			AND TL.ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <!--保存资质  -->
+  <insert id="save" parameterType="com.c503.sc.jxwl.transacation.bean.LicenceEntity" >
+    insert into T_LICENCE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="corporateNo != null" >
+        CORPORATE_NO,
+      </if>
+      <if test="licencePlateNo != null" >
+        LICENCE_PLATE_NO,
+      </if>
+      <if test="identificationCardNo != null" >
+        IDENTIFICATION_CARD_NO,
+      </if>
+      <if test="licenceName != null" >
+        LICENCE_NAME,
+      </if>
+      <if test="licenceIssuingAuthority != null" >
+        LICENCE_ISSUING_AUTHORITY,
+      </if>
+      <if test="verifyStatus != null" >
+        VERIFY_STATUS,
+      </if>
+      <if test="rejectReason != null" >
+        REJECT_REASON,
+      </if>
+      <if test="expireDate != null" >
+        EXPIRE_DATE,
+      </if>
+       <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="remove != null" >
+        REMOVE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="corporateNo != null" >
+        #{corporateNo,jdbcType=VARCHAR},
+      </if>
+      <if test="licencePlateNo != null" >
+        #{licencePlateNo,jdbcType=VARCHAR},
+      </if>
+      <if test="identificationCardNo != null" >
+        #{identificationCardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="licenceName != null" >
+        #{licenceName,jdbcType=VARCHAR},
+      </if>
+      <if test="licenceIssuingAuthority != null" >
+        #{licenceIssuingAuthority,jdbcType=TIMESTAMP},
+      </if>
+      <if test="verifyStatus != null" >
+        #{verifyStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="rejectReason != null" >
+        #{rejectReason,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expireDate != null" >
+        #{expireDate,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remove != null" >
+        #{remove,jdbcType=CHAR}
+      </if>
+    </trim>
+  </insert>
+  
+  
+  <!-- 更新资质 -->
+  <update id="update" parameterType="com.c503.sc.jxwl.transacation.bean.LicenceEntity" >
+    update T_LICENCE
+    <set >
+      <if test="corporateNo != null" >
+        CORPORATE_NO = #{corporateNo,jdbcType=VARCHAR},
+      </if>
+      <if test="licencePlateNo != null" >
+        LICENCE_PLATE_NO = #{licencePlateNo,jdbcType=VARCHAR},
+      </if>
+      <if test="identificationCardNo != null" >
+        IDENTIFICATION_CARD_NO = #{identificationCardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="licenceName != null" >
+        LICENCE_NAME = #{licenceName,jdbcType=VARCHAR},
+      </if>
+      <if test="licenceIssuingAuthority != null" >
+        LICENCE_ISSUING_AUTHORITY = #{licenceIssuingAuthority,jdbcType=VARCHAR},
+      </if>
+      <if test="verifyStatus != null" >
+        VERIFY_STATUS = #{verifyStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="rejectReason != null" >
+        REJECT_REASON = #{rejectReason,jdbcType=VARCHAR},
+      </if>
+      <if test="expireDate != null" >
+        EXPIRE_DATE = #{expireDate,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="remove != null" >
+        REMOVE = #{remove,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+    AND REMOVE = '0'
+  </update>
+  
+  <!-- 删除 -->
+  <update id="delete" parameterType="String" >
+   BEGIN
+    update T_LICENCE set REMOVE = '1' 
+    WHERE ID =#{id,jdbcType=VARCHAR} AND REMOVE ='0';
+    
+    delete from T_LICENCE_FILE_RELA 
+    WHERE LICENCE_ID = #{id,jdbcType=VARCHAR};
+    
+    EXCEPTION
+	  WHEN OTHERS THEN
+	    ROLLBACK;
+	END;
+  </update>
+  
+  
+  <!-- 联想查询人员信息 -->
+  <select id="findPerson"  parameterType="map"  resultType="com.c503.sc.jxwl.vehiclemonitor.bean.OccupationPersonEntity">
+			  	SELECT TOC.PERSON_NAME AS personName,
+			  		   TOC.OCCUPATION_PERSON_TYPE AS occupationPersonType,
+			       TOC.IDENTIFICATION_CARD_NO AS identificationCardNo,
+			       (CASE
+			         when TB.ID IS NOT NULL THEN
+			          '是'
+			         else
+			          '否'
+			       end) as  blackStatus
+			  from T_OCCUPATION_PERSON TOC
+			  LEFT JOIN T_BLACKLIST_MANAGE TB
+			    ON TOC.IDENTIFICATION_CARD_NO = TB.IDENTIFICATION_CARD_NO
+			   AND TB.OBJECT_TYPE = '104001002'
+			   AND TB.REMOVE = '0'
+			 WHERE TOC.REMOVE = '0'
+			   <if test="personName != null and personName != ''">
+				AND TOC.PERSON_NAME like '%' || #{personName,jdbcType=VARCHAR} || '%' 
+			  </if>
+			  <if test="corporateNo != null and corporateNo != ''">
+				  AND TOC.CORPORATE_NO = #{corporateNo,jdbcType=VARCHAR}
+			</if>
+  </select>
+  
+  <!-- 联想查询企业信息 -->
+ <select id="findEnterprise"  parameterType="map"  resultType="com.c503.sc.jxwl.vehiclemonitor.bean.EnterpriseEntity">
+			  select TE.ENTERPRISE_NAME AS enterpriseName,
+			       (CASE
+			         when TB.ID IS NOT NULL THEN
+			          '是'
+			         else
+			          '否'
+			       end) as blackStatus
+			  from T_ENTERPRISE TE
+			  LEFT JOIN T_BLACKLIST_MANAGE TB
+			    ON TE.CORPORATE_NO = TB.CORPORATE_NO
+			   AND TB.OBJECT_TYPE = '104001001'
+			   AND TB.REMOVE = '0'
+			 WHERE TE.REMOVE = '0'
+			   AND TE.CORPORATE_NO = #{corporateNo,jdbcType=VARCHAR}
+   </select>
+   
+   
+   <!-- 查询某公司是否存在某车辆 -->
+   <select id="findCar4match" parameterType="map" resultType="String">
+	SELECT T.LICENCE_PLATE_NO
+	  FROM T_DANGER_VEHICLE T
+	 WHERE T.CORPORATE_NO = #{corporateNo,jdbcType=VARCHAR}
+	   AND T.LICENCE_PLATE_NO = #{licencePlateNo,jdbcType=VARCHAR}
+	   AND T.REMOVE = '0'
+   </select>
+   
+    <!-- 查询某公司是否存在某人员 -->
+   <select id="findPerson4match" parameterType="map" resultType="String">
+    SELECT T.IDENTIFICATION_CARD_NO
+	  FROM T_OCCUPATION_PERSON T
+	 WHERE T.CORPORATE_NO = #{corporateNo,jdbcType=VARCHAR}
+	   AND T.IDENTIFICATION_CARD_NO = #{identificationCardNo,jdbcType=VARCHAR}
+	   AND T.PERSON_NAME = #{personName,jdbcType=VARCHAR}
+	   AND T.REMOVE = '0'
+
+   </select>
+   
+
+   <!-- 判断资质备案所属企业或人员或车辆是否存在 -->
+   <select id="isExit" parameterType="map" resultMap="BaseResultMap">
+   select TE.CORPORATE_NO 
+   <if test="licenceType  == 'car'.toString()">
+      ,TD.LICENCE_PLATE_NO
+   </if>
+   <if test="licenceType  == 'person'.toString()">
+      ,TOC.IDENTIFICATION_CARD_NO
+   </if>
+	  from T_LICENCE TL
+	  LEFT JOIN T_ENTERPRISE TE
+	    ON TL.CORPORATE_NO = TE.CORPORATE_NO
+	   AND TE.REMOVE = '0'
+	<if test="licenceType  == 'car'.toString()">
+	  LEFT JOIN T_DANGER_VEHICLE TD
+	    ON TD.LICENCE_PLATE_NO = TL.LICENCE_PLATE_NO
+	   AND TD.REMOVE = '0'
+	</if>
+	<if test="licenceType  == 'person'.toString()">
+	  LEFT JOIN T_OCCUPATION_PERSON TOC
+	    ON TL.IDENTIFICATION_CARD_NO = TOC.IDENTIFICATION_CARD_NO
+	   AND TOC.REMOVE = '0'
+	</if>
+	 WHERE TL.ID = #{id,jdbcType=VARCHAR}
+	   AND TL.REMOVE = '0'
+   </select>
+   
+</mapper>

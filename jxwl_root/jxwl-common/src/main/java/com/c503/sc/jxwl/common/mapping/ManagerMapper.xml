@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.c503.sc.jxwl.common.dao.IManagerDao" >
+  <resultMap id="BaseResultMap" type="com.c503.sc.jxwl.common.bean.EnterpriseEntity" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="CORPORATE_NO" property="corporateCode" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID, CORPORATE_CODE
+  </sql>
+  
+	<select id="findEnterpriseByCorporateCode" resultMap="BaseResultMap" parameterType="java.lang.String">
+		SELECT
+		    ID,                CORPORATE_NO
+		FROM T_ENTERPRISE TE
+	   WHERE TE.remove = '0'
+		<if test="corporateNo != null ">
+		 AND TE.CORPORATE_NO=#{corporateNo, jdbcType=VARCHAR}
+		</if>
+	</select>
+	
+  <!-- *************************** 根据用户id查询法人代码 ************************* -->
+  <select id="findCorporateCode" parameterType="java.lang.String" >
+    SELECT <include refid="Base_Column_List" /> 
+    FROM T_MANAGER 
+    WHERE id = #{id, jdbcType = VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from T_MANAGER
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  
+  <insert id="insertSelective" >
+    insert into T_MANAGER
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKey" >
+    update T_MANAGER
+    set CORPORATE_CODE = #{corporateCode,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="findStatus" parameterType="java.util.Map" resultType="java.util.Map">
+    SELECT VERIFY_STATUS,REJECT_REASON
+    FROM T_REGISTER_INFO 
+    WHERE ACCOUNT = #{account, jdbcType = VARCHAR}
+    AND REMOVE = #{remove,jdbcType = VARCHAR}
+  </select>
+  <update id="updatePassword"  parameterType="java.util.Map" >
+    update T_REGISTER_INFO
+    set PASSWORD = #{password,jdbcType=VARCHAR}
+    where ACCOUNT = #{account,jdbcType=VARCHAR}
+    AND REMOVE = '0'
+  </update>
+  
+  <!-- 根据account查询regid -->
+  <select id="findRegIdByAccount" parameterType="String" resultType="String">
+    select t.regid
+	  from T_REGISTER_INFO t
+	 where t.account = #{account,jdbcType=VARCHAR}
+	   and t.login_state = '0'<!-- 之前为已登录状态 -->
+	   and t.remove = '0'
+	   and t.VERIFY_STATUS = '114001003'
+  </select>
+  
+  <!-- 根据account查询login_state -->
+  <select id="findLoginStateByAccount" parameterType="String" resultType="String">
+    select t.login_state
+	  from T_REGISTER_INFO t
+	 where t.account = #{account,jdbcType=VARCHAR}
+	   and t.remove = '0'
+	   and t.VERIFY_STATUS = '114001003'
+  </select>
+  
+  
+   <update id="updateRegId"  parameterType="java.util.Map" >
+    UPDATE T_REGISTER_INFO
+	   SET REGID = #{regId,jdbcType=VARCHAR}
+	 WHERE ACCOUNT = #{account,jdbcType=VARCHAR}
+	   AND REMOVE = '0'
+  </update>
+  
+  <update id="clearAllSameRegIds"  parameterType="String" >
+    UPDATE T_REGISTER_INFO
+	   SET REGID = ''
+	 WHERE REGID = #{regId,jdbcType=VARCHAR}
+	   AND ACCOUNT != #{account,jdbcType=VARCHAR}
+	   AND REMOVE = '0'
+  </update>
+  
+  <!-- 判断该账号的所属人员和企业是否存在 -->
+  <select  id="isExist"  parameterType="java.util.Map" resultType ="java.util.Map" >
+     select TOC.ID AS OCCUPATION_ID, TE.ID AS ENTERPRISE_ID
+	  from T_OCCUPATION_PERSON TOC
+	  LEFT JOIN T_ENTERPRISE TE
+	    ON TE.CORPORATE_NO = TOC.CORPORATE_NO
+	   AND TE.REMOVE = '0'
+	  LEFT JOIN T_REGISTER_INFO TRE
+	  ON TRE.OCCUPATION_ID = TOC.ID
+	  AND TRE.REMOVE = '0'
+	 WHERE TRE.Account= #{account,jdbcType=VARCHAR}
+	   AND TOC.REMOVE = '0'
+	   AND TRE.VERIFY_STATUS = '114001003'
+  </select>
+  
+  
+  <update id="updateLoginState" parameterType="String">
+  		update T_REGISTER_INFO t
+		   set t.login_state = '0'
+		 where t.account = #{account,jdbcType=VARCHAR}
+		   and t.remove = '0'
+		   and t.verify_status = '114001003'
+  </update>
+  
+  <update id="updateExitState" parameterType="String">
+  		update T_REGISTER_INFO t
+		   set t.login_state = '1'
+		 where t.account = #{account,jdbcType=VARCHAR}
+		   and t.remove = '0'
+		   and t.verify_status = '114001003'
+  </update>
+  
+  
+  
+  <select id="findLoginState" parameterType="String" resultType="String">
+  
+  	select TRI.LOGIN_STATE, TRI.OCCUPATION_ID
+	  from T_REGISTER_INFO TRI
+	  JOIN T_OCCUPATION_PERSON TOP
+	    ON TOP.ID = TRI.OCCUPATION_ID
+	   AND TOP.REMOVE = '0'
+	 WHERE TRI.REMOVE = '0'
+	   AND TRI.VERIFY_STATUS = '114001003'
+	   AND TOP.IDENTIFICATION_CARD_NO = #{driverid,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- setAppAccount 根据驾驶员身份证查询app账号 -->
+  <select id="setAppAccount" parameterType="String" resultType="String">
+  	SELECT TRI.ACCOUNT
+	  FROM T_REGISTER_INFO TRI
+	  JOIN T_OCCUPATION_PERSON TOP
+	    ON TOP.ID = TRI.OCCUPATION_ID
+	   AND TOP.IDENTIFICATION_CARD_NO = #{driverId,jdbcType=VARCHAR}
+	 WHERE TRI.REMOVE = '0'
+	   AND TOP.REMOVE = '0'
+  </select>
+</mapper>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.c503.sc.jxwl.zcpt.dao.IAlarmInfoDao">
+  	<resultMap id="BaseResultMap" type="com.c503.sc.jxwl.zcpt.bean.AlarmRecord">
+		<id     column="ID"                    property="id"                  jdbcType="VARCHAR" />
+		<result column="ALARM_NO"              property="alarmNo"             jdbcType="VARCHAR" />
+		<result column="TERMINAL_ID"           property="terminalId"          jdbcType="VARCHAR" />
+		<result column="LICENCE_PLATE_NO"      property="carrierName"         jdbcType="VARCHAR" />
+		<result column="WAYBILL_NO"            property="waybillNo"           jdbcType="VARCHAR" />
+		<result column="ALARM_TYPE"            property="alarmType"           jdbcType="VARCHAR" />
+		<result column="ALARM_DEAL_STATUS"     property="alarmDealStatus"     jdbcType="VARCHAR" />
+		<result column="ALARM_DATE"            property="alarmDate"           jdbcType="DATE" />
+		<result column="ALARM_DETAILS"         property="alarmDetails"        jdbcType="VARCHAR" />
+		<result column="ALARM_REGISTER_HANDLE" property="alarmRegisterHandle" jdbcType="VARCHAR" />
+		<result column="CREATE_BY"             property="createBy"            jdbcType="VARCHAR" />
+		<result column="CREATE_TIME"           property="createTime"          jdbcType="TIMESTAMP" />
+		<result column="UPDATE_BY"             property="updateBy"            jdbcType="VARCHAR" />
+		<result column="UPDATE_TIME"           property="updateTime"          jdbcType="TIMESTAMP" />
+		<result column="REMOVE"                property="remove"              jdbcType="CHAR" />
+		<result column="CORPORATE_NO"          property="corporateNo"         jdbcType="VARCHAR" />
+	</resultMap>
+
+
+	<insert id="save" parameterType="com.c503.sc.jxwl.zcpt.bean.AlarmRecord">
+	   INSERT INTO T_ALARM_MANAGE (
+		  ID,                TERMINAL_ID, LICENCE_PLATE_NO,
+		  ALARM_TYPE,        ALARM_DATE,  ALARM_DETAILS,
+		  ALARM_DEAL_STATUS, CORPORATE_NO, REMOVE)
+	   VALUES (
+		  #{id},              #{terminalId},  #{carrierName},
+		  #{alarmType},       #{alarmDate},   #{alarmDetails},
+		  #{alarmDealStatus}, #{corporateNo}, '0')
+	</insert>
+	
+	
+	<delete id="delete" parameterType="java.lang.String">
+	    delete from T_LIMIT_AREA where ID=#{id}
+	</delete>
+	
+	
+	<select id="findAlarmRecordByParams" parameterType="map" resultMap="BaseResultMap">
+		SELECT *
+		  FROM (SELECT *
+		          FROM T_ALARM_MANAGE
+		         WHERE LICENCE_PLATE_NO = #{carrierName}
+		           AND REMOVE = '0'
+		         ORDER BY ALARM_DATE DESC) TMP
+		 WHERE ROWNUM &lt;= 30	
+	</select>
+	
+	<select id="findById" parameterType="String" resultMap="BaseResultMap">
+	  SELECT * 
+	    FROM T_ALARM_MANAGE
+	   WHERE id = #{id}
+	</select>
+	
+	<!-- 根据车牌号查询法人代码和企业名称 -->
+	<select id="findCorporateCodeByCarrierName" parameterType="String" resultType="map">
+	  SELECT DISTINCT 
+	         TA.CORPORATE_NO,
+	         TB.ENTERPRISE_NAME,
+	         TB.ID
+	    FROM T_DANGER_VEHICLE TA
+	    LEFT JOIN T_ENTERPRISE TB
+	      ON TA.CORPORATE_NO = TB.CORPORATE_NO
+	     AND TA.REMOVE = '0'
+	   WHERE TA.LICENCE_PLATE_NO = #{value}
+	     AND ROWNUM = 1
+	</select>
+	
+	
+	
+</mapper>

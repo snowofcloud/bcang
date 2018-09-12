@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.c503.sc.jxwl.vehiclemonitor.dao.IOccupationPersonDao" >
+  <resultMap id="BaseResultMap" type="com.c503.sc.jxwl.vehiclemonitor.bean.OccupationPersonEntity" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="ENTERPRISE_NAME" property="enterpriseName" jdbcType="VARCHAR" />
+    <result column="ENTERPRISE_ID" property="enterpriseId" jdbcType="VARCHAR" />
+    <result column="OCCUPATION_PERSON_TYPE" property="occupationPersonType" jdbcType="VARCHAR" />
+    <result column="PERSON_NAME" property="personName" jdbcType="VARCHAR" />
+    <result column="PERSON_SEX" property="personSex" jdbcType="VARCHAR" />
+    <result column="NATION" property="nation" jdbcType="VARCHAR" />
+    <result column="EDUCATION_DEGREE" property="educationDegree" jdbcType="VARCHAR" />
+    <result column="IDENTIFICATION_CARD_NO" property="identificationCardNo" jdbcType="VARCHAR" />
+    <result column="TELEPHONE" property="telephone" jdbcType="VARCHAR" />
+    <result column="CRIME_RECORD" property="crimeRecord" jdbcType="VARCHAR" />
+    <result column="TRAFFIC_ACCIDENT" property="trafficAccident" jdbcType="VARCHAR" />
+    <result column="DRIVE_VEHICLE_TYPE" property="driveVehicleType" jdbcType="VARCHAR" />
+    <result column="OCCUPATION_NO" property="occupationNo" jdbcType="VARCHAR" />
+    <result column="DRIVE_CARD_NO" property="driveCardNo" jdbcType="VARCHAR" />
+    <result column="HEALTH_CONDITION" property="healthCondition" jdbcType="VARCHAR" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_BY" property="updateBy" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="REMOVE" property="remove" jdbcType="CHAR" />
+    <result column="CORPORATE_NO" property="corporateNo" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID, ENTERPRISE_ID, OCCUPATION_PERSON_TYPE, PERSON_NAME, PERSON_SEX, NATION, EDUCATION_DEGREE, 
+    IDENTIFICATION_CARD_NO, TELEPHONE, CRIME_RECORD, TRAFFIC_ACCIDENT, DRIVE_VEHICLE_TYPE, 
+    OCCUPATION_NO, DRIVE_CARD_NO, HEALTH_CONDITION, CREATE_BY, CREATE_TIME, UPDATE_BY, 
+    UPDATE_TIME, REMOVE, CORPORATE_NO
+  </sql>
+  
+  <!-- 新增、编辑 判断身份证唯一 -->
+  <select id="findIdCardNoExist" parameterType="String" resultType="String">
+    SELECT IDENTIFICATION_CARD_NO
+      FROM T_OCCUPATION_PERSON
+     WHERE REMOVE = '0'
+       AND IDENTIFICATION_CARD_NO = #{identificationCardNo}
+     <if test="id != null and id != ''">
+       AND ID <![CDATA[<>]]> #{id}
+     </if>
+       AND ROWNUM = 1
+  </select>
+  
+  <!-- 判断驾驶员是否存在 -->
+  <select id="findDriverExist" parameterType="String" resultMap="BaseResultMap">
+    SELECT PERSON_NAME,IDENTIFICATION_CARD_NO,CORPORATE_NO
+      FROM T_OCCUPATION_PERSON
+     WHERE REMOVE = '0'
+       AND PERSON_NAME = #{driver,jdbcType=VARCHAR}
+       AND OCCUPATION_PERSON_TYPE = '101001001'
+  </select>
+  
+  
+  <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+			A. ID,
+			A. ENTERPRISE_ID, 
+			A. OCCUPATION_PERSON_TYPE,
+			A. PERSON_NAME,
+			A. DRIVE_VEHICLE_TYPE,
+			A. PERSON_SEX,
+			A. NATION,
+			A. EDUCATION_DEGREE, 
+            A. IDENTIFICATION_CARD_NO,
+			A. TELEPHONE,
+			A. CRIME_RECORD, 
+			A. TRAFFIC_ACCIDENT, 
+			A. DRIVE_VEHICLE_TYPE,
+			A. OCCUPATION_NO,
+			A. DRIVE_CARD_NO,
+			A. HEALTH_CONDITION,
+			A. CREATE_BY, 
+			A. CREATE_TIME, 
+			A. UPDATE_BY, 
+            A. UPDATE_TIME,
+            A. CORPORATE_NO,
+            A. REMOVE,
+			B. ENTERPRISE_NAME enterpriseName
+		from T_OCCUPATION_PERSON A
+		LEFT OUTER JOIN T_ENTERPRISE B ON  A.CORPORATE_NO = B. CORPORATE_NO
+            where A.ID = #{id,jdbcType=VARCHAR}
+              AND A.REMOVE = '0'
+  </select>
+  
+  <!-- 分页查询从业人员信息 -->
+	<select id="findByParams" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		select
+			A. ID,
+			A. PERSON_NAME,
+			A. NATION,
+			A. DRIVE_VEHICLE_TYPE,
+			A. EDUCATION_DEGREE, 
+			A. IDENTIFICATION_CARD_NO,
+			A. TELEPHONE,
+			A. CRIME_RECORD,
+			A. TRAFFIC_ACCIDENT,  
+			A. OCCUPATION_NO,
+			A. DRIVE_CARD_NO,
+			A. HEALTH_CONDITION,
+			A. CORPORATE_NO,
+			TB. ENTERPRISE_NAME,
+			TC.NAME AS OCCUPATION_PERSON_TYPE,
+			TD.NAME AS PERSON_SEX
+		FROM T_OCCUPATION_PERSON A
+		LEFT JOIN T_ENTERPRISE       TB ON TB .CORPORATE_NO = A. CORPORATE_NO
+		LEFT JOIN T_DICTIONARY_VALUE TC ON TC.VALUE         = A.OCCUPATION_PERSON_TYPE 
+		LEFT JOIN T_DICTIONARY_VALUE TD ON TD.VALUE         = A.PERSON_SEX 
+		WHERE A.REMOVE  = '0'
+		  AND TB.REMOVE = '0'
+	    <if test="enterpriseName != null and enterpriseName != ''">
+		  AND (TB.ENTERPRISE_NAME LIKE CONCAT(CONCAT('%',#{enterpriseName}),'%')
+	       OR  A.CORPORATE_NO LIKE CONCAT(CONCAT('%',#{enterpriseName}),'%')) 
+		</if>
+		<if test="personName != null and personName != ''">
+		  AND A.PERSON_NAME like CONCAT(CONCAT('%',#{personName}), '%')
+		</if>
+		<if test="occupationPersonType != null and occupationPersonType != ''">
+		  AND A.OCCUPATION_PERSON_TYPE=#{occupationPersonType, jdbcType=VARCHAR}
+		</if>
+		<if test="corporateNo != null and corporateNo != ''">
+		  AND A.CORPORATE_NO=#{corporateNo, jdbcType=VARCHAR}
+		</if>
+		ORDER BY A.OCCUPATION_PERSON_TYPE, 
+				 A.UPDATE_TIME DESC
+	</select>
+  
+  <!--查询对应物流企业的驾驶员、押运员 -->
+  <select id="findPersonType" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    SELECT 
+     		ID,                 PERSON_NAME, 		        IDENTIFICATION_CARD_NO,
+     		OCCUPATION_NO,		DRIVE_CARD_NO,				TELEPHONE
+    FROM 	T_OCCUPATION_PERSON		
+   	WHERE 		CORPORATE_NO = #{corporateNo,jdbcType=VARCHAR} 
+   	      AND 	OCCUPATION_PERSON_TYPE = #{personType,jdbcType=VARCHAR} 
+   	      AND 	REMOVE = '0'
+  </select>
+  
+  
+  <insert id="save" parameterType="com.c503.sc.jxwl.vehiclemonitor.bean.OccupationPersonEntity" >
+    insert into T_OCCUPATION_PERSON
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="enterpriseId != null" >
+        ENTERPRISE_ID,
+      </if>
+      <if test="occupationPersonType != null" >
+        OCCUPATION_PERSON_TYPE,
+      </if>
+      <if test="personName != null" >
+        PERSON_NAME,
+      </if>
+      <if test="personSex != null" >
+        PERSON_SEX,
+      </if>
+      <if test="nation != null" >
+        NATION,
+      </if>
+      <if test="educationDegree != null" >
+        EDUCATION_DEGREE,
+      </if>
+      <if test="identificationCardNo != null" >
+        IDENTIFICATION_CARD_NO,
+      </if>
+      <if test="telephone != null" >
+        TELEPHONE,
+      </if>
+      <if test="crimeRecord != null" >
+        CRIME_RECORD,
+      </if>
+      <if test="trafficAccident != null" >
+        TRAFFIC_ACCIDENT,
+      </if>
+      <if test="driveVehicleType != null" >
+        DRIVE_VEHICLE_TYPE,
+      </if>
+      <if test="occupationNo != null" >
+        OCCUPATION_NO,
+      </if>
+      <if test="driveCardNo != null" >
+        DRIVE_CARD_NO,
+      </if>
+      <if test="healthCondition != null" >
+        HEALTH_CONDITION,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="updateBy != null" >
+        UPDATE_BY,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="remove != null" >
+        REMOVE,
+      </if>
+      <if test="corporateNo != null" >
+        CORPORATE_NO,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="enterpriseId != null" >
+        #{enterpriseId,jdbcType=VARCHAR},
+      </if>
+      <if test="occupationPersonType != null" >
+        #{occupationPersonType,jdbcType=VARCHAR},
+      </if>
+      <if test="personName != null" >
+        #{personName,jdbcType=VARCHAR},
+      </if>
+      <if test="personSex != null" >
+        #{personSex,jdbcType=VARCHAR},
+      </if>
+      <if test="nation != null" >
+        #{nation,jdbcType=VARCHAR},
+      </if>
+      <if test="educationDegree != null" >
+        #{educationDegree,jdbcType=VARCHAR},
+      </if>
+      <if test="identificationCardNo != null" >
+        #{identificationCardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null" >
+        #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="crimeRecord != null" >
+        #{crimeRecord,jdbcType=VARCHAR},
+      </if>
+      <if test="trafficAccident != null" >
+        #{trafficAccident,jdbcType=VARCHAR},
+      </if>
+      <if test="driveVehicleType != null" >
+        #{driveVehicleType,jdbcType=VARCHAR},
+      </if>
+      <if test="occupationNo != null" >
+        #{occupationNo,jdbcType=VARCHAR},
+      </if>
+      <if test="driveCardNo != null" >
+        #{driveCardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="healthCondition != null" >
+        #{healthCondition,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remove != null" >
+        #{remove,jdbcType=CHAR},
+      </if>
+      <if test="corporateNo != null" >
+        #{corporateNo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="com.c503.sc.jxwl.vehiclemonitor.bean.OccupationPersonEntity" >
+    update T_OCCUPATION_PERSON
+    <set >
+      <if test="enterpriseId != null" >
+        ENTERPRISE_ID = #{enterpriseId,jdbcType=VARCHAR},
+      </if>
+      <if test="occupationPersonType != null" >
+        OCCUPATION_PERSON_TYPE = #{occupationPersonType,jdbcType=VARCHAR},
+      </if>
+      <if test="personName != null" >
+        PERSON_NAME = #{personName,jdbcType=VARCHAR},
+      </if>
+      <if test="personSex != null" >
+        PERSON_SEX = #{personSex,jdbcType=VARCHAR},
+      </if>
+      <if test="nation != null" >
+        NATION = #{nation,jdbcType=VARCHAR},
+      </if>
+      <if test="educationDegree != null" >
+        EDUCATION_DEGREE = #{educationDegree,jdbcType=VARCHAR},
+      </if>
+      <if test="identificationCardNo != null" >
+        IDENTIFICATION_CARD_NO = #{identificationCardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null" >
+        TELEPHONE = #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="crimeRecord != null" >
+        CRIME_RECORD = #{crimeRecord,jdbcType=VARCHAR},
+      </if>
+      <if test="trafficAccident != null" >
+        TRAFFIC_ACCIDENT = #{trafficAccident,jdbcType=VARCHAR},
+      </if>
+      <if test="driveVehicleType != null" >
+        DRIVE_VEHICLE_TYPE = #{driveVehicleType,jdbcType=VARCHAR},
+      </if>
+      <if test="occupationNo != null" >
+        OCCUPATION_NO = #{occupationNo,jdbcType=VARCHAR},
+      </if>
+      <if test="driveCardNo != null" >
+        DRIVE_CARD_NO = #{driveCardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="healthCondition != null" >
+        HEALTH_CONDITION = #{healthCondition,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remove != null" >
+        REMOVE = #{remove,jdbcType=CHAR},
+      </if>
+      <if test="corporateNo != null" >
+        CORPORATE_NO = #{corporateNo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 人员删除后  在资质管理中的人员审核状态改变-->
+  <update id="updateLicenceInfo" parameterType="String" >
+  UPDATE T_LICENCE TL
+ <!-- 通过的设定为已注销,其他的不变 -->
+  SET TL.VERIFY_STATUS = CASE
+                            WHEN TL.VERIFY_STATUS = '151001003' THEN
+                             '151001004'
+                            ELSE
+                             TL.VERIFY_STATUS
+                          END,
+   <!-- 处于审核和拒绝的，逻辑删除，其余不变 -->                          
+       TL.REMOVE = CASE
+                     WHEN TL.VERIFY_STATUS IN ('151001001', '151001002') THEN
+                      '1'
+                     ELSE
+                      TL.REMOVE
+                   END
+ WHERE TL.IDENTIFICATION_CARD_NO = #{cardNo,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="delete" parameterType="map">
+    <if test="ids != null and ids.length > 0">
+      UPDATE T_OCCUPATION_PERSON SET
+        UPDATE_BY   = #{updateBy,jdbcType=VARCHAR},
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+        REMOVE      = #{remove}
+      <where>
+        <foreach collection="ids" item="item" open="id in (" close=")" separator=",">
+          #{item}
+        </foreach>
+      </where>
+    </if>
+  </update>
+  
+  
+  <!-- 删除account表中相应的记录 -->
+  <update id="deleteAccount" parameterType="map">
+      <if test="ids != null and ids.length > 0">
+     update T_REGISTER_INFO
+	   set remove = '1'
+      <where>
+        <foreach collection="ids" item="item" open="OCCUPATION_ID in (" close=")" separator=",">
+          #{item}
+        </foreach>
+      </where>
+    </if> 
+  </update>
+</mapper>

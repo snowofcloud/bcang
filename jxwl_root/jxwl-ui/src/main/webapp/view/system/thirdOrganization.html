@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>第三方机构</title>
+    <link rel="stylesheet" href="../../js/lib/bootstrap-3.3.4/css/bootstrap.css"/>
+    <link rel="stylesheet" href="../../js/lib/jquery/css/jquery-ui.css"/>
+    <link rel="stylesheet" href="../../js/lib/jqGrid/ui.jqgrid.css"/>
+    <link rel="stylesheet" href="../../css/module/module.css"/>
+</head>
+<body>
+<!--主体区域-->
+<div class="right-content">
+    <div class="container-fluid">
+        <!--搜索栏区域-->
+        <div class="searchBox">
+            <form class="form" id="">
+                <div class="line-searchBox">
+                    <div class="item-searchBox col-xs-3">
+                        <label class="horizontal-span">第三方机构名称</label>
+                        <input name="organName" type="text" class="form-control" id="orgName-search">
+                    </div>
+                    <div class="item-searchBox col-xs-3">
+                        <label class="horizontal-span">第三方机构类型</label>
+                        <select name="organType" class="form-control" id="orgType-search">
+                        </select>
+                    </div>
+                    <div class="item-searchBox col-xs-3">
+                        <button type="button" class="btn btn-lemon" id="searchBtn"><span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;搜索</button>
+                        &nbsp;&nbsp;
+                        <button type="button" class="btn btn-success" id="enteringBtn"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;新增</button>
+                        &nbsp;&nbsp;
+                        <button type="button" class="btn btn-danger" id="batchDeleteBtn"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;删除</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--表格和分页信息-->
+        <table id="thirdOrgTable"></table>
+        <div id="thirdOrgPager"></div>
+    </div>
+</div>
+
+<!--页面弹框--->
+<div class="panel panel-gray-sm" id="saveOrUpdatePanel">
+    <div class="panel-heading">
+        <span class="panel-title">新增第三方机构名称</span>
+    </div>
+    <form id="saveOrUpdateForm">
+        <div class="panel-body">
+            <div class="panel-body-content">
+                <div class="row">
+                    <div class="col-xs-2"><label class="must" for="organName">机构名称</label></div>
+                    <div class="col-xs-4"><input type="text" class="form-control" name="organName" id="organName" required/></div>
+                    <div class="col-xs-2"><label class="must" for="organType">机构类型</label></div>
+                    <div class="col-xs-4"><select class="form-control" name="organType" id="organType" required></select></div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-2"><label class="must" for="organNo">编号</label></div>
+                    <div class="col-xs-4"><input type="text" class="form-control" name="organNo" id="organNo" required/></div>
+                    <div class="col-xs-2"><label class="must" for="telephone">电话</label></div>
+                    <div class="col-xs-4"><input type="text" class="form-control" name="telephone" id="telephone" required/></div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-2"><label for="postCode">邮编</label></div>
+                    <div class="col-xs-4"><input type="text" class="form-control" name="postCode" id="postCode"/></div>
+                    <div class="col-xs-2"><label for="address">地址</label></div>
+                    <div class="col-xs-4"><input type="text" class="form-control" name="address" id="address"/></div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-2"><label for="professionScope">专业范围</label></div>
+                    <div class="col-xs-10"><textarea class="form-control" name="professionScope" id="professionScope" rows="5"></textarea></div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <button type="submit" class="btn btn-cyan" id="submitBtn">确定</button>
+            <button type="reset" class="btn btn-border cancel">取消</button>
+        </div>
+    </form>
+</div>
+
+<script src="../../js/lib/jquery/jquery-1.11.2.min.js"></script>
+<script src="../../js/lib/jquery/jquery-ui.min.js"></script>
+<script src="../../js/lib/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+<script src="../../js/lib/jqGrid/jquery.jqGrid.min.js"></script>
+<script src="../../js/lib/jqGrid/grid.locale-cn.js"></script>
+<script src="../../js/module/jquery-html5Validate.js"></script>
+<script src="../../js/module/message-2.0.0.js"></script>
+<script src="../../js/module/base.js"></script>
+<script src="../../js/view/system/thirdOrganization.js"></script>
+</body>

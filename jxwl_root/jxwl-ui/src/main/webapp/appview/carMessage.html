@@ -1,0 +1,131 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>嘉兴物流微信公众号</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <link rel="stylesheet" href="../js/lib/AmazeUI-2.7.1/assets/css/amazeui.min.css">
+    <link rel="stylesheet" href="../js/lib/AmazeUI-2.7.1/assets/css/app.css">
+    <!--业务样式-->
+    <link rel="stylesheet" href="../css/module/appCommon.css">
+</head>
+<body>
+<!--页面头部-->
+<div class="header">
+    <a href="#leftMenu" data-am-offcanvas class="pageTitle-icon">
+        <i class="am-menu-toggle-icon am-icon-bars"></i>
+    </a>
+    <div class="pageTitle">物流企业车辆信息</div>
+</div>
+<!--内容-->
+<div class="am-tabs mainContainer" data-am-tabs="{noSwipe:1}" id="doc-tab-demo-1">
+   	<div class="top-search">
+   		<span class="rela_span">
+        	<input type="text" class="am-form-field search-input search_width" id="carNumberSearch" style="display: inline;" placeholder="搜索   车牌号">
+	        <span class="clear-x">×</span>
+   		</span>
+   		<button id="car_search"  type="button" class="mysearch-btn">搜索</button>
+   	</div>
+    <div class="am-tabs-bd">
+        <!--企业列表-->
+        <div class="am-tab-panel am-active" style="padding: 0px 10px 15px">
+            <!--数据展示区-->
+            <div id="carMessageData" class="showData">
+            </div>
+            <!--按钮区-->
+            <div class="pageFooter">
+                <button class="am-btn am-btn-default btn-Footer" id="moreMsg-btn">点击加载更多</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<!--车辆数据列表模板-->
+<section class="hidden" id="carMessageHtmlTemplate">
+    <div class="content horizontal-line">
+        <div class="am-g">
+            <div class="am-u-sm-4">{licencePlateNo}</div>
+            <div class="am-u-sm-8">{enterpriseName}</div>
+        </div>
+        
+    </div>
+</section>
+
+
+<!--车辆信息详情界面-->
+<div class="panel am-modal am-modal-no-btn" tabindex="1" id="carDetailPanel">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">车辆详情
+            <a href="javascript:void(0)" class="am-close am-close-spin" data-am-modal-close>＜</a>
+        </div>
+        <div class="detail-head">车辆基本信息</div>
+        <div class="am-modal-bd detail-backcolor" id="carDetailBd"></div>
+    </div>
+</div>
+
+<!--企业信息详情查看数据模板-->
+<section class="hidden" id="carDetailHtmlTemplate">
+	<div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">车牌号:</div>
+        <div class="am-u-sm-7">{licencePlateNo}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">企业名称:</div>
+        <div class="am-u-sm-7">{enterpriseName}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">车辆类型:</div>
+        <div class="am-u-sm-7">{vehicleType}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">车辆品牌:</div>
+        <div class="am-u-sm-7">{vehicleBrand}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">品牌型号:</div>
+        <div class="am-u-sm-7">{vehicleBrandType}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">车辆排量:</div>
+        <div class="am-u-sm-7">{vehicleOutput}</div>
+    </div>
+    <!--项目具体信息-->
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">发动机号码:</div>
+        <div class="am-u-sm-7">{motorNo}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">底盘号码:</div>
+        <div class="am-u-sm-7">{graduadedNo}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">车辆编号:</div>
+        <div class="am-u-sm-7">{vehicleNo}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">跨域类型:</div>
+        <div class="am-u-sm-7">{crossDomainType}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">车辆状态:</div>
+        <div class="am-u-sm-7">{status}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">经营区域:</div>
+        <div class="am-u-sm-7"></div>
+    </div>
+</section>
+
+<script src="../js/lib/AmazeUI-2.7.1/assets/js/jquery.min.js"></script>
+<script src="../js/lib/AmazeUI-2.7.1/assets/js/amazeui.js"></script>
+<script src="../js/lib/AmazeUI-2.7.1/assets/js/handlebars.min.js"></script>
+<script src="../js/lib/AmazeUI-2.7.1/assets/js/amazeui.widgets.helper.js"></script>
+<script src="../js/module/appBase.js"></script>
+<script src="../js/app/carMessage.js"></script>
+</html>

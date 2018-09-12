@@ -1,0 +1,199 @@
+/*�켣�ط�*/
+.rep_bg {
+	width: 455px;
+	height: 127px;
+	margin: 0px;
+	background-color: white;
+	background-repeat: repeat;
+	clear: left;
+	float: left;
+}
+
+.rep_button {
+	margin-left: 5px;
+	cursor: pointer;
+	float: left;
+	width: 36px;
+	height: 37px;
+}
+
+.rep_kt {
+	background-image: url(../img/rep_kt_a.png);
+	background-repeat: no-repeat;
+}
+
+.rep_kt:active {
+	top: 1px;
+	position: relative;
+}
+
+.rep_kt:hover {
+	background-image: url("../img/kt_hover.png");
+	background-repeat: no-repeat;
+	text-decoration: none;
+}
+
+.rep_play {
+	background-image: url(../img/rep_play_a.png);
+	background-repeat: no-repeat;
+}
+
+.rep_play:active {
+	top: 1px;
+	position: relative;
+}
+
+.rep_play:hover {
+	background-image: url("../img/play_hover.png");
+	background-repeat: no-repeat;
+	text-decoration: none;
+}
+
+.rep_kj {
+	background-image: url(../img/rep_kj_a.png);
+	background-repeat: no-repeat;
+}
+
+.rep_kj:active {
+	top: 1px;
+	position: relative;
+}
+
+.rep_kj:hover {
+	background-image: url("../img/kj_hover.png");
+	background-repeat: no-repeat;
+	text-decoration: none;
+}
+
+.rep_re {
+	background-image: url(../img/rep_re_a.png);
+	background-repeat: no-repeat;
+}
+
+.rep_re:active {
+	top: 1px;
+	position: relative;
+}
+
+.rep_re:hover {
+	background-image: url("../img/re_hover.png");
+	background-repeat: no-repeat;
+	text-decoration: none;
+}
+
+#label_kt {
+	top: 107px;
+	left: 156px;
+	position: absolute;
+	clear: both;
+	float: left;
+	margin-left: 10px;
+	display: none;
+}
+
+#label_kj {
+	position: absolute;
+	left: 166px;
+	display: none;
+	bottom: 0px;
+}
+
+#beginDate {
+	font-size: 12px;
+	font-family: micro yahei;
+	margin-left: -24px;
+	float: left;
+}
+
+#endDate {
+	font-size: 12px;
+	font-family: micro yahei;
+	position: absolute;
+	width: 100px;
+	left: 363px;
+}
+
+#slider_Container {
+	width: 80%;
+	margin-top: 20px;
+	margin-left: 50px;
+	/* 	height: 35px; */
+}
+
+#rep_close {
+	width: 40px;
+	font-size: 24px;
+	font-weight: normal;
+	text-align: center;
+	margin: 0;
+	float: right;
+	cursor: pointer;
+	color: rgba(255, 255, 255, 0.8);
+	border-top-right-radius: 4px;
+	/* margin-left: 440px;
+	margin-top: -24px;
+	cursor: pointer; */
+	/* background-image:url(../img/rep_close.gif); */
+}
+
+#rep_close:active {
+	top: 1px;
+	position: relative;
+}
+
+#out {
+	width: 55px;
+	bottom: 5px;
+	right: 6px;
+	position: absolute;
+}
+
+/* 日历框样式 */
+.input-new {
+	background-color: #fff;
+	border: 0;
+	padding: 6px 6px 6px 0;
+}
+
+#dgRep i {
+	cursor: pointer;
+	color: rgba(255, 255, 255, 0.8);
+	float: right;
+	right: 45px;
+	top: 11px;
+}
+
+#dgRep #rep_close {
+	width: 25px;
+	height: 31px;
+}
+
+/* 轨迹播放样式 */
+#dgRep {
+	-webkit-transform: translate3d(0, 0, 0);
+	transform: translate3d(0, 0, 0);
+	position: absolute;
+	z-index: 10000;
+	right: 363px;
+	bottom: 30px;
+	width: 470px;
+	height: 203px;
+	background-color: #0F4576;
+	"
+}
+
+#dgRep .panel-heading {
+	background-color: #1F2F4D;
+}
+
+#slider_Container {
+	width: 380px;
+	margin-top: 25px;
+	margin-left: 56px;
+}
+
+.sliderBtn {
+	clear: both;
+	margin-top: 30px;
+	margin-left: 140px;
+}

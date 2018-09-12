@@ -1,0 +1,9 @@
+@charset "utf-8";
+
+#storagetank-form span ,#pipeline-form span{
+	height:34px;
+	line-height:34px;
+}
+#storagetank-form .col-xs-11 ,#pipeline-form .col-xs-11{
+	margin-left: -81px;
+	}

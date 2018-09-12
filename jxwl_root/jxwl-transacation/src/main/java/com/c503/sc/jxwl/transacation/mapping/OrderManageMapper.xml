@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.c503.sc.jxwl.transacation.dao.IOrderManageDao" >
+  <resultMap id="BaseResultMap" type="com.c503.sc.jxwl.transacation.bean.SrcGoods" >
+    <id     column="ID"               property="id"              jdbcType="VARCHAR" />
+    <result column="WAYBILLL_NO"      property="waybilllNo"      jdbcType="VARCHAR" />
+    <result column="END_DATE"         property="endDate"         jdbcType="TIMESTAMP" />
+    <result column="SENDER_ADDR"      property="senderAddr"      jdbcType="VARCHAR" />
+    <result column="SENDER_COMPANY"   property="senderCompany"   jdbcType="VARCHAR" />
+    <result column="SENDER_TEL"       property="senderTel"       jdbcType="VARCHAR" />
+    <result column="RECEIVER_ADDR"    property="receiverAddr"    jdbcType="VARCHAR" />
+    <result column="RECEIVER_COMPANY" property="receiverCompany" jdbcType="VARCHAR" />
+    <result column="RECEIVER_TEL"     property="receiverTel"     jdbcType="VARCHAR" />
+    <result column="CREATE_BY"        property="createBy"        jdbcType="VARCHAR" />
+    <result column="CREATE_TIME"      property="createTime"      jdbcType="TIMESTAMP" />
+    <result column="UPDATE_BY"        property="updateBy"        jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME"      property="updateTime"      jdbcType="TIMESTAMP" />
+    <result column="REMOVE"           property="remove"          jdbcType="CHAR" />
+    <result column="TRADE_STATUS"     property="tradeStatus"     jdbcType="VARCHAR" />
+    <result column="HG_CORPORATE_NO"  property="hgCorporateNo"   jdbcType="VARCHAR" />
+    <result column="WL_CORPORATE_NO"  property="wlCorporateNo"   jdbcType="VARCHAR" />
+    <result column="PUBLISH_DATE"     property="publishDate"     jdbcType="TIMESTAMP" />
+    <result column="START_POINT"      property="startPoint"      jdbcType="VARCHAR" />
+    <result column="END_POINT"        property="endPoint"        jdbcType="VARCHAR" />
+    <result column="SENDER_LINKER"    property="senderLinker"    jdbcType="VARCHAR" />
+    <result column="RECEIVER_LINKER"  property="receiverLinker"  jdbcType="VARCHAR" />
+	<result column="CAR_TYPE"         property="carType"         jdbcType="VARCHAR" />
+	<result column="CAR_LENGTH"       property="carLength"       jdbcType="DECIMAL" />
+	<result column="ALL_GOODS_NAME"   property="allGoodsName"    jdbcType="VARCHAR" />
+    <result column="ORDER_NO"              property="orderNo"             jdbcType="VARCHAR" />
+    <result column="ORDER_DATE"            property="orderDate"           jdbcType="TIMESTAMP" />
+    <result column="TRADE_OBJECT"          property="tradeObject"         jdbcType="VARCHAR" />
+    <result column="TRADEROBJ_TEL"         property="traderobjTel"        jdbcType="VARCHAR" />
+    <result column="WL_ENTERPRISE_NAME"    property="wlEnterpriseName"    jdbcType="VARCHAR" />
+    <result column="HG_ENTERPRISE_NAME"    property="hgEnterpriseName"    jdbcType="VARCHAR" />
+    <result column="COMMENT_TIMES"         property="commentTimes"        jdbcType="DECIMAL" />
+    <result column="COMPLAIN_TIMES"        property="complainTimes"       jdbcType="DECIMAL" />
+  </resultMap>
+  
+  <resultMap id="BaseResultMap2" type="com.c503.sc.jxwl.transacation.bean.SrcGoods" extends="BaseResultMap">
+    <result column="TRADE_CORPPRATE_NO"  property="tradeCorpprateNo" jdbcType="VARCHAR" />
+  	<collection property="goodsInfos" ofType="com.c503.sc.jxwl.transacation.bean.SrcGoodsInfo">
+	    <id     column="GOODSINFO_ID"    property="id"            jdbcType="VARCHAR" />
+	    <result column="SRC_GOODS_ID"    property="srcGoodsId"    jdbcType="VARCHAR" />
+	    <result column="GOODS_SERIAL_NO" property="goodsSerialNo" jdbcType="VARCHAR" />
+	    <result column="GOODS_NAME"      property="goodsName"     jdbcType="VARCHAR" />
+	    <result column="PACK"            property="pack"          jdbcType="VARCHAR" />
+	    <result column="AMOUNT"          property="amount"        jdbcType="DECIMAL" />
+	    <result column="WEIGHT"          property="weight"        jdbcType="DECIMAL" />
+	    <result column="UNIT_PRICE"      property="unitPrice"     jdbcType="DECIMAL" />
+	    <result column="GOODS_WORTH"     property="goodsWorth"    jdbcType="DECIMAL" />
+	    <result column="VOLUME"          property="volume"        jdbcType="DECIMAL" />
+	    <result column="REMOVE"           property="remove"          jdbcType="CHAR" />
+  	</collection>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID, WAYBILLL_NO, END_DATE, SENDER_ADDR, SENDER_COMPANY, SENDER_TEL, RECEIVER_ADDR, 
+    RECEIVER_COMPANY, RECEIVER_TEL,TRADE_STATUS, HG_CORPORATE_NO, WL_CORPORATE_NO, PUBLISH_DATE,
+    ORDER_NO, ORDER_DATE, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, REMOVE
+  </sql>
+  
+  <!-- 分页查询 -->  
+  <select id="findByParams" parameterType="map" resultMap="BaseResultMap2">
+	WITH T_VAL AS
+	 (SELECT SRC_GOODS_ID,
+	         LISTAGG(GOODS_NAME, '; ') WITHIN GROUP(ORDER BY GOODS_NAME) AS ALL_GOODS_NAME
+	    FROM T_SOURCE_GOODS_INFO
+	   WHERE REMOVE = '0'
+	   GROUP BY SRC_GOODS_ID),
+	   
+	T_TIMES AS (
+	  SELECT T.ORDER_ID,
+	         T.CORPORATE_NO,
+	         COUNT(DECODE(T.TYPE, '0', T.ID)) COMMENT_TIMES,
+	         COUNT(DECODE(T.TYPE, '1', T.ID)) COMPLAIN_TIMES
+	    FROM T_COMMENT_COMPLAINT T
+	   GROUP BY T.CORPORATE_NO, T.ORDER_ID)
+	   
+  	SELECT TA.ID,
+  		   TA.ORDER_NO,
+  		   TA.WAYBILLL_NO,
+  		   TA.TRADE_STATUS,
+  		   TA.HG_CORPORATE_NO,
+  		   TA.WL_CORPORATE_NO,
+  		   TA.PUBLISH_DATE,
+  		   TA.ORDER_DATE,
+  		   T_VAL.ALL_GOODS_NAME,
+  		   TC.REMOVE,
+  		   TC.ENTERPRISE_NAME AS TRADE_OBJECT,
+  		   NVL(T_TIMES.COMMENT_TIMES,  0) COMMENT_TIMES,
+  		   NVL(T_TIMES.COMPLAIN_TIMES, 0) COMPLAIN_TIMES
+  		   <choose>
+		     <when test="hgCorporateNo != null and hgCorporateNo != ''">
+			   , TA.WL_CORPORATE_NO AS TRADE_CORPPRATE_NO 
+		     </when>
+		     <when test="wlCorporateNo != null and wlCorporateNo != ''">
+			   , TA.HG_CORPORATE_NO AS TRADE_CORPPRATE_NO 
+		     </when>
+		     <otherwise>
+			   , TA.WL_CORPORATE_NO AS TRADE_CORPPRATE_NO 
+		     </otherwise>
+	       </choose> 
+  	  FROM T_SOURCE_GOODS TA 
+  	  LEFT JOIN T_VAL ON TA.ID = T_VAL.SRC_GOODS_ID
+  	  <choose>
+		<when test="hgCorporateNo != null and hgCorporateNo != ''">
+			LEFT JOIN T_ENTERPRISE TC ON TA.WL_CORPORATE_NO = TC.CORPORATE_NO
+			LEFT JOIN T_TIMES ON TA.HG_CORPORATE_NO = T_TIMES.CORPORATE_NO
+			 AND TA.ID = T_TIMES.ORDER_ID
+		</when>
+		<when test="wlCorporateNo != null and wlCorporateNo != ''">
+			LEFT JOIN T_ENTERPRISE TC ON TA.HG_CORPORATE_NO = TC.CORPORATE_NO
+			LEFT JOIN T_TIMES ON TA.WL_CORPORATE_NO = T_TIMES.CORPORATE_NO
+			 AND TA.ID = T_TIMES.ORDER_ID
+		</when>
+		<otherwise>
+			LEFT JOIN T_ENTERPRISE TC ON TA.WL_CORPORATE_NO = TC.CORPORATE_NO
+			LEFT JOIN T_TIMES ON TA.HG_CORPORATE_NO = T_TIMES.CORPORATE_NO
+			 AND TA.ID = T_TIMES.ORDER_ID
+		</otherwise>
+	  </choose> 
+  	 WHERE TA.REMOVE = '0'
+  	 <if test="startTime != null">
+  	   AND ORDER_DATE &gt;= #{startTime}
+  	 </if>
+  	 <if test="endTime != null">
+  	   AND ORDER_DATE &lt;= #{endTime}
+  	 </if>
+  	 <if test="hgCorporateNo != null and hgCorporateNo != ''">
+  	   AND HG_CORPORATE_NO = #{hgCorporateNo}
+  	 </if>
+  	 <if test="wlCorporateNo != null and wlCorporateNo != ''">
+  	   AND WL_CORPORATE_NO = #{wlCorporateNo}
+  	 </if>
+  	  
+  	 <if test="wlCorporateNo != null or hgCorporateNo != null">
+  	   AND TA.TRADE_STATUS IN('110001003','110001004','110001005','110001006')
+  	 </if>
+  	 <if test="wlCorporateNo == null and hgCorporateNo == null">
+  	   AND TA.TRADE_STATUS IN('110001005','110001006')
+  	 </if>  
+  	 ORDER BY TA.TRADE_STATUS ASC, TA.ORDER_DATE DESC
+  </select>
+  
+  
+  <!-- 查询详情 -->
+  <select id="findById" resultMap="BaseResultMap2" parameterType="java.lang.String" >
+    SELECT TA.ID,
+  		   TA.ORDER_NO,
+  		   TA.WAYBILLL_NO,
+  		   TA.ORDER_DATE,
+  		   TA.START_POINT,
+  		   TA.END_POINT,
+  		   TA.HG_CORPORATE_NO,
+  		   TA.WL_CORPORATE_NO,
+    
+  		   TA.SENDER_COMPANY,
+  		   TA.SENDER_LINKER,
+  		   TA.SENDER_TEL,
+  		   TA.SENDER_ADDR,
+    
+  		   TA.RECEIVER_COMPANY,
+  		   TA.RECEIVER_LINKER,
+  		   TA.RECEIVER_TEL,
+  		   TA.RECEIVER_ADDR,
+  		   
+  		   TB.ID AS GOODSINFO_ID,
+  		   TB.SRC_GOODS_ID,
+  		   TB.GOODS_SERIAL_NO,
+  		   TB.GOODS_NAME,
+  		   TB.PACK,
+  		   TB.AMOUNT,
+  		   TB.WEIGHT,
+  		   TB.VOLUME,
+  		   TB.UNIT_PRICE,
+  		   TB.GOODS_WORTH,
+    
+  		   TA.TRADE_STATUS,
+  		   TA.PUBLISH_DATE,
+  		   TC.ENTERPRISE_NAME AS TRADE_OBJECT
+  	  <choose>
+		<when test="wlCorporateNo != null and wlCorporateNo != ''">
+			,TA.SENDER_TEL AS TRADEROBJ_TEL
+		</when>
+		<otherwise>
+			,TA.RECEIVER_TEL AS TRADEROBJ_TEL
+		</otherwise>
+	  </choose>
+  	  FROM T_SOURCE_GOODS TA 
+  	  LEFT JOIN T_SOURCE_GOODS_INFO TB 
+  	    ON TA.ID = TB.SRC_GOODS_ID 
+  	<choose>
+		<when test="wlCorporateNo != null and wlCorporateNo != ''">
+			LEFT JOIN T_ENTERPRISE TC ON TA.HG_CORPORATE_NO = TC.CORPORATE_NO
+		</when>
+		<otherwise>
+			LEFT JOIN T_ENTERPRISE TC ON TA.WL_CORPORATE_NO = TC.CORPORATE_NO
+		</otherwise>
+	  </choose>
+    WHERE TA.ID = #{id,jdbcType=VARCHAR}
+      AND TA.REMOVE = '0'
+      AND ROWNUM    = 1
+  </select>
+  
+  <!-- 查询订单相关的评价、投诉（物流、化工评价投诉） -->
+  <select id="findCommentComplainByOrderId" parameterType="string" resultType="com.c503.sc.jxwl.transacation.bean.CommentComplain">
+	SELECT TA.SCORE       AS score,
+	       TA.CREATE_TIME AS complainDate,
+	       TA.CONTENT     AS content,
+	       TA.TYPE        AS type
+	  FROM T_COMMENT_COMPLAINT TA
+	 WHERE TA.ORDER_ID = #{orderId}
+	   AND TA.CORPORATE_NO = #{tradeObjCode}
+	   AND TA.TYPE = '0'
+	   AND ROWNUM = 1
+	UNION ALL
+	SELECT TA.SCORE       AS SCORE,
+	       TA.CREATE_TIME AS complainDate,
+	       TA.CONTENT     AS CONTENT,
+	       TA.TYPE        AS type
+	  FROM T_COMMENT_COMPLAINT TA
+	 WHERE TA.ORDER_ID = #{orderId}
+	   AND TA.CORPORATE_NO = #{tradeObjCode}
+	   AND TA.TYPE = '1'
+	   AND ROWNUM = 1
+  </select>
+  
+  
+  <!-- 查询订单相关的评价、投诉（政府查看, 化工对物流的评价、投诉） -->
+  <select id="findComComByOrderIdForzf" parameterType="string" resultType="com.c503.sc.jxwl.transacation.bean.CommentComplain">
+	SELECT TA.SCORE           AS score,
+	       TA.CREATE_TIME     AS complainDate,
+	       TA.CONTENT         AS content,
+	       TA.TYPE            AS type,
+	       TB.ENTERPRISE_NAME AS enterpriseName
+	  FROM T_COMMENT_COMPLAINT TA
+	  LEFT JOIN T_ENTERPRISE TB ON TA.CORPORATE_NO = TB.CORPORATE_NO <!-- 化工评价方 -->
+	 WHERE TA.ORDER_ID = #{orderId}
+	   AND TA.OTHER_SIDE_NO = #{tradeObjCode} <!-- 物流方接受评价 -->
+	   AND TA.TYPE = '0'
+	   AND ROWNUM = 1
+	UNION ALL
+	SELECT TA.SCORE       AS SCORE,
+	       TA.CREATE_TIME AS CREATETIME,
+	       TA.CONTENT     AS CONTENT,
+	       TA.TYPE        AS type,
+	       TB.ENTERPRISE_NAME AS enterpriseName
+	  FROM T_COMMENT_COMPLAINT TA
+	  LEFT JOIN T_ENTERPRISE TB ON TA.CORPORATE_NO = TB.CORPORATE_NO <!-- 化工投诉方 -->
+	 WHERE TA.ORDER_ID = #{orderId}
+	   AND TA.OTHER_SIDE_NO = #{tradeObjCode} <!-- 物流方接受投诉 -->
+	   AND TA.TYPE = '1'
+	   AND ROWNUM = 1
+  </select>
+  
+  
+  <!-- 查询订单状态-->
+  <select id="findTradeStatus" parameterType="String" resultType="String">
+    SELECT TRADE_STATUS FROM T_SOURCE_GOODS WHERE ID = #{id}
+  </select>
+  
+  
+  <!-- 更改流程状态  -->
+  <update id="updateTradeStatus" parameterType="Object">
+	UPDATE T_SOURCE_GOODS SET 
+	  <if test="publishDate != null and publishDate != ''">
+      	PUBLISH_DATE = #{publishDate},
+      </if>
+      TRADE_STATUS = #{tradeStatus},
+      UPDATE_BY    = #{updateBy,jdbcType=VARCHAR},
+      UPDATE_TIME  = SYSDATE
+   	 WHERE ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 大屏展示所有订单 -->
+  <select id="findAllOrders" parameterType="map" resultType="com.c503.sc.jxwl.transacation.bean.OrderForFull">
+	SELECT DISTINCT *
+	  FROM (SELECT TA.TRADE_STATUS     tradeStatus,
+	               TC.ENTERPRISE_NAME  wlEnterpriseName,
+	               TD.ENTERPRISE_NAME  hgEnterpriseName,
+	               TB.AMOUNT           amount,
+	               TB.GOODS_NAME       goodsName,
+	               TA.UPDATE_TIME
+	          FROM T_SOURCE_GOODS TA
+	          JOIN T_SOURCE_GOODS_INFO TB
+	            ON TA.ID = TB.SRC_GOODS_ID 
+	          JOIN T_ENTERPRISE TC
+	            ON TA.WL_CORPORATE_NO = TC.CORPORATE_NO
+	            AND TC.REMOVE = '0'
+	          JOIN T_ENTERPRISE TD
+	            ON TA.HG_CORPORATE_NO = TD.CORPORATE_NO
+	         WHERE TA.REMOVE = '0'
+	           AND TB.REMOVE = '0'
+	           AND TA.TRADE_STATUS IN ('110001005', '110001006')
+	           <!-- AND TA.UPDATE_TIME > sysdate-7 -->
+	         ORDER BY TA.UPDATE_TIME DESC) TMP
+	  WHERE ROWNUM &lt;= 20
+	  ORDER BY TMP.UPDATE_TIME DESC
+  </select>
+  
+  
+  
+  <!-- **************************************查询所有订单（微信公众号）************************************ -->
+  <select id="findDataForWeixinByParams" parameterType="map" resultType="map">
+	SELECT T.ID,
+	       T.ORDER_NO,
+	       T.WAYBILLL_NO,
+	       TD.NAME AS TRADE_STATUS,
+	       TE.ENTERPRISE_NAME,
+	       T.HG_CORPORATE_NO
+	  FROM T_SOURCE_GOODS T
+	  JOIN T_ENTERPRISE TE
+	    ON T.WL_CORPORATE_NO = TE.CORPORATE_NO
+	   AND TE.REMOVE = '0'
+	  LEFT JOIN T_DICTIONARY_VALUE TD
+	    ON T.TRADE_STATUS = TD.VALUE
+	 WHERE T.REMOVE = '0' 
+	   AND T.TRADE_STATUS IN ('110001005', '110001006')
+	 <if test="corporateNo != null and corporateNo != ''">
+	  AND T.WL_CORPORATE_NO = #{corporateNo}
+	 </if>
+	 <if test="orderNo != null and orderNo!= ''">
+	  AND T.ORDER_NO LIKE CONCAT(CONCAT('%',#{orderNo}),'%')
+	 </if>
+	 ORDER BY T.TRADE_STATUS DESC
+  </select>
+  
+  
+  <!-- 查询详情（微信） -->
+  <select id="findByIdForWeixin" resultMap="BaseResultMap2" parameterType="java.lang.String" >
+    SELECT TA.ID,
+  		   TA.ORDER_NO,
+  		   TA.WAYBILLL_NO,
+  		   TA.ORDER_DATE,
+  		   TA.START_POINT,
+  		   TA.END_POINT,
+  		   TA.HG_CORPORATE_NO,
+  		   TA.WL_CORPORATE_NO,
+    
+  		   TA.SENDER_COMPANY,
+  		   TA.SENDER_LINKER,
+  		   TA.SENDER_TEL,
+  		   TA.SENDER_ADDR,
+    
+  		   TA.RECEIVER_COMPANY,
+  		   TA.RECEIVER_LINKER,
+  		   TA.RECEIVER_TEL,
+  		   TA.RECEIVER_ADDR,
+  		   
+  		   TB.ID AS GOODSINFO_ID,
+  		   TB.SRC_GOODS_ID,
+  		   TB.GOODS_SERIAL_NO,
+  		   TB.GOODS_NAME,
+  		   TB.PACK,
+  		   TB.AMOUNT,
+  		   TB.WEIGHT,
+  		   TB.VOLUME,
+  		   TB.UNIT_PRICE,
+  		   TB.GOODS_WORTH,
+    
+  		   TA.TRADE_STATUS,
+  		   TA.PUBLISH_DATE,
+  		   TC.ENTERPRISE_NAME AS TRADE_OBJECT,
+  		   TA.SENDER_TEL      AS TRADEROBJ_TEL <!-- 交易对象联系方式 -->
+  	  FROM T_SOURCE_GOODS TA 
+  	  LEFT JOIN T_SOURCE_GOODS_INFO TB 
+  	    ON TA.ID = TB.SRC_GOODS_ID 
+	  LEFT JOIN T_ENTERPRISE TC ON TA.HG_CORPORATE_NO = TC.CORPORATE_NO <!--交易对象 -->
+     WHERE TA.ID = #{id,jdbcType=VARCHAR}
+       AND TA.REMOVE = '0'
+  </select>
+  
+  
+  <!-- 模糊查询订单信息 -->
+  <select id="findOrderNo" parameterType="map" resultMap="BaseResultMap">
+  	select T.ORDER_NO,T.START_POINT,T.END_POINT
+  from T_SOURCE_GOODS T
+ WHERE T.HG_CORPORATE_NO = #{corporateNo,jdbcType=VARCHAR} 
+   AND T.ORDER_NO LIKE '%'||#{orderNo,jdbcType=VARCHAR}||'%'
+   AND T.TRADE_STATUS = '110001005'
+   AND T.REMOVE = '0'
+  </select>
+  
+  
+  <!-- 精确查询订单信息 -->
+  <select id="findAccurateOrderNo" parameterType="map" resultMap="BaseResultMap">
+  	select T.ORDER_NO
+  from T_SOURCE_GOODS T
+ WHERE 
+   T.REMOVE = '0'
+   AND T.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+   AND T.HG_CORPORATE_NO = #{corporateNo,jdbcType=VARCHAR} 
+   AND T.TRADE_STATUS = '110001005'
+  </select>
+  
+  
+  <!-- 通过订单id 查询订单号然后再关联运单 查找运单状态 -->
+  <select id='hgConfirmOrderStatus'  parameterType="map" resultType="String">
+  select TW.CHECKSTATUS
+	  from T_SOURCE_GOODS TSD
+	  left join T_WAYBILL TW
+	    ON TW.ORDER_NO = TSD.ORDER_NO
+	   AND TW.REMOVE = #{remove,jdbcType=VARCHAR}
+	 WHERE TSD.ID = #{id,jdbcType=VARCHAR}
+	   AND TSD.REMOVE= #{remove,jdbcType=VARCHAR}
+  </select>
+  
+</mapper>

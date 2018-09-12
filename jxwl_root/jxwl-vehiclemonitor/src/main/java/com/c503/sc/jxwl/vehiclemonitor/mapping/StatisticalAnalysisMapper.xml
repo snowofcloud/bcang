@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.c503.sc.jxwl.vehiclemonitor.dao.IStatisticalAnalysisDao">
+  	<resultMap id="BaseResultMap" type="com.c503.sc.jxwl.vehiclemonitor.bean.EnpEveryTimes">
+		<id     column="ID"                    property="id"                jdbcType="VARCHAR" />
+		<result column="ENTERPRISE_NAME"       property="enterpriseName"    jdbcType="VARCHAR" />
+		<result column="CROSS_DOMAIN_TYPE"     property="portArea"          jdbcType="VARCHAR" />
+		<result column="ONS"                   property="onlineCar"         jdbcType="DECIMAL" />
+		<result column="OFFS"                  property="offlineCar"        jdbcType="DECIMAL" />
+		<result column="CUR_MONTHA_LARM"       property="curMonthAlarm"     jdbcType="DECIMAL" />
+		<result column="CUR_QUARTER_ALARM"     property="curQuarterAlarm"   jdbcType="DECIMAL" />
+		<result column="CUR_YEAR_ALARM"        property="curYearAlarm"      jdbcType="DECIMAL" />
+		<result column="CUR_MONTH_WAYBILL"     property="curMonthWaybill"   jdbcType="DECIMAL" />
+		<result column="CUR_QUARTER_WAYBILL"   property="curQuarterWaybill" jdbcType="DECIMAL" />
+		<result column="CUR_YEAR_WAYBILL"      property="curYearWaybill"    jdbcType="DECIMAL" />
+		<result column="CORPORATE_NO"          property="corporateNo"       jdbcType="VARCHAR" />
+	</resultMap>
+
+
+	<!-- 统计物流企业（港区非港区） -->
+	<select id="countwlEnp" resultType="map">
+		SELECT COUNT(DECODE(T.CROSS_DOMAIN_TYPE, '105001001', 1)) LOCALENP,
+		       COUNT(DECODE(T.CROSS_DOMAIN_TYPE, '105001002', 1)) NOLOCALENP
+		  FROM T_ENTERPRISE T
+		 WHERE T.ENTERPRISE_TYPE = '106001001'
+		   AND T.REMOVE = '0'
+	</select>
+	
+	<!-- 统计物流企业车辆 -->
+	<select id="countCar"  resultType="map">
+		SELECT COUNT(DECODE(T.CROSS_DOMAIN_TYPE, '105001001', T.ID)) LOCALCAR,
+		       COUNT(DECODE(T.CROSS_DOMAIN_TYPE, '105001002', T.ID)) NOLOCALCAR
+		  FROM T_DANGER_VEHICLE T
+		  LEFT JOIN T_ENTERPRISE TE
+		  ON TE.CORPORATE_NO = T.CORPORATE_NO
+		 WHERE T.REMOVE = '0'
+		 AND TE.REMOVE = '0'	
+	</select>
+	
+	<!-- 统计年度运单 -->
+	<select id="countWaybill" resultType="map">
+		SELECT *
+		  FROM (SELECT TMP.*, TE.ENTERPRISE_NAME
+		          FROM (SELECT T.LOGISTICS_ID, COUNT(1) AS TIMES
+		                  FROM T_WAYBILL T
+		                 WHERE T.CHECKSTATUS = '111001004'
+		                   AND TO_CHAR(T.UPDATE_TIME, 'yyyy') = #{year}
+		                   AND T.REMOVE = '0'
+		                 GROUP BY T.LOGISTICS_ID) TMP
+		          JOIN T_ENTERPRISE TE
+		            ON TMP.LOGISTICS_ID = TE.CORPORATE_NO
+		           AND TE.REMOVE = '0'
+		         ORDER BY TIMES DESC)
+		 WHERE ROWNUM &lt;= 8
+	</select>
+	
+	
+	
+	
+  <!-- 车辆在线离线统计（表格） -->
+  <select id="countAllByParams" parameterType="map" resultMap="BaseResultMap">
+    <!-- 统计在线离线车辆 -->
+	WITH T_ONOFF AS
+	 (SELECT TT.CORPORATE_NO,
+	         COUNT(DECODE(TT.ON_OFF_LINE, 'on',  1)) ONS,
+	         COUNT(DECODE(TT.ON_OFF_LINE, 'off', 1)) OFFS
+	    FROM (SELECT TEMP.CORPORATE_NO,
+	                 TEMP.CARRIER_NAME,
+	                 <!-- 判断时间差值（30分钟内：在线） -->
+	                 CASE
+	                   WHEN (CEIL(((TO_DATE(#{curDate}, 'yyyy-mm-dd hh24-mi-ss') -
+	                              TLOC.POINT_TIME)) * 24 * 60) > 0 AND
+	                         CEIL(((TO_DATE(#{curDate}, 'yyyy-mm-dd hh24-mi-ss') -
+	                              TLOC.POINT_TIME)) * 24 * 60) &lt;= 30) THEN
+	                    'on'
+	                   ELSE
+	                    'off'
+	                 END ON_OFF_LINE
+	            <!--查询每个企业下的车辆-->
+	            FROM (SELECT TA.ENTERPRISE_NAME,
+	                         TA.CORPORATE_NO,
+	                         TB.LICENCE_PLATE_NO AS CARRIER_NAME <!--,-->
+	                         <!--(SELECT COUNT(ID)-->
+	                         <!--   FROM T_DANGER_VEHICLE TC-->
+	                         <!--  WHERE TC.CORPORATE_NO = TA.CORPORATE_NO-->
+	                         <!--    AND TC.LICENCE_PLATE_NO IS NOT NULL-->
+	                         <!--    AND TC.REMOVE = '0') CAR_NUM-->
+	                    FROM T_ENTERPRISE TA
+	                    JOIN T_DANGER_VEHICLE TB
+	                      ON TA.CORPORATE_NO = TB.CORPORATE_NO
+	                   WHERE TA.ENTERPRISE_TYPE = '106001001'
+	                     AND TA.REMOVE = '0'
+	                     AND TB.REMOVE = '0') TEMP
+	            LEFT JOIN T_CAR_LOCATION TLOC
+	              ON TEMP.CARRIER_NAME = TLOC.CARRIER_NAME
+	           ORDER BY TEMP.CORPORATE_NO) TT
+	   GROUP BY TT.CORPORATE_NO),
+	   
+	<!--*********************************报警*******************************-->
+	T_MON AS <!-- 本月报警 -->
+	 (SELECT T_DAN.CORPORATE_NO, COUNT(T_ALR.ID) CUR_MONTHA_LARM
+	    FROM T_DANGER_VEHICLE T_DAN
+	    LEFT JOIN T_ALARM_MANAGE T_ALR
+	      ON T_DAN.LICENCE_PLATE_NO = T_ALR.LICENCE_PLATE_NO
+	     AND T_DAN.REMOVE = '0'
+	     AND TO_CHAR(T_ALR.ALARM_DATE, 'yyyy-MM') = #{curMon}
+	   GROUP BY T_DAN.CORPORATE_NO),
+	
+	T_3MON AS <!-- 本季度报警 -->
+	 (SELECT T_DAN.CORPORATE_NO, COUNT(T_ALR.ID) CUR_QUARTER_ALARM
+	    FROM T_DANGER_VEHICLE T_DAN
+	    LEFT JOIN T_ALARM_MANAGE T_ALR
+	      ON T_DAN.LICENCE_PLATE_NO = T_ALR.LICENCE_PLATE_NO
+	     AND T_DAN.REMOVE = '0'
+	     AND TO_CHAR(T_ALR.ALARM_DATE, 'yyyy-mm')
+	     <foreach collection="quarter" index="index" open="IN (" close=")" separator=",">
+	     	#{quarter[${index}]}
+	     </foreach>
+	   GROUP BY T_DAN.CORPORATE_NO),
+	T_YEAR AS <!-- 本年报警 -->
+	 (SELECT T_DAN.CORPORATE_NO, COUNT(T_ALR.ID) CUR_YEAR_ALARM
+	    FROM T_DANGER_VEHICLE T_DAN
+	    LEFT JOIN T_ALARM_MANAGE T_ALR
+	      ON T_DAN.LICENCE_PLATE_NO = T_ALR.LICENCE_PLATE_NO
+	     AND T_DAN.REMOVE = '0'
+	     AND TO_CHAR(T_ALR.ALARM_DATE, 'yyyy') IN (#{curYear})
+	   GROUP BY T_DAN.CORPORATE_NO),
+	
+	<!--*********************************运单*******************************--> 
+	T_WBI_MON AS <!-- 本月运单 -->
+	 (SELECT T_WBI.LOGISTICS_ID CORPORATE_NO, COUNT(T_WBI.ID) CUR_MONTH_WAYBILL
+	    FROM T_WAYBILL T_WBI
+	   WHERE T_WBI.CHECKSTATUS = '111001004'
+	     AND TO_CHAR(T_WBI.UPDATE_TIME, 'yyyy-mm') IN (#{curMon})
+	     AND T_WBI.REMOVE = '0'
+	   GROUP BY T_WBI.LOGISTICS_ID),
+	
+	T_WBI_3MON AS <!-- 本季度运单 -->
+	 (SELECT T_WBI.LOGISTICS_ID CORPORATE_NO,
+	         COUNT(T_WBI.ID) CUR_QUARTER_WAYBILL
+	    FROM T_WAYBILL T_WBI
+	   WHERE T_WBI.CHECKSTATUS = '111001004'
+	     AND TO_CHAR(T_WBI.UPDATE_TIME, 'yyyy-mm')
+	     <foreach collection="quarter" index="index" open="IN (" close=")" separator=",">
+	     	#{quarter[${index}]}
+	     </foreach>
+	     AND T_WBI.REMOVE = '0'
+	   GROUP BY T_WBI.LOGISTICS_ID),
+	
+	T_WBI_YEAR AS <!-- 本年运单 -->
+	 (SELECT T_WBI.LOGISTICS_ID CORPORATE_NO, COUNT(T_WBI.ID) CUR_YEAR_WAYBILL
+	    FROM T_WAYBILL T_WBI
+	   WHERE T_WBI.CHECKSTATUS = '111001004'
+	     AND TO_CHAR(T_WBI.UPDATE_TIME, 'yyyy') IN (#{curYear})
+	     AND T_WBI.REMOVE = '0'
+	   GROUP BY T_WBI.LOGISTICS_ID)
+	
+	<!--*********************************总查询*******************************--> 
+	SELECT T.ID,
+		   T.CORPORATE_NO,
+	       T.ENTERPRISE_NAME,
+	       T.CROSS_DOMAIN_TYPE,
+	       NVL(T_ONOFF.ONS,  0) ONS,
+	       NVL(T_ONOFF.OFFS, 0) OFFS,
+	       NVL(T_ALARM.CUR_MONTHA_LARM,     0) CUR_MONTHA_LARM,
+	       NVL(T_ALARM.CUR_QUARTER_ALARM,   0) CUR_QUARTER_ALARM,
+	       NVL(T_ALARM.CUR_YEAR_ALARM,      0) CUR_YEAR_ALARM,
+	       NVL(T_WAYBI.CUR_MONTH_WAYBILL,   0) CUR_MONTH_WAYBILL,
+	       NVL(T_WAYBI.CUR_QUARTER_WAYBILL, 0) CUR_QUARTER_WAYBILL,
+	       NVL(T_WAYBI.CUR_YEAR_WAYBILL,    0) CUR_YEAR_WAYBILL
+	  FROM T_ENTERPRISE T
+	  LEFT JOIN T_ONOFF
+	    ON T.CORPORATE_NO = T_ONOFF.CORPORATE_NO
+	  LEFT JOIN (SELECT TMP.*, T_MON.CUR_MONTHA_LARM
+                 FROM (SELECT T_YEAR.CORPORATE_NO,
+                              T_YEAR.CUR_YEAR_ALARM,
+                              T_3MON.CUR_QUARTER_ALARM
+                         FROM T_YEAR
+                         LEFT JOIN T_3MON
+                           ON T_YEAR.CORPORATE_NO = T_3MON.CORPORATE_NO) TMP
+                 LEFT JOIN T_MON
+                   ON TMP.CORPORATE_NO = T_MON.CORPORATE_NO) T_ALARM
+	    ON T.CORPORATE_NO = T_ALARM.CORPORATE_NO
+	  LEFT JOIN (SELECT TMP.*, T_WBI_MON.CUR_MONTH_WAYBILL
+                 FROM (SELECT T_WBI_YEAR.CORPORATE_NO,
+                              T_WBI_YEAR.CUR_YEAR_WAYBILL,
+                              T_WBI_3MON.CUR_QUARTER_WAYBILL
+                         FROM T_WBI_YEAR 
+                         LEFT JOIN T_WBI_3MON
+                           ON T_WBI_YEAR.CORPORATE_NO = T_WBI_3MON.CORPORATE_NO) TMP
+                 LEFT JOIN T_WBI_MON
+                   ON TMP.CORPORATE_NO = T_WBI_MON.CORPORATE_NO) T_WAYBI
+	    ON T.CORPORATE_NO = T_WAYBI.CORPORATE_NO
+	 WHERE T.ENTERPRISE_TYPE = '106001001'
+	   AND T.REMOVE = '0'
+<!--      ORDER BY ONS, CUR_YEAR_WAYBILL DESC -->
+  </select>
+  
+  
+  <!-- 查询车辆在线、离线柱状图 -->
+  <select id="countCarCol" parameterType="map" resultType="map">
+	SELECT TE.CORPORATE_NO,
+	       TE.ENTERPRISE_NAME,
+	       COUNT(DECODE(TT.ON_OFF_LINE, 'on', 1)) ONS,
+	       COUNT(DECODE(TT.ON_OFF_LINE, 'off', 1)) OFFS
+	  FROM T_ENTERPRISE TE
+	  LEFT JOIN (SELECT TEMP.CORPORATE_NO,
+	                    TEMP.CARRIER_NAME,
+	                    <!-- 判断时间差值（30分钟内：在线） -->
+	                    CASE
+	                      WHEN (CEIL(((TO_DATE(#{curDate}, 'yyyy-mm-dd hh24-mi-ss') -
+	                                 TLOC.POINT_TIME)) * 24 * 60) > 0 AND
+	                           CEIL(((TO_DATE(#{curDate}, 'yyyy-mm-dd hh24-mi-ss') -
+	                                 TLOC.POINT_TIME)) * 24 * 60) &lt;= 30) THEN
+	                       'on'
+	                      ELSE
+	                       'off'
+	                    END ON_OFF_LINE
+	               <!--查询每个企业下的车辆-->
+	               FROM (SELECT TA.ENTERPRISE_NAME,
+	                            TA.CORPORATE_NO,
+	                            TB.LICENCE_PLATE_NO AS CARRIER_NAME
+	                       FROM T_ENTERPRISE TA
+	                       JOIN T_DANGER_VEHICLE TB
+	                         ON TA.CORPORATE_NO = TB.CORPORATE_NO
+	                      WHERE TA.ENTERPRISE_TYPE = '106001001'
+	                        AND TA.REMOVE = '0'
+	                        AND TB.REMOVE = '0') TEMP
+	               LEFT JOIN T_CAR_LOCATION TLOC
+	                 ON TEMP.CARRIER_NAME = TLOC.CARRIER_NAME
+	              ORDER BY TEMP.CORPORATE_NO) TT
+	    ON TE.CORPORATE_NO = TT.CORPORATE_NO
+	 WHERE TE.ENTERPRISE_TYPE = '106001001'
+	   AND TE.REMOVE = '0'
+	 GROUP BY TE.CORPORATE_NO, TE.ENTERPRISE_NAME
+	 ORDER BY ONS DESC, OFFS DESC
+  </select>
+  
+  
+  
+  <!-- 查询报警数柱状图 -->
+  <select id="countAlrCol" parameterType="map" resultType="map">
+	 SELECT T.ENTERPRISE_NAME, NVL(TMP.CUR_ALARM, 0) CUR_ALARM
+	   FROM T_ENTERPRISE T
+	   LEFT JOIN (SELECT T_DAN.CORPORATE_NO, COUNT(T_ALR.ID) CUR_ALARM
+	                FROM T_DANGER_VEHICLE T_DAN
+	                LEFT JOIN T_ALARM_MANAGE T_ALR
+	                  ON T_DAN.LICENCE_PLATE_NO = T_ALR.LICENCE_PLATE_NO
+	                 AND T_DAN.REMOVE = '0'
+	                 AND T_ALR.REMOVE = '0'
+	                 <choose>
+	                   <when test="startTime != null and endTime != null ">
+	                     AND T_ALR.ALARM_DATE BETWEEN #{startTime} AND #{endTime}
+	                   </when>
+	                   <otherwise>
+                         AND TO_CHAR(T_ALR.ALARM_DATE, 'yyyy') IN (#{curYear})
+	                   </otherwise>
+	                 </choose>
+	               GROUP BY T_DAN.CORPORATE_NO) TMP
+	     ON T.CORPORATE_NO = TMP.CORPORATE_NO
+	  WHERE T.ENTERPRISE_TYPE = '106001001'
+	    AND T.REMOVE = '0'
+	  ORDER BY CUR_ALARM DESC
+  </select>
+  
+  
+  <!-- 查询运单柱状图 -->
+  <select id="countWbiCol" parameterType="map" resultType="map">
+	SELECT T.ENTERPRISE_NAME, NVL(TMP.CUR_WAYBILL, 0) CUR_WAYBILL
+	  FROM T_ENTERPRISE T
+	  LEFT JOIN (SELECT T_WBI.LOGISTICS_ID CORPORATE_NO,
+	                    COUNT(T_WBI.ID) CUR_WAYBILL
+	               FROM T_WAYBILL T_WBI
+	              WHERE T_WBI.CHECKSTATUS = '111001004'
+	                 <choose>
+	                   <when test="startTime != null and endTime != null ">
+	                     AND T_WBI.UPDATE_TIME BETWEEN #{startTime} AND #{endTime}
+	                   </when>
+	                   <otherwise>
+                         AND TO_CHAR(T_WBI.UPDATE_TIME, 'yyyy') IN (#{curYear})
+	                   </otherwise>
+	                 </choose>	              
+	                AND T_WBI.REMOVE = '0'
+	              GROUP BY T_WBI.LOGISTICS_ID) TMP
+	    ON T.CORPORATE_NO = TMP.CORPORATE_NO
+	 WHERE T.ENTERPRISE_TYPE = '106001001'
+	   AND T.REMOVE = '0'
+	 ORDER BY CUR_WAYBILL DESC
+  </select>
+	
+	
+</mapper>

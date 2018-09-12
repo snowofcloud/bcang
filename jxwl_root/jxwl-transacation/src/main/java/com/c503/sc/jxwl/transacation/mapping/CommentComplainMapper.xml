@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.c503.sc.jxwl.transacation.dao.ICommentComplainDao" >
+  <resultMap id="BaseResultMap" type="com.c503.sc.jxwl.transacation.bean.CommentComplain" >
+    <id     column="ID"              property="id"             jdbcType="VARCHAR" />
+    <result column="ORDER_ID"        property="orderId"        jdbcType="VARCHAR" />
+    <result column="CONTENT"         property="content"        jdbcType="VARCHAR" />
+    <result column="TYPE"            property="type"           jdbcType="VARCHAR" />
+    <result column="SCORE"           property="score"          jdbcType="DECIMAL" />
+    <result column="OTHER_SIDE_NO"   property="otherSideNo"    jdbcType="VARCHAR" />
+    <result column="CORPORATE_NO"    property="corporateNo"    jdbcType="VARCHAR" />
+    <result column="CREATE_BY"       property="createBy"       jdbcType="VARCHAR" />
+    <result column="CREATE_TIME"     property="createTime"     jdbcType="TIMESTAMP" />
+    <result column="UPDATE_BY"       property="updateBy"       jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME"     property="updateTime"     jdbcType="TIMESTAMP" />
+    <result column="REMOVE"          property="remove"         jdbcType="CHAR" />
+
+	<result column="ENTERPRISE_NAME" property="enterpriseName" jdbcType="VARCHAR" />
+	<result column="ORDER_NO"        property="orderNo"        jdbcType="VARCHAR" />
+  </resultMap>
+  
+  
+  
+  <sql id="Base_Column_List" >
+    ID, ORDER_ID, CONTENT, TYPE, SCORE, OTHER_SIDE_NO, CORPORATE_NO, 
+    CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, REMOVE
+  </sql>
+  
+  <!-- 查询评价、投诉 (给他人的)-->
+  <select id="findByParams" resultMap="BaseResultMap" parameterType="map" >
+	SELECT TA.ID,
+	       TA.ORDER_ID,
+	       TA.CONTENT,
+	       TA.TYPE,
+	       TA.SCORE,
+	       TA.OTHER_SIDE_NO,
+	       TA.CORPORATE_NO,
+	       TA.UPDATE_TIME,
+	       TB.ORDER_NO,
+	       TC.REMOVE,
+	       TC.ENTERPRISE_NAME
+	  FROM T_COMMENT_COMPLAINT TA
+	  JOIN T_SOURCE_GOODS TB
+	    ON TA.ORDER_ID = TB.ID
+	  JOIN T_ENTERPRISE TC ON TA.OTHER_SIDE_NO = TC.CORPORATE_NO
+	 WHERE TA.CORPORATE_NO = #{corporateNo}
+	   AND TA.TYPE   = #{type}  <!-- 0：代表评价、1：代表投诉 -->
+	   AND TB.REMOVE = '0'
+	   <if test="orderNo != null and orderNo != ''">
+	   AND TB.ORDER_NO LIKE '%' || #{orderNo, jdbcType=VARCHAR} || '%'
+	   </if>
+	   <if test="startTime != null">
+	   AND TA.UPDATE_TIME <![CDATA[>=]]> #{startTime}
+	   </if>
+	   <if test="endTime != null">
+	   AND TA.UPDATE_TIME <![CDATA[<=]]> #{endTime}
+	   </if>
+	 ORDER BY TA.UPDATE_TIME DESC
+  </select>
+  
+  
+  <!-- 查询评价、投诉 (来自企业的)-->
+  <select id="findOtherByParams" resultMap="BaseResultMap" parameterType="map" >
+	SELECT TA.ID,
+	       TA.ORDER_ID,
+	       TA.CONTENT,
+	       TA.TYPE,
+	       TA.SCORE,
+	       TA.OTHER_SIDE_NO,
+	       TA.CORPORATE_NO,
+	       TA.UPDATE_TIME,
+	       TB.ORDER_NO,
+	       TC.REMOVE,
+	       TC.ENTERPRISE_NAME
+	  FROM T_COMMENT_COMPLAINT TA
+	  LEFT JOIN T_SOURCE_GOODS TB
+	    ON TA.ORDER_ID = TB.ID
+	  LEFT JOIN T_ENTERPRISE TC ON TA.CORPORATE_NO = TC.CORPORATE_NO
+	 WHERE TA.OTHER_SIDE_NO = #{corporateNo, jdbcType=VARCHAR} 
+	   AND TA.TYPE   = #{type}  <!-- 0：代表评价、1：代表投诉 -->
+	   AND TB.REMOVE = '0'
+	   AND TA.REMOVE = '0'
+	   <if test="orderNo != null and orderNo != ''">
+	   AND TB.ORDER_NO LIKE '%' || #{orderNo, jdbcType=VARCHAR} || '%'
+	   </if>
+	   <if test="startTime != null">
+	   AND TA.UPDATE_TIME <![CDATA[>=]]> #{startTime}
+	   </if>
+	   <if test="endTime != null">
+	   AND TA.UPDATE_TIME <![CDATA[<=]]> #{endTime}
+	   </if>
+	 ORDER BY TA.UPDATE_TIME DESC
+  </select>
+  
+  
+  <select id="findById" parameterType="String" resultMap="BaseResultMap">
+  	SELECT <include refid="Base_Column_List"/>
+  	  FROM T_COMMENT_COMPLAINT
+  	 WHERE ID = #{id}
+  </select>
+  
+  
+  <insert id="save" parameterType="com.c503.sc.jxwl.transacation.bean.CommentComplain" >
+    INSERT INTO T_COMMENT_COMPLAINT (ID, ORDER_ID, CONTENT, 
+      TYPE, SCORE, OTHER_SIDE_NO, 
+      CORPORATE_NO, CREATE_BY, CREATE_TIME, 
+      UPDATE_BY, UPDATE_TIME, REMOVE
+      )
+    VALUES (#{id,jdbcType=VARCHAR},    #{orderId,jdbcType=VARCHAR},      #{content,jdbcType=VARCHAR}, 
+      #{type,jdbcType=VARCHAR},        #{score,jdbcType=DECIMAL},        #{otherSideNo,jdbcType=VARCHAR}, 
+      #{corporateNo,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR},     #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=VARCHAR},    #{updateTime,jdbcType=TIMESTAMP}, '0'
+      )
+  </insert>
+  
+  
+  
+  <update id="update" parameterType="com.c503.sc.jxwl.transacation.bean.CommentComplain" >
+    UPDATE T_COMMENT_COMPLAINT
+    SET CONTENT       = #{content,jdbcType=VARCHAR},
+      SCORE           = #{score,jdbcType=DECIMAL},
+      UPDATE_BY       = #{updateBy,jdbcType=VARCHAR},
+      UPDATE_TIME     = #{updateTime,jdbcType=TIMESTAMP}
+    WHERE ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+  
+  <!-- 查询企业平均评分 -->
+  <select id="findAvgScore" parameterType="String" resultType="java.math.BigDecimal">
+	SELECT  NVL(AVG(TA.SCORE), 0) AVG_SCORE
+    FROM T_COMMENT_COMPLAINT TA
+    LEFT JOIN T_SOURCE_GOODS TB
+      ON TA.ORDER_ID = TB.ID
+    LEFT JOIN T_ENTERPRISE TC ON TA.CORPORATE_NO = TC.CORPORATE_NO
+   WHERE TA.OTHER_SIDE_NO = #{corporateNo, jdbcType=VARCHAR}
+     AND TA.TYPE = '0' 
+     AND TA.REMOVE = '0'
+     AND TB.REMOVE = '0'
+  </select>
+  
+  
+  
+</mapper>

@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.c503.sc.jxwl.transacation.dao.ILeaveMessageDao" >
+
+  <resultMap id="BaseResultMap" type="com.c503.sc.jxwl.transacation.bean.LeaveMessageEntity" >
+    <id     column="ID" 					property="id" 		jdbcType="VARCHAR" />
+    <result column="LOGISTICS_ENTERPRISE" 	property="logisticsEnterprise" 	jdbcType="VARCHAR" />
+    <result column="WAYBILLL_NO" 		 property="waybilllNo" 				jdbcType="VARCHAR" />
+    <result column="GOODS_SOURCE_ID" 	 property="goodsSourceId" 			jdbcType="VARCHAR" />
+    <result column="MESSAGE_CONTENT" 	 property="messageContent" 		    jdbcType="VARCHAR" />
+    <result column="CHEMICAL_ENTERPRISE" property="chemicalEnterprise" 	    jdbcType="VARCHAR" />
+    <result column="CREATED_TIME" 		 property="createdTime" 			jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY"           property="createBy"                jdbcType="VARCHAR" />
+	<result column="CREATE_TIME"         property="createTime"              jdbcType="TIMESTAMP" />
+	<result column="UPDATE_BY"           property="updateBy"                jdbcType="VARCHAR" />
+	<result column="UPDATE_TIME"         property="updateTime"              jdbcType="TIMESTAMP" />
+	<result column="REMOVE"              property="remove"                  jdbcType="CHAR" />
+	<result column="SRC_GOODS_REMOVE"    property="srcGoodsRemove"          jdbcType="CHAR" />
+	<result column="TRADE_OBJ"           property="tradeObject"             jdbcType="VARCHAR" />  <!-- property="交易对象" -->
+	<result column="SENDER_COMPANY"      property="senderCompany"           jdbcType="VARCHAR" />  <!-- property="发货单位" -->
+    <result column="RECEIVER_COMPANY"    property="receiverCompany"         jdbcType="VARCHAR" />  <!-- property="收货单位" -->
+    <result column="TRADE_STATUS"        property="tradeStatus"             jdbcType="VARCHAR" />  <!-- property="交易状态" -->
+  </resultMap>
+  
+  
+  <resultMap id="BaseResultMap3" type="com.c503.sc.jxwl.transacation.bean.LeaveMessageEntity">
+  	<id     column="ID" 					property="id" 		            jdbcType="VARCHAR" />
+  	<result column="GOODS_SOURCE_ID" 		property="goodsSourceId" 		jdbcType="VARCHAR" />
+  	<result column="CREATED_TIME" 			property="createdTime" 			jdbcType="TIMESTAMP" />
+  	<result column="MESSAGE_CONTENT" 		property="messageContent" 		jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID, LOGISTICS_ENTERPRISE, WAYBILLL_NO, MESSAGE_CONTENT, CHEMICAL_ENTERPRISE, CREATED_TIME
+  </sql>
+  
+
+    <!-- 分页查询留言  查询参数（起始时间-终止时间） -->
+	<select id="findByParams" parameterType="java.util.Map" resultMap="BaseResultMap">
+		SELECT TA.ID,
+			TD.WAYBILLL_NO,
+			TD.ID AS GOODS_SOURCE_ID,
+			TD.TRADE_STATUS AS TRADE_STATUS,
+			TD.REMOVE AS SRC_GOODS_REMOVE,
+			TA.MESSAGE_CONTENT,
+			TA.CREATED_TIME,
+       		TB.ENTERPRISE_NAME AS LOGISTICS_ENTERPRISE,
+       		TC.ENTERPRISE_NAME AS CHEMICAL_ENTERPRISE
+		FROM T_LEAVE_MESSAGE TA
+		LEFT JOIN T_ENTERPRISE TB
+		    ON TA.LOGISTICS_ENTERPRISE = TB.CORPORATE_NO
+		LEFT JOIN T_ENTERPRISE TC
+		    ON TA.CHEMICAL_ENTERPRISE = TC.CORPORATE_NO
+		LEFT JOIN T_SOURCE_GOODS TD
+		    ON TA.GOODS_NO = TD.ID
+		<where>
+		    <if test="startTime != null">
+		       AND CREATED_TIME &gt;= #{startTime}
+		     </if>
+		     <if test="endTime != null">
+		       AND CREATED_TIME &lt; #{endTime}
+		     </if>
+			   AND ta.remove='0'
+			 <if test="corporateNo != null">
+			   AND LOGISTICS_ENTERPRISE=#{corporateNo}
+		     </if>
+		</where>
+		ORDER BY ta.UPDATE_TIME DESC
+	</select>
+	
+	<!-- 按id值查询留言   -->
+	<select id="findById" parameterType="map" resultMap="BaseResultMap3">
+		SELECT TA.ID,
+		       TA.MESSAGE_CONTENT,
+		       TA.CREATED_TIME,
+		       TD.ID AS GOODS_SOURCE_ID
+		  FROM T_LEAVE_MESSAGE TA
+		  LEFT JOIN T_SOURCE_GOODS TD
+		    ON TA.GOODS_NO = TD.ID
+	   where ta.ID = #{id,jdbcType=VARCHAR}
+	   and ta.remove='0'
+    </select>
+  
+
+  <!--保存留言  -->
+  <insert id="save" parameterType="com.c503.sc.jxwl.transacation.bean.LeaveMessageEntity" >
+    insert into T_LEAVE_MESSAGE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="logisticsEnterprise != null" >
+        LOGISTICS_ENTERPRISE,
+      </if>
+      <if test="goodsNo != null" >
+        GOODS_NO,
+      </if>
+      <if test="messageContent != null" >
+        MESSAGE_CONTENT,
+      </if>
+      <if test="chemicalEnterprise != null" >
+        CHEMICAL_ENTERPRISE,
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="updateBy != null" >
+        UPDATE_BY,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="remove != null" >
+        REMOVE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="logisticsEnterprise != null" >
+        #{logisticsEnterprise,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsNo != null" >
+        #{goodsNo,jdbcType=VARCHAR},
+      </if>
+      <if test="messageContent != null" >
+        #{messageContent,jdbcType=VARCHAR},
+      </if>
+      <if test="chemicalEnterprise != null" >
+        #{chemicalEnterprise,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remove != null" >
+        #{remove,jdbcType=CHAR}
+      </if>
+      
+    </trim>
+  </insert>
+  <!--编辑留言  -->
+  <update id="update" parameterType="com.c503.sc.jxwl.transacation.bean.LeaveMessageEntity" >
+     update T_LEAVE_MESSAGE
+    <set >
+      <if test="logisticsEnterprise != null" >
+        LOGISTICS_ENTERPRISE = #{logisticsEnterprise,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsNo != null" >
+        GOODS_NO = #{goodsNo,jdbcType=VARCHAR},
+      </if>
+      <if test="messageContent != null" >
+        MESSAGE_CONTENT = #{messageContent,jdbcType=VARCHAR},
+      </if>
+      <if test="chemicalEnterprise != null" >
+        CHEMICAL_ENTERPRISE = #{chemicalEnterprise,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remove != null" >
+        REMOVE = #{remove,jdbcType=CHAR}
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <!--删除留言  -->
+  <update id="delete" parameterType="java.util.Map">
+    <if test="id != null">
+        UPDATE T_LEAVE_MESSAGE
+	     SET <!-- REMOVE = '1', -->
+	     	REMOVE = #{remove,jdbcType=VARCHAR},
+        	UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+        	UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
+    </if>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!--按货单号查询货单所属化工企业  -->
+  <select id="findChemicalEnterpriseByGoodNo" parameterType="java.lang.String" resultType="java.lang.String">
+  	select HG_CORPORATE_NO
+  	from T_SOURCE_GOODS
+  	WHERE ID = #{goodsNo,jdbcType=VARCHAR}
+  </select>
+  
+  <!--查询货源状态  -->
+  <select id="checkGoodsStatus" parameterType="java.lang.String" resultType="java.lang.String">
+  	select TRADE_STATUS
+  	from T_SOURCE_GOODS
+  	WHERE ID = #{goodsNo,jdbcType=VARCHAR}
+  	AND REMOVE = '0'
+  </select>
+  
+  <!--查询留言是否已存在  -->
+  <select id="findLeaveMessageExist" parameterType="java.lang.String" resultType="int">
+  	select count(ID)
+  	from T_LEAVE_MESSAGE
+  	WHERE LOGISTICS_ENTERPRISE = #{logisticsEnterprise,jdbcType=VARCHAR}
+  	AND GOODS_NO = #{goodsNo,jdbcType=VARCHAR}
+  	AND REMOVE = '0'
+  </select>
+  
+  
+  <!--查询留言remove字段值  -->
+  <select id="findLeaveMessageRemove" parameterType="java.lang.String" resultType="java.lang.String">
+  	select REMOVE
+  	from T_LEAVE_MESSAGE
+  	WHERE ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+</mapper>
+

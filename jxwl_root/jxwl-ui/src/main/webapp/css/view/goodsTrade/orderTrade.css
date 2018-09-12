@@ -1,0 +1,110 @@
+@charset "UTF-8";
+
+.waybilllNoo {
+	margin-top: 7px;
+}
+
+#orderDetailPanel .row {
+	margin-bottom: 0px;
+}
+
+.unit {
+	line-height: 34px;
+}
+
+/* #talkMsgs {
+	height: 125px;
+	overflow-x: hidden;
+	margin-right: 10px;
+} */
+#srcGoodsForm .panel-body {
+	  max-height: 760px;
+      overflow: hidden;
+}
+
+hr {
+	margin-top: 0px;
+	margin-bottom: 7px;
+	border: 0;
+	border-top: 1px solid #24324E;
+	margin-left: 81px;
+	margin-right: 100px;
+}
+
+/* 滚动条宽度 */
+#srcGoodsForm .panel-body::-webkit-scrollbar {
+	width: 10px;
+}
+/* 滚动条拖动块 */
+#srcGoodsForm .panel-body::-webkit-scrollbar-thumb {
+	background-color: white;
+	border-radius: 3px;
+}
+/* 滚动条*/
+#srcGoodsForm .panel-body::-webkit-scrollbar {
+	margin-right: 50px;
+	background-color: #B4B4B4;
+	border-radius: 3px;
+}
+
+/* 新增多个货物时表格操作项样式 */
+#goodsTabDiv .jqgrid-handle-text {
+	margin-bottom: 0;
+	font-size: 15px;
+	color: rgb(144, 187, 45);
+	text-decoration: underline;
+	cursor: pointer;
+	width: auto;
+	margin-left: 8px;
+}
+
+/* 当前选中的企业的所有车辆信息表格操作项样式 */
+#carsTableDiv .jqgrid-handle-text {
+	margin-bottom: 0;
+	font-size: 15px;
+	color: rgb(144, 187, 45);
+	text-decoration: underline;
+	cursor: pointer;
+	width: auto;
+	margin-left: 20px;
+}
+
+/* 下拉框禁用样式 */
+.form-control[disabled],.form-control[readonly],fieldset[disabled] 
+	.form-control {
+	background-color: #63666D;
+	opacity: 1;
+}
+
+/* 评分距离 */
+.comment-margin {
+	margin-top: 12px;
+}
+
+/* 评分清除按钮 */
+#comment_form div.clear-rating {
+	float: right;
+	margin-top: 13px;
+	margin-right: 65px;
+}
+
+/* 来自企业评价的信息 */
+#comment_enp_name,#complain_enp_name {
+	text-align: left;
+	margin-left: 37px;
+	font-weight: bolder;
+}
+
+/* 详情：显示评分 */
+#comment_view_score {
+	margin-top: -6px;
+}
+/* 交易大厅 */
+.panel-contents {
+	max-height:500px;
+	overflow-y:scroll;
+}
+.panel .panel-body1 {
+	background-color: #0F4576;
+}
+/* 交易大厅 end*/

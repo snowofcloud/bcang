@@ -1,0 +1,30 @@
+{
+	"code": 1,
+	"data": null,
+	"msg": "查询成功",
+	"num": 10,
+	"page": 1,
+	"records": 3,
+	"rows": [{
+				"licencePlateNo": "黑A12345",
+				"vehicleType": "驾驶员A",
+				"vehicleOutput": "13020106987421",
+				"usableLimit": "2016101016987456",
+				"alarmDate": "2016-11-1",
+				"alarmType": "103001003",
+				"alarmDetails": "偏离路线",
+				"alarmDealStatus": "103002002"
+			},
+			{
+				"licencePlateNo": "黑A12345",
+				"vehicleType": "驾驶员B",
+				"vehicleOutput": "13020106987304",
+				"usableLimit": "2016091016987456",
+				"alarmDate": "2016-11-1",
+				"alarmType": "103001005",
+				"alarmDetails": "超速",
+				"alarmDealStatus": "103002002"
+			}
+		],
+	"total": 3
+}

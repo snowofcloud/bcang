@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>登录页面</title>
+    <link rel="stylesheet" href="js/lib/bootstrap-3.3.4/css/bootstrap.css"/>
+    <link rel="stylesheet" href="css/login.css"/>
+    <link rel="shortcut icon" href="/JXWL/images/logo-ico.ico" type="image/x-icon">
+</head>
+<body>
+<div class="login-container">
+	<div class="hidden-xs">
+	    <img src="images/top-logo.png" alt="logo"/>
+	    <div class="login-title">
+	        <span class="login-top-title">智慧物流运管分系统</span>
+	        <span class="login-sub-title">嘉兴港区智慧化工园区</span> 
+	        <span class="login-sub-sub-title">Jiaxing  Harbour District Wisdom Logistics Traffic Control Subsystem</span>
+	    </div>
+    </div>
+    <img src="images/appImages/logo.png" alt="登录logo" class="visible-xs login-logoimg" title="登录logo"/>
+    <div class="login-box">
+        <div id="login-form">
+            <div class="row">
+                <div class="col-xs-6 col-xs-offset-3">
+                    <div class="input-group">
+                    	<div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>
+                        <input type="text" class="form-control" placeholder="用户名" name="userName" autofocus>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6 col-xs-offset-3">
+                    <div class="input-group">
+	                    <div class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></div>
+                        <input type="password" class="form-control" placeholder="密码" name="userPass">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-2 col-xs-offset-3">
+                    <img onclick="javascript:doLogin.refresh(this);" id="codeImg" width="103" height="34" title="点击刷新验证" alt="验证码">
+                </div>
+                <div class="col-xs-4">
+                    <input type="text" class="form-control" placeholder="请输入验证码" name="validCode" maxlength="4"/>
+                </div>
+            </div>
+            <div class="row info-msg">
+                <div class="col-xs-6 col-xs-offset-3" id="input-error">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6 col-xs-offset-3">
+                    <button type="submit" onclick="doLogin.submit()" class="btn btn-success btn-block" id="submitBtn">登录</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6 col-xs-offset-3 copyright">
+                    <span>copyright © 航天恒星233222 CASC 2016</span>
+                    <span class="line line-left"></span>
+                    <span class="line line-right"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="js/lib/jquery/jquery-1.11.2.min.js"></script>
+<script src="js/login.js"></script>
+</body>
+</html>

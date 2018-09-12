@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>园区卡口记录</title>
+<link rel="stylesheet" href="../../js/lib/bootstrap-3.3.4/css/bootstrap.css" />
+<link rel="stylesheet" href="../../js/lib/jquery/css/jquery-ui.css" />
+<link rel="stylesheet" href="../../js/lib/jqGrid/ui.jqgrid.css" />
+<link rel="stylesheet" href="../../css/module/module.css" />
+<link rel="stylesheet" href="../../js/lib/uploadFile/Huploadify.css" />
+<link rel="stylesheet" href="../../css/view/goodsTrade/bayonetRecoder.css" />
+<!-- 媒体查询，只能放在最后 -->
+<link rel="stylesheet" href="../../css/view/media.css"/>
+</head>
+<body>
+	<div class="right-content">
+		<div role="tabpanel" class="tabMinWidth">
+			<!-- Nav tabs -->
+			<ul class="nav nav-tabs" role="tablist" id="wayBill-tabs">
+				<li role="presentation" class="active" data-module="bayonetRecord">
+					<a href="#wayBillMag" aria-controls="wayBillMag" role="tab" 
+						data-toggle="tab" data-module-name="wayBillMag">园区卡口记录</a>
+				</li>
+			</ul>
+			
+			<!-- Tab panes -->
+			<div class="tab-content">
+				<!--运单管理-->
+				<div role="tabpanel" class="tab-pane active" id="bayonetRecord" data-module="bayonetRecord">
+					<!--搜索栏区域-->
+					<div class="searchBox">
+					<form id="serch">
+							<div class="line-searchBox" id="">
+								<div class="item-searchBox col-xs-3">
+									<label class="horizontal-span">审核状态</label> 
+									<select name="checkstatus" class="form-control"  id="bayonetRecord-verify">
+									</select>
+								</div>
+								<div class="item-searchBox col-xs-3">
+									<label class="horizontal-span">车牌号</label> 
+									<input type="text" class="form-control" id="bayonetRecord-carno" maxlength="32">
+								</div>
+								<div class="item-searchBox col-xs-3">
+									<label class="horizontal-span">运单号</label> 
+									<input type="text" class="form-control" id="bayonetRecord-checkno" maxlength="32">
+								</div>
+								<div class="item-searchBox col-xs-3">
+									<button type="submit" class="btn btn-lemon" id="bayonetRecord-searchBtn"
+										data-func="bayonetRecord-findByPage">
+										<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;查询
+									</button>
+									&nbsp;&nbsp;
+								</div>
+							</div>
+						</form>
+					</div>
+					<!--表格展示-->
+					<table id="bayonetRecoderTable"></table>
+					<div id="bayonetRecoderPage"></div>
+				</div>
+
+				<!--运单信息新增弹框-->
+				<div class="panel panel-gray-sl" id="bayonetRecoder-panel">
+					<div class="panel-heading">
+						<span class="panel-title">运单详情</span>
+					</div>
+					<form id="bayonetRecoder-form">
+						<div class="panel-body">
+							<div class="panel-body-content">
+								<div class="subtitle">
+									<div class="subtitleIco"></div>
+									<span class="subSpan">运单信息</span>  
+									<div class="subClear" style=""></div>
+								</div>
+								<div class="row ">
+									<div class="col-xs-6 oneSpan">
+										<div class="col-xs-4">
+											<label class="">托运单号</label>
+										</div>
+										<div class="col-xs-7">
+											<span  id="wayBillcheckno"></span> 
+											<span class="look-formPanel hidden" id="wayBillchecknoSpan" name="checkno"></span>
+										</div>
+									</div>
+									<div class="col-xs-5">
+										<div class="col-xs-3">
+											<label class="">订单号</label>
+										</div>
+										<div class="col-xs-9">
+											<input type="hidden" class="form-control saveInput" id="orderNo" name="orderNo">
+											
+											<span class="look-formPanel hidden" id="orderNo" name="orderNo"></span>
+										</div>
+								</div>
+								</div>
+								
+								
+								<div class="row threeSpan">
+								  	<div class="col-xs-6">
+										<div class="col-xs-4">
+											<label class="" for="wayBillconsumerno">客户单号</label>
+										</div>
+										<div class="col-xs-7">
+												   <span class="look-formPanel hidden" name="consumerno"></span> 
+										</div>
+									</div>
+									<div class="col-xs-3 fourMargF">
+										<div class="col-xs-4">
+											<label  class="must mustFlag" for="wayBillstartpoint">起点</label>
+										</div>
+										<div class="col-xs-7">
+											<span class="look-formPanel hidden" name="startpoint"></span>	   
+										</div>
+									</div>
+									<div class="col-xs-3 fourMargS">
+										<div class="col-xs-4">
+											<label  class="must mustFlag" for="wayBillendpoint">到点</label>
+										</div>
+										<div class="col-xs-7">
+										    <span class="look-formPanel hidden" name="endpoint"></span>
+										</div>
+									</div>
+								</div>
+								
+								<div class="row threeSpan">
+									<div class="col-xs-6">
+											<div class="col-xs-4">
+												<label class="must mustFlag">发货单位</label>
+											</div>
+											<div class="col-xs-7">
+										    	<span class="look-formPanel hidden" name="deliveryunit"></span>
+											</div>
+									</div>
+									<div class="col-xs-3 fourMargF" >
+										<div class="col-xs-4">
+											<label for="wayBilldeliveryunitperson">联系人</label>
+										</div>
+										<div class="col-xs-7">
+ 											<span class="look-formPanel hidden" name="deliveryunitperson"></span>
+										</div>
+									</div>
+									<div class="col-xs-3 fourMargS">
+										<div class="col-xs-4" for="wayBilldeliveryunitphone">
+											<label class="">联系电话</label>
+										</div>
+										<div class="col-xs-7">
+											 <span class="look-formPanel hidden" name="deliveryunitphone"></span>	
+										</div>
+									</div>
+								</div>
+								
+								<div class="row twoSpan">
+									<div class="col-xs-9">
+										<div class="col-xs-4">
+											<label>发货地址</label>
+										</div>
+										<div class="col-xs-7">
+										    <span class="look-formPanel hidden" name="deliveryunitaddress"></span>  
+										</div>
+									</div>
+									<div class="col-xs-3">
+										<div class="col-xs-4">
+											<label class="must mustFlag" for="deliveryunittime">装货时间</label>
+										</div>
+										<div class="col-xs-7">
+									    	<span class="look-formPanel hidden " name="deliveryunittime"></span>
+										</div>
+									</div>
+								</div>
+								<div class="row threeSpan">
+									<div class="col-xs-6">
+										<div class="col-xs-4">
+											<label class="must mustFlag" for="wayBillachieveuint">收货单位</label>
+										</div>
+										<div class="col-xs-7">
+											 <span class="look-formPanel hidden " name="achieveuint"></span>   
+										</div>
+									</div>
+									<div class="col-xs-3">
+										<div class="col-xs-4">
+											<label class="" for="wayBillachievepersons">联系人</label>
+										</div>
+										<div class="col-xs-7">
+											 <span class="look-formPanel hidden" name="achieveperson"></span>	   
+										</div>
+									</div>
+									<div class="col-xs-3">
+										<div class="col-xs-4">
+											<label for="wayBillachievephone">联系电话</label>
+										</div>
+										<div class="col-xs-7">
+										    <span class="look-formPanel hidden" name="achievephone"></span>
+										</div>
+									</div>
+								</div>
+
+								<div class="row twoSpan">
+									<div class="col-xs-9">
+										<div class="col-xs-4">
+											<label for="wayBillachieveaddress">收货地址</label>
+										</div>
+										<div class="col-xs-7">
+											 <span class="look-formPanel hidden" name="achieveaddress"></span>   
+										</div>
+									</div>
+									<div class="col-xs-3">
+										<div class="col-xs-4">
+											<label class="must mustFlag" for="achievetime">卸货时间</label>
+										</div>
+										<div class="col-xs-7">
+											 <span class="look-formPanel hidden" name="achievetime"></span>	   
+										</div>
+									</div>
+								</div>
+
+								<div class="subtitle">
+									<div class="subtitleIco"></div>
+									<span class="subSpan">企业相关信息</span>
+									<div class="subClear" style=""></div>
+								</div>
+								<div id="wayBillEnterInfor">
+									<div class="row threeSpan">
+										<div class="col-xs-6">
+											<div class="col-xs-4">
+												<label class="must mustFlag">物流企业名称</label>
+											</div>
+											<div class="col-xs-7">
+												<span class="look-formPanel hidden" name="logisticsId"></span>
+											</div>
+										</div>
+										<div class="col-xs-3">
+											<div class="col-xs-4">
+												<label class="must mustFlag firstlabel">车牌号</label>
+											</div>
+											<div class="col-xs-6">
+												<span class="look-formPanel hidden firstspan" name="carno"></span>
+											</div>
+										</div>
+										<div class="col-xs-3">
+											<div class="col-xs-4">
+												<label class="secondlabel">挂车车牌</label>
+											</div>
+											<div class="col-xs-7"> 
+												<span class="look-formPanel hidden secondspan" name="handcarno"></span>
+											</div>
+										</div>
+									</div>
+									
+									<div class="row fourSpan">
+										<div class="col-xs-3">
+											<div class="col-xs-4">
+												<label class="must mustFlag">驾驶员</label>
+											</div>
+											<div class="col-xs-7">
+												 <span class="look-formPanel hidden" name="driver"></span>
+											</div>
+										</div>
+										<div id="wayBillDriverChange">
+											<div class="col-xs-3">
+												<div class="col-xs-4 fourLabel">
+													<label class="must mustFlag" for="wayBillDriverphone">联系电话</label>
+												</div>
+												<div class="col-xs-7">
+													<span class="look-formPanel hidden hidden" name="driverphone"></span>
+												</div>
+											</div>
+											<div class="col-xs-3">
+												<div class="col-xs-4 fourLabel">
+													<label class="must mustFlag">身份证号</label>
+												</div>
+												<div class="col-xs-7">
+													<span class="look-formPanel hidden hidden" name="driverid"></span>
+												</div>
+											</div>
+											<div class="col-xs-3">
+												<div class="col-xs-4 fourLabel">
+													<label class="must mustFlag">从业证号</label>
+												</div>
+												<div class="col-xs-7">
+													<span class="look-formPanel hidden" name="driverno"></span>
+												</div>
+											</div>
+										</div>
+									</div>
+	
+									<div class="row fourSpan">
+										<div class="col-xs-3">
+											<div class="col-xs-4">
+												<label class="must mustFlag">押运员</label>
+											</div>
+											<div class="col-xs-7">
+												<span class="look-formPanel hidden" name="escort"></span>
+											</div>
+										</div>
+										<div id="wayBillEscortChange">
+											<div class="col-xs-3">
+											<div class="col-xs-4 fourLabel">
+												<label class="must mustFlag" for="wayBillEscortphone">联系电话</label>
+											</div>
+											<div class="col-xs-7">
+												<span class="look-formPanel hidden" name="escortphone"></span>
+											</div>
+										</div>
+										<div class="col-xs-3">
+											<div class="col-xs-4 fourLabel">
+												<label class="must mustFlag">身份证号</label>
+											</div>
+											<div class="col-xs-7">
+												<span class="look-formPanel hidden" name="escortid"></span>
+											</div>
+										</div>
+										<div class="col-xs-3">
+											<div class="col-xs-4 fourLabel">
+												<label class="must mustFlag">从业证号</label>
+											</div>
+											<div class="col-xs-7">
+												<span class="look-formPanel hidden" name="escortno"></span>
+											</div>
+										</div>
+										</div>
+									</div>
+								</div>
+								<div class="row" style="margin-left: -17px;">
+									<div class="col-xs-2">
+										<label class="" for="wayBillremark">备注</label>
+									</div>
+									<div class="col-xs-9">
+										<span class="look-formPanel hidden" name="remark"></span>
+									</div>
+								</div>
+								
+								<div class="subtitle">
+									<div class="subtitleIco"></div>
+									<span class="subSpan">货物信息</span>  
+									<div class="subClear" style=""></div>
+								</div>
+								<div id="goodsTablePlace" style="width:1000px">
+									<div>
+										<table id="wayBillGoodsTable"></table>
+										<div id="wayBillGoodsTablePage"></div>
+									</div>
+									
+								</div>
+								
+								<div id="bayverify">
+								<div class="subtitle">
+									<div class="subtitleIco"></div>
+									<span class="subSpan">卡口审核</span>
+									<div class="subClear" style=""></div>
+								</div>
+									<div class="row fourSpan">
+										<div class="col-xs-3">
+											<div class="col-xs-4">
+												<label class="must mustFlag">审核状态</label>
+											</div>
+											<div class="col-xs-7">
+												<select class="form-control saveInput" name="verifystatus" id="verifystatus" required>
+												</select>
+												<span class="look-formPanel hidden" name="verifystatus"></span>
+											</div>
+										</div>
+										<div class="col-xs-3">
+											<div class="col-xs-4">
+												<label class="must mustFlag">卡口号</label>
+											</div>
+											<div class="col-xs-7">
+												<select class="form-control saveInput" name="bayonetport"  required>
+												</select>
+												<span class="look-formPanel hidden" id="bayonetport" name="bayonetport"></span>
+											</div>
+										</div>
+										<div class="col-xs-3">
+											<div class="col-xs-4">
+												<label class="must mustFlag firstlabel">操作人</label>
+											</div>
+											<div class="col-xs-6">
+												<span class="look-formPanel hidden firstspan" name="verifyperson"></span>
+											</div>
+										</div>
+										<div class="col-xs-3">
+											<div class="col-xs-4">
+												<label class="secondlabel">操作时间</label>
+											</div>
+											<div class="col-xs-7"> 
+												<span class="look-formPanel hidden secondspan" name="verifytime"></span>
+											</div>
+										</div>
+									</div>
+							</div>
+								
+							</div>
+							<div class="panel-footer">
+								<button type="submit" class="btn btn-cyan" id="wayBill-submmitBtn">保存</button>
+								<button type="reset" class="btn btn-border cancel" id="wayBill-cancelBtn">取消</button>
+							</div>
+						</div>
+					</form>
+				</div>
+	
+			</div>
+		</div>
+	</div>
+	<!--js引用-->
+	<script src="../../js/loadScript.js"></script>
+	<script src="../../js/view/bayonet/bayonetRecoder.js"></script>
+</body>
+</html>

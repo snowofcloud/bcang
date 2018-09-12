@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>运单管理</title>
+<link rel="stylesheet" href="../../js/lib/bootstrap-3.3.4/css/bootstrap.css" />
+<link rel="stylesheet" href="../../js/lib/jquery/css/jquery-ui.css" />
+<link rel="stylesheet" href="../../js/lib/jqGrid/ui.jqgrid.css" />
+<link rel="stylesheet" href="../../css/module/module.css" />
+<link rel="stylesheet" href="../../js/lib/uploadFile/Huploadify.css" />
+<link rel="stylesheet" href="../../css/view/goodsTrade/wayBill.css" />
+<!-- 媒体查询，只能放在最后 -->
+<link rel="stylesheet" href="../../css/view/media.css"/>
+</head>
+<body>
+	<div class="right-content">
+		<div role="tabpanel" class="">
+			<!-- Nav tabs -->
+			<ul class="nav nav-tabs" role="tablist" id="wayBill-tabs">
+				<li role="presentation" class="active" data-module="wayBillMag">
+					<a href="#wayBillMag" aria-controls="wayBillMag" role="tab" 
+						data-toggle="tab" data-module-name="wayBillMag">运单管理</a>
+				</li>
+				<li role="presentation" data-module="wayBillTempMag">
+					<a href="#wayBillTempMag" aria-controls="wayBillTempMag"
+						 role="tab" data-toggle="tab" data-module-name="wayBillTempMag">运单模板管理</a>
+				</li>
+			</ul>
+			
+			<!-- Tab panes -->
+			<div class="tab-content">
+				<!--运单管理-->
+				<div role="tabpanel" class="tab-pane active" id="wayBillMag" data-module="wayBillMag">
+					<!--搜索栏区域-->
+					<div class="searchBox">
+							<div class="line-searchBox row" id="">
+								<div class="item-searchBox col-xs-5">
+									<label class="horizontal-span ">发货时间</label> 
+										<input type="text" class="form-control Wdate" id="wayBillMagStartTime" 
+											onclick="WdatePicker({dateFmt:'yyyy-MM-dd',onSelect:wayBillMag.searchHandler(),maxDate:'#F{$dp.$D(\'wayBillMagEndTime\')}'})" readonly="">
+											<span class="split-Wdate left-span">&nbsp;&nbsp;到&nbsp;&nbsp;</span>
+										<input type="text" class="form-control Wdate" id="wayBillMagEndTime" 
+											onclick="WdatePicker({dateFmt:'yyyy-MM-dd',onSelect:wayBillMag.searchHandler(),minDate:'#F{$dp.$D(\'wayBillMagStartTime\')}'})" readonly="">
+								</div>
+								<div class="item-searchBox col-xs-3">
+									<label class="horizontal-span">运单状态</label> 
+									<select name="checkstatus" class="form-control"  id="wayBillStatus-search">
+									</select>
+								</div>
+								<div class="item-searchBox col-xs-3">
+									<label class="horizontal-span">车牌号</label> 
+									<input type="text" class="form-control" id="wayBillCarNo-search" maxlength="200">
+								</div>
+							</div>
+							<div class="line-searchBox row" id="">
+								<div class="item-searchBox  col-xs-8"></div>
+								<div class="item-searchBox  col-xs-4">
+									<button type="button" class="btn btn-lemon" id="wayBillMag-searchBtn"
+										data-func="wayBillMag-findByPage">
+										<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;查询
+									</button>
+									&nbsp;&nbsp;
+									<button type="button" class="btn btn-success" id="wayBillMag-addBtn"
+										data-func="wayBillMag-save">
+										<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;新增
+									</button>
+									&nbsp;&nbsp;
+									<button type="button" class="btn btn-success" id="wayBillMag-print">
+										<span class="glyphicon glyphicon-print"></span>&nbsp;&nbsp;打印
+									</button>
+									&nbsp;&nbsp;
+								</div>
+							</div>
+					</div>
+					<!--表格展示-->
+					<table id="wayBillMagTable"></table>
+					<div id="wayBillMagPage"></div>
+				</div>
+
+
+				<!--模板管理--运单-->
+				<div role="tabpanel" class="tab-pane" id="wayBillTempMag" data-module="wayBillTempMag">
+					<!--搜索栏区域-->
+					<div class="searchBox">
+							<div class="line-searchBox" id="">
+								<div class="item-searchBox col-xs-5">
+									<label class="horizontal-span">创建时间</label> 
+										<input type="text" class="form-control Wdate" id="wayBillTempMagStartTime" 
+											onclick="WdatePicker({dateFmt:'yyyy-MM-dd',onSelect:wayBillTempMag.searchHandler(),maxDate:'#F{$dp.$D(\'wayBillTempMagEndTime\')}'})" readonly="">
+											<span class="split-Wdate left-span">&nbsp;&nbsp;到&nbsp;&nbsp;</span>
+										<input type="text" class="form-control Wdate" id="wayBillTempMagEndTime" 
+											onclick="WdatePicker({dateFmt:'yyyy-MM-dd',onSelect:wayBillTempMag.searchHandler(),minDate:'#F{$dp.$D(\'wayBillTempMagStartTime\')}'})" readonly="">
+								</div>
+								<div class="item-searchBox col-xs-4">
+									<button type="button" class="btn btn-lemon" id="wayBillTempMag-searchBtn"
+										data-func="wayBillTempMag-findByPage">
+										<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;查询
+									</button>
+									&nbsp;&nbsp;
+									<button type="button" class="btn btn-success" id="wayBillTempMag-addBtn"
+										data-func="wayBillTempMag-save">
+										<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;新增
+									</button>
+									&nbsp;&nbsp;
+								</div>
+							</div>
+					</div>
+					<!--表格展示-->
+					<table id="wayBillTempMagTable"></table>
+					<div id="wayBillTempMagPage"></div>
+				</div>
+
+				<!--运单信息新增弹框-->
+				<div class="panel panel-gray-sl" id="wayBill-panel">
+					<div class="panel-heading">
+						<span class="panel-title">运单详情</span>
+					</div>
+					<form id="wayBill-form">
+						<div class="panel-body">
+							<div class="panel-body-content">
+								<div id="wayBill-orderMessage">
+									<div class="subtitle">
+										<div class="subtitleIco"></div>
+										<span class="subSpan">运单信息</span>  
+										<div class="subClear" style=""></div>
+									</div>
+									<div class="row hidden" id = "wayBillchecknoDiv">
+										<div class="col-xs-6" style="margin-left: 88px">
+											<div class="col-xs-2">
+												<label class="">托运单号</label>
+										    </div>
+										    <div class="col-xs-7">
+												<input type="hidden" class="form-control saveInput" id="wayBillchecknoInput" name="checkno">
+												<span  id="wayBillcheckno"></span> 
+												<span class="look-formPanel hidden" id="wayBillchecknoSpan" name="checkno"></span>
+										    </div>
+										 </div>
+									</div>
+									<div class="row">
+									   <div class="col-xs-6">
+											<div class="col-xs-4">
+												<label  class="" for="orderNo">订单号</label>
+											</div>
+											<div class="col-xs-7">
+												<input type="text" name="orderNo" class="form-control saveInput  "
+													   id="orderNo" maxlength="10" placeholder="请输入0~10个字符"/>
+												<span class="look-formPanel hidden" name="orderNo"></span>	   
+											</div>
+										</div>
+									</div>
+									<div class="row threeSpan">
+										<div class="col-xs-6">
+											<div class="col-xs-4">
+												<label class="" for="wayBillconsumerno">客户单号</label>
+											</div>
+											<div class="col-xs-7">
+												<input type="text" name="consumerno" class="form-control saveInput  "
+													   id="wayBillconsumerno" maxlength="64"  placeholder="请输入1~200个字符"/> 
+													   <span class="look-formPanel hidden" name="consumerno"></span> 
+											</div>
+										</div>
+										<div class="col-xs-3">
+											<div class="col-xs-4">
+												<label  class="must mustFlag" for="wayBillstartpoint">起点</label>
+											</div>
+											<div class="col-xs-7">
+												<input type="text" name="startpoint" class="form-control saveInput  "
+													   id="wayBillstartpoint" maxlength="200" placeholder="请输入1~200个字符" required/>
+												<span class="look-formPanel hidden" name="startpoint"></span>
+											</div>
+											<input type="text" class="form-control hidden" name="startLng" id="startLngInput">
+											<input type="text" class="form-control hidden" name="startLat" id="startLatInput">
+										</div>
+										<div class="col-xs-3">
+											<div class="col-xs-4">
+												<label  class="must mustFlag" for="wayBillendpoint">到点</label>
+											</div>
+											<div class="col-xs-7">
+												<input type="text" name="endpoint" class="form-control saveInput"  id="wayBillendpoint"
+													   maxlength="200" placeholder="请输入1~200个字符" required/>
+											    <span class="look-formPanel hidden" name="endpoint"></span>
+											</div>
+											<input type="text" class="form-control hidden" name="endLng" id="endLngInput">
+											<input type="text" class="form-control hidden" name="endLat" id="endLatInput">
+										</div>
+									</div>
+									
+									
+									<div class="row fourSpan" style="margin-left: 66px;">
+										<div class="col-xs-3">
+												<div class="col-xs-5">
+													<label class="must mustFlag">发货单位</label>
+												</div>
+												<div class="col-xs-7">
+													<input type="text" name="deliveryunit" class="form-control saveInput  "
+													  style="width: 295px;" id="alarmNo-add" maxlength="200" placeholder="请输入1~200个字符" required/> 
+											    	<span class="look-formPanel hidden" name="deliveryunit"></span>
+												</div>
+										</div>
+										<div class="col-xs-3">
+										</div>
+										<!-- <div class="col-xs-3">
+											<div class="col-xs-5">
+												<label class="must mustFlag" for="wayBillStatus">运单状态</label>
+											</div>
+											<div class="col-xs-7">
+												<input type="text" class="form-control hidden"  name="checkstatus" value="111001001">
+											
+												<select name="checkstatus" class="form-control saveInput" id="wayBillStatus" required>
+													<option value="111001001">待运输</option>
+												</select>
+	 											<span class="look-formPanel hidden" name="checkstatus" id="wayBillStatusSpan"></span>
+											</div>
+										</div> -->
+										<div class="col-xs-3 fourMargF" style="margin-left: -33px;" >
+											<div class="col-xs-4">
+												<label for="wayBilldeliveryunitperson">联系人</label>
+											</div>
+											<div class="col-xs-7">
+												<input type="text" name="deliveryunitperson" class="form-control saveInput"
+													   id="wayBilldeliveryunitperson" placeholder="请输入0~200个字符" maxlength="200" /> 
+	 											<span class="look-formPanel hidden" name="deliveryunitperson"></span>
+											</div>
+										</div>
+										<div class="col-xs-3 fourMargS" style="  margin-left: 1px">
+											<div class="col-xs-5" for="wayBilldeliveryunitphone">
+												<label class="">联系电话</label>
+											</div>
+											<div class="col-xs-7">
+												<input type="telormobile" name="deliveryunitphone" class="form-control saveInput" id="wayBilldeliveryunitphone"
+												    pattern="^1\d{10}$|^((0\d{2,3}-?)|(\(0\d{2,3}\))?)[1-9]\d{4,7}(-\d{1,4})?$|^\d{1,5}$"
+											        error-msg="请输入手机或座机号码" maxlength="20" placeholder="请输入手机或座机号码"/>
+												<span class="look-formPanel hidden" name="deliveryunitphone"></span>	
+											</div>
+										</div>
+									</div>
+									
+									<div class="row twoSpan">
+										<div class="col-xs-9">
+											<div class="col-xs-4">
+												<label>发货地址</label>
+											</div>
+											<div class="col-xs-7">
+												<input type="text" name="deliveryunitaddress" class="form-control saveInput"
+													   id="alarmNo-addr" placeholder="请输入1~200个字符" maxlength="100"/>
+											    <span class="look-formPanel hidden" name="deliveryunitaddress"></span>  
+											</div>
+										</div>
+										<div class="col-xs-3">
+											<div class="col-xs-4">
+												<label class="must mustFlag" for="deliveryunittime">装货时间</label>
+											</div>
+											<div class="col-xs-7">
+												<input type="text" name="deliveryunittime" class="form-control Wdate saveInput  "
+													  onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'achievetime\')}'})" id="deliveryunittime" maxlength="100" required readOnly/>
+										    	<span class="look-formPanel hidden " name="deliveryunittime"></span>
+											</div>
+										</div>
+									</div>
+									<div class="row threeSpan">
+										<div class="col-xs-6">
+											<div class="col-xs-4">
+												<label class="must mustFlag" for="wayBillachieveuint">收货单位</label>
+											</div>
+											<div class="col-xs-7">
+												<input type="text" name="achieveuint" class="form-control saveInput  "
+													   id="wayBillachieveuint" maxlength="200" placeholder="请输入1~200个字符" required/> 
+												 <span class="look-formPanel hidden " name="achieveuint"></span>   
+											</div>
+										</div>
+										<div class="col-xs-3">
+											<div class="col-xs-4">
+												<label class="" for="wayBillachievepersons">联系人</label>
+											</div>
+											<div class="col-xs-7">
+												<input type="text" name="achieveperson" class="form-control saveInput  "
+													   id="wayBillachievepersons" placeholder="请输入0~200个字符" maxlength="200" /> 
+												 <span class="look-formPanel hidden" name="achieveperson"></span>	   
+											</div>
+										</div>
+										<div class="col-xs-3">
+											<div class="col-xs-4">
+												<label for="wayBillachievephone">联系电话</label>
+											</div>
+											<div class="col-xs-7">
+												<input type="telormobile" name="achievephone" class="form-control saveInput" id="wayBillachievephone" 
+												    pattern="^1\d{10}$|^((0\d{2,3}-?)|(\(0\d{2,3}\))?)[1-9]\d{4,7}(-\d{1,4})?$|^\d{1,5}$"
+											        error-msg="请输入手机或座机号码" maxlength="20" placeholder="请输入手机或座机号码"/>
+											    <span class="look-formPanel hidden" name="achievephone"></span>
+											</div>
+										</div>
+									</div>
+	
+									<div class="row twoSpan">
+										<div class="col-xs-9">
+											<div class="col-xs-4">
+												<label for="wayBillachieveaddress">收货地址</label>
+											</div>
+											<div class="col-xs-7">
+												<input type="text" name="achieveaddress" class="form-control saveInput"
+													   id="wayBillachieveaddress" placeholder="请输入1~200个字符" maxlength="200"/>
+												 <span class="look-formPanel hidden" name="achieveaddress"></span>   
+											</div>
+										</div>
+										<div class="col-xs-3">
+											<div class="col-xs-4">
+												<label class="must mustFlag" for="achievetime">卸货时间</label>
+											</div>
+											<div class="col-xs-7">
+												<input type="text" name="achievetime" class="form-control Wdate saveInput  "
+													   onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'deliveryunittime\')}'})" id="achievetime" maxlength="100" required readOnly/> 
+												 <span class="look-formPanel hidden" name="achievetime"></span>	   
+											</div>
+										</div>
+									</div>
+								</div>
+								<input type="text" class="form-control hidden"  name="checkstatus" value="111001001">
+									
+								<div class="subtitle">
+									<div class="subtitleIco"></div>
+									<span class="subSpan">企业相关信息</span>
+									<div class="subClear" style=""></div>
+								</div>
+								<div id="wayBillEnterInfor">
+									<div class="row threeSpan">
+										<div class="col-xs-6">
+											<div class="col-xs-4">
+												<label class="must mustFlag">物流企业名称</label>
+											</div>
+											<div class="col-xs-7">
+												<select class="form-control form-control-disabled saveInput" name="logisticsId" id="wayBillLogisticsId" required>
+												</select>
+												<span class="look-formPanel hidden" name="wlEnterpriseName"></span>
+											</div>
+										</div>
+										<div class="col-xs-3">
+											<div class="col-xs-4">
+												<label class="must mustFlag firstlabel">车牌号</label>
+											</div>
+											<div class="col-xs-7">
+												<select class="form-control saveInput firstinput" name="carno" id="wayBillCarNo" required>
+												</select>
+												<span class="look-formPanel hidden firstspan" name="carno"></span>
+											</div>
+										</div>
+										<div class="col-xs-3">
+											<div class="col-xs-4">
+												<label class="secondlabel">挂车车牌</label>
+											</div>
+											<div class="col-xs-7"> 
+												<input type="text" name="handcarno" class="form-control saveInput secondinput"
+													   id="wayBillhandcarno" pattern="^[\u4e00-\u9fa5]{1}[A-Z]{1}[A-Z_0-9]{5}$">
+												<span class="look-formPanel hidden secondspan" name="handcarno"></span>
+											</div>
+										</div>
+									</div>
+									
+									<div class="row fourSpan">
+										<div class="col-xs-3">
+											<div class="col-xs-4">
+												<label class="must mustFlag">驾驶员</label>
+											</div>
+											<div class="col-xs-7">
+												<select class="form-control saveInput  " name="driverId" id="wayBillDriver" required>
+												</select>
+												 <span class="look-formPanel hidden" name="driver"></span>
+											</div>
+										</div>
+										<div id="wayBillDriverChange">
+											<div class="col-xs-3">
+												<div class="col-xs-4 fourLabel">
+													<label class="must mustFlag" for="wayBillDriverphone">联系电话</label>
+												</div>
+												<div class="col-xs-7">
+													<input type="telormobile" name="driverphone" class="form-control saveInput" id="wayBillDriverphone" 
+													    pattern="^1\d{10}$|^((0\d{2,3}-?)|(\(0\d{2,3}\))?)[1-9]\d{4,7}(-\d{1,4})?$|^\d{1,5}$"
+										                error-msg="请输入手机或座机号码" maxlength="20" placeholder="请输入手机或座机号码" required readonly/>
+													<span class="look-formPanel hidden hidden" name="driverphone"></span>
+												</div>
+											</div>
+											<div class="col-xs-3">
+												<div class="col-xs-4 fourLabel">
+													<label class="must mustFlag">身份证号</label>
+												</div>
+												<div class="col-xs-7">
+													<input type="text" name="driverid" class="form-control saveInput  "
+														   id="wayBillDriverid" maxlength="100"  required readonly/>
+													<span class="look-formPanel hidden hidden" name="driverid"></span>
+												</div>
+											</div>
+											<div class="col-xs-3">
+												<div class="col-xs-4 fourLabel">
+													<label class="must mustFlag">从业证号</label>
+												</div>
+												<div class="col-xs-7">
+													<input type="text" name="driverno" class="form-control saveInput  "
+														   id="wayBillDriverno" maxlength="100" required readonly/>
+													<span class="look-formPanel hidden" name="driverno"></span>
+												</div>
+											</div>
+										</div>
+									</div>
+	
+									<div class="row fourSpan">
+										<div class="col-xs-3">
+											<div class="col-xs-4">
+												<label class="must mustFlag">押运员</label>
+											</div>
+											<div class="col-xs-7">
+												<select  class="form-control saveInput  " name="escortId" id="wayBillEscort" required>
+												</select>
+												<span class="look-formPanel hidden" name="escort"></span>
+											</div>
+										</div>
+										<div id="wayBillEscortChange">
+											<div class="col-xs-3">
+											<div class="col-xs-4 fourLabel">
+												<label class="must mustFlag" for="wayBillEscortphone">联系电话</label>
+											</div>
+											<div class="col-xs-7">
+												<input type="telormobile" name="escortphone" class="form-control saveInput" id="wayBillEscortphone" 
+													pattern="^1\d{10}$|^((0\d{2,3}-?)|(\(0\d{2,3}\))?)[1-9]\d{4,7}(-\d{1,4})?$|^\d{1,5}$"
+										            error-msg="请输入手机或座机号码" maxlength="20" placeholder="请输入手机或座机号码" required readonly>
+												<span class="look-formPanel hidden" name="escortphone"></span>
+											</div>
+										</div>
+										<div class="col-xs-3">
+											<div class="col-xs-4 fourLabel">
+												<label class="must mustFlag">身份证号</label>
+											</div>
+											<div class="col-xs-7">
+												<input type="text" name="escortid" class="form-control saveInput  "
+													   id="wayBillEscortid" maxlength="100"  required readonly/>
+												<span class="look-formPanel hidden" name="escortid"></span>
+											</div>
+										</div>
+										<div class="col-xs-3">
+											<div class="col-xs-4 fourLabel">
+												<label class="must mustFlag">从业证号</label>
+											</div>
+											<div class="col-xs-7">
+												<input type="text" name="escortno" class="form-control saveInput  "
+													   id="wayBillEscortno" maxlength="100"  required readonly/>
+												<span class="look-formPanel hidden" name="escortno"></span>
+											</div>
+										</div>
+										</div>
+									</div>
+								</div>
+								<div class="row" style="margin-left: -17px;">
+									<div class="col-xs-2">
+										<label class="" for="wayBillremark">备注</label>
+									</div>
+									<div class="col-xs-9">
+									<textarea type="text" name="remark" class="form-control saveInput  "
+											  id="wayBillremark" placeholder="请输入1~1000个字符" maxlength="1000" ></textarea>
+										<span class="look-formPanel hidden" name="remark"></span>
+									</div>
+								</div>
+								<div class="subtitle">
+									<div class="subtitleIco"></div>
+									<span class="subSpan">货物信息</span>  
+									<div class="subClear" style=""></div>
+								</div>
+								<div>
+									<button type="button" class="btn btn-success" id="wayBillGoodsAddBtn" style="margin: 10px;">
+										<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;新增
+									</button>
+								</div>
+								<div id="goodsTablePlace" style="width:1000px">
+									<div>
+										<table id="wayBillGoodsTable"></table>
+										<div id="wayBillGoodsTablePage"></div>
+									</div>
+									
+								</div>
+							</div>
+							<div class="panel-footer">
+								<button type="submit" class="btn btn-cyan" id="wayBill-submmitBtn">保存</button>
+								<button type="reset" class="btn btn-border cancel" id="wayBill-cancelBtn">取消</button>
+							</div>
+						</div>
+					</form>
+				</div>
+				
+				<!--货物信息弹框-->
+				<div class="panel panel-gray-sm" id="wayBillGoods-panel" style="z-index:2600">
+					<div class="panel-heading">
+						<span class="panel-title">货物信息</span>
+					</div>
+					<form id="wayBillGoods-form">
+						<div class="panel-body">
+							<div class="panel-body-content verify-park-info">
+								<div class="row">
+									<div class="col-xs-6">
+										<input type="text" class="form-control hidden" name="id">
+										<div class="col-xs-3">
+											<label class="must mustFlag" for="wayBillgoodsname">品名</label>
+										</div>
+										<div class="col-xs-6">
+											<input type="text" name="goodsname" class="form-control saveInput" id="wayBillgoodsname"
+												placeholder="请输入1~200个字符" maxlength="200" required/>
+										</div>
+									</div>
+									<div class="col-xs-6">
+										<div class="col-xs-3">
+											<label class="must mustFlag" for="wayBillGoodspack">包装</label>
+										</div>
+										<div class="col-xs-6">
+											<input type="text" name="pack" class="form-control saveInput" id="wayBillGoodspack"
+												placeholder="请输入1~200个字符" maxlength="200" required/>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-6">
+										<div class="col-xs-3">
+											<label class="must mustFlag" for="wayBillGoodquantity">数量</label>
+										</div>
+										<div class="col-xs-6">
+											<input type="text" name="quantity" class="form-control saveInput" id="wayBillGoodquantity"
+												pattern="^(0|10000|[1-9]\d{0,3})$" placeholder="请输入0-10,000以内的整数" required/>
+										</div>
+									</div>
+									<div class="col-xs-6">
+										<div class="col-xs-3">
+											<label class="must mustFlag" for="wayBillGoodweight">重量</label>
+										</div>
+										<div class="col-xs-6">
+										<input type="text" name="weight" class="form-control saveInput" id="wayBillGoodweight"
+											pattern="^((([1-9]\d{0,3}|0)(\.\d{1,2})?))?$|^((10000)|(10000(\.[0]{1,2})))?$" 
+											placeholder="请输入0-10,000.00以内的数(最多含2位小数)" required/>
+										</div>
+										<div class="col-xs-3">
+											<label style="text-align:left">吨</label>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-6">
+										<div class="col-xs-3">
+											<label for="wayBillGoodformat">规格</label>
+										</div>
+										<div class="col-xs-6">
+											<input type="text" name="format" class="form-control saveInput" id="wayBillGoodformat"
+												placeholder="请输入1~200个字符" maxlength="200"/>
+										</div>
+										
+									</div>
+									<div class="col-xs-6">
+										<div class="col-xs-3">
+											<label class="" for="wayBillGoodsvolume">体积</label>
+										</div>
+										<div class="col-xs-6">
+											<input type="text" name="volume" class="form-control saveInput" id="wayBillGoodsvolume"
+												pattern="^((([1-9]\d{0,3}|0)(\.\d{1,2})?))?$|^((10000)|(10000(\.[0]{1,2})))?$" 
+											placeholder="请输入0-10,000.00以内的数(最多含2位小数)"/>
+										</div>
+										<div class="col-xs-3">
+											<label style="text-align:left">立方米</label>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-6">
+										<div class="col-xs-3">
+											<label for="wayBillGoodsbatch">批次</label>
+										</div>
+										<div class="col-xs-6">
+											<input type="text" name="batch" class="form-control saveInput" id="wayBillGoodsbatch"
+												placeholder="请输入整数" maxlength="200"/>
+										</div>
+									</div>
+									<div class="col-xs-6"></div>
+								</div>
+								
+							</div>
+						</div>
+						<div class="panel-footer">
+							<button type="submit" class="btn btn-cyan" id="alarmManage-setBtn">确定</button>
+							<button type="reset" class="btn btn-border" id="wayBillGoodCanel">取消</button>
+						</div>
+					</form>
+				</div>
+				
+				
+				<!--生成模板弹框-->
+				<div class="panel panel-gray-sm" id="wayBillGoods-tempName-panel">
+					<div class="panel-heading">
+						<span class="panel-title">模板信息</span>
+					</div>
+					<form id="wayBillGoods-tempName-form">
+						<div class="panel-body">
+							<div class="panel-body-content">
+								<div class="row">
+									<div class="col-xs-10">
+										<div class="col-xs-4">
+											<label class="must mustFlag" for="wayBilltempname" >模板名称</label>
+										</div>
+										<div class="col-xs-8">
+											<input type="text" name="tempname" class="form-control saveInput" id="wayBilltempname"
+												maxlength="200" required/>
+										</div>
+									</div>
+									<div class="col-xs-2"></div>
+								</div>
+							</div>
+						</div>
+						<div class="panel-footer">
+							<button type="submit" class="btn btn-cyan">确定</button>
+							<button type="reset" class="btn btn-border cancel">取消</button>
+						</div>
+					</form>
+				</div>
+				
+				
+				
+				
+				
+				
+				<!--模板管理---运单信息新增弹框-->
+				<div class="panel panel-gray-sl" id="wayBillTemp-panel">
+					<div class="panel-heading">
+						<span class="panel-title">模板详情</span>
+					</div>
+					<form id="wayBillTemp-form">
+						<div class="panel-body">
+							<div class="panel-body-content">
+								<div class="subtitle">
+									<div class="subtitleIco"></div>
+									<span class="subSpan">运单信息</span>  
+									<div class="subClear" style=""></div>
+								</div>
+								<div class="row hidden" id="wayBillTempNoRow">
+									<!-- <div class="col-xs-6">
+										<div class="col-xs-2" style="margin-left: 91px;">
+											<label class="">托运单号</label>
+										</div>
+										<div class="col-xs-6">
+											<span  id="wayBillTempcheckno"></span> 
+											<span  id="wayBillTempSaveWayBill"></span>   
+										</div>
+									</div> -->
+									<!-- <div class="col-xs-6">
+										<div class="col-xs-2">
+											<label class="must mustFlag" for="wayBillTemptempname">模板名称</label>
+										</div>
+										<div class="col-xs-9">
+											<input type="text" name="tempname" class="form-control saveInput inputMust "
+												   id="wayBillTemptempname" maxlength="64" required style="  width: 406px;"/>   
+											<span class="look-formPanel hidden" id="wayBillTempchecknoSpan" name="tempname"></span>
+										</div>
+									 </div> -->
+								</div>
+								<div class="row">
+									<!-- <div class="col-xs-6">
+										<div class="col-xs-2" style="margin-left: 91px;">
+											<label class="">托运单号</label>
+										</div>
+										<div class="col-xs-6">
+											<span  id="wayBillTempcheckno"></span> 
+											<span  id="wayBillTempSaveWayBill"></span>   
+										</div>
+									</div> -->
+									<div class="col-xs-6" style="margin-left: 88px">
+										<div class="col-xs-2">
+											<label class="must mustFlag" for="wayBillTemptempname" id="tempNameMustAdd">模板名称</label>
+										</div>
+										<div class="col-xs-7">
+											<input type="text" name="tempname" class="form-control saveInput "
+												   id="wayBillTemptempname" maxlength="64" required/>   
+											<span class="look-formPanel hidden" id="wayBillTempchecknoSpan" name="tempname"></span>
+										</div>
+									 </div>
+								</div>
+								<div class="row threeSpan">
+									<div class="col-xs-6">
+										<div class="col-xs-4">
+											<label class="" for="wayBillTempconsumerno">客户单号</label>
+										</div>
+										<div class="col-xs-7">
+											<input type="text" name="consumerno" class="form-control saveInput" placeholder="请输入0-200个字符"
+												   id="wayBillTempconsumerno" maxlength="64"/> 
+												   <span class="look-formPanel hidden" name="consumerno"></span> 
+										</div>
+									</div>
+									<div class="col-xs-3">
+										<div class="col-xs-4">
+											<label  class="must mustFlag" for="wayBillTempstartpoint">起点</label>
+										</div>
+										<div class="col-xs-7">
+											<input type="text" name="startpoint" class="form-control saveInput inputMust" placeholder="请输入0-200个字符"
+												   id="wayBillTempstartpoint" maxlength="200"/>
+											<span class="look-formPanel hidden" name="startpoint"></span>
+											<input type="text" class="form-control hidden" name="startLng" id="startLngTempInput">
+											<input type="text" class="form-control hidden" name="startLat" id="startLatTempInput">	   
+										</div>
+									</div>
+									<div class="col-xs-3">
+										<div class="col-xs-4">
+											<label  class="must mustFlag " for="wayBillTempendpoint">到点</label>
+										</div>
+										<div class="col-xs-7">
+											<input type="text" name="endpoint" class="form-control saveInput inputMust" id="wayBillTempendpoint" placeholder="请输入0-200个字符"
+												   maxlength="200" required/>
+										    <span class="look-formPanel hidden" name="endpoint"></span>
+										    <input type="text" class="form-control hidden" name="endLng" id="endLngTempInput">
+											<input type="text" class="form-control hidden" name="endLat" id="endLatTempInput">
+										</div>
+									</div>
+								</div>
+								
+								
+								<div class="row fourSpan" style="margin-left: 66px;">
+									<div class="col-xs-3">
+											<div class="col-xs-5">
+												<label class="must mustFlag">发货单位</label>
+											</div>
+											<div class="col-xs-7">
+												<input type="text" name="deliveryunit" class="form-control saveInput inputMust" placeholder="请输入0-200个字符"
+												   style="width: 295px;" id="alarmNo-add" maxlength="200" required/> 
+										    	<span class="look-formPanel hidden" name="deliveryunit"></span>
+											</div>
+									</div>
+									<div class="col-xs-3">
+										<div class="col-xs-5">
+											<!-- <label class="must mustFlag" for="wayBillTempStatus">运单状态</label> -->
+										</div>
+										<div class="col-xs-7">
+										 <!-- <input type="text" class="form-control saveInput hidden"  name="checkstatus" value="111001001"> -->
+											<!-- <select name="checkstatus" class="form-control saveInput inputMust" id="wayBillTempStatus" required>
+												<option value="111001001">待运输</option>
+											</select>
+ 											<span class="look-formPanel hidden" name="checkstatus" id="wayBillTempStatusSpan"></span> -->
+										</div>
+									</div>
+									<div class="col-xs-3 fourMargF" style="margin-left: -30px;" >
+										<div class="col-xs-4">
+											<label for="wayBillTempdeliveryunitperson">联系人</label>
+										</div>
+										<div class="col-xs-7">
+											<input type="text" name="deliveryunitperson" class="form-control saveInput" placeholder="请输入0-200个字符"
+												   id="wayBillTempdeliveryunitperson" maxlength="64" /> 
+ 											<span class="look-formPanel hidden" name="deliveryunitperson"></span>
+										</div>
+									</div>
+									<div class="col-xs-3 fourMargS" style="  margin-left: -3px;">
+										<div class="col-xs-5" for="wayBillTempdeliveryunitphone">
+											<label class="">联系电话</label>
+										</div>
+										<div class="col-xs-7">
+											<input type="telormobile" name="deliveryunitphone" class="form-control saveInput" id="wayBillTempdeliveryunitphone"
+												 pattern="^1\d{10}$|^((0\d{2,3}-?)|(\(0\d{2,3}\))?)[1-9]\d{4,7}(-\d{1,4})?$|^\d{1,5}$"
+										         error-msg="请输入手机或座机号码" maxlength="20" placeholder="请输入手机或座机号码"/>
+											 <span class="look-formPanel hidden" name="deliveryunitphone"></span>	
+										</div>
+									</div>
+								</div>
+								
+								<div class="row twoSpan">
+									<div class="col-xs-9">
+										<div class="col-xs-4">
+											<label>发货地址</label>
+										</div>
+										<div class="col-xs-7">
+											<input type="text" name="deliveryunitaddress" class="form-control saveInput" placeholder="请输入0-200个字符"
+												   id="alarmNo-add" maxlength="100"/>
+										    <span class="look-formPanel hidden" name="deliveryunitaddress"></span>  
+										</div>
+									</div>
+									<div class="col-xs-3">
+										<div class="col-xs-4">
+											<label class="must mustFlag" for="Tempdeliveryunittime">装货时间</label>
+										</div>
+										<div class="col-xs-7">
+											<input type="text" name="deliveryunittime" class="form-control Wdate saveInput inputMust"
+												  onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'Tempachievetime\')}'})" id="Tempdeliveryunittime" maxlength="100" required readOnly/>
+									    	<span class="look-formPanel hidden " name="deliveryunittime"></span>
+										</div>
+									</div>
+								</div>
+								<div class="row threeSpan">
+									<div class="col-xs-6">
+										<div class="col-xs-4">
+											<label class="must mustFlag" for="wayBillTempachieveuint">收货单位</label>
+										</div>
+										<div class="col-xs-7">
+											<input type="text" name="achieveuint" class="form-control saveInput inputMust" placeholder="请输入0-200个字符"
+												   id="wayBillTempachieveuint" maxlength="200" required/> 
+											 <span class="look-formPanel hidden " name="achieveuint"></span>   
+										</div>
+									</div>
+									<div class="col-xs-3">
+										<div class="col-xs-4">
+											<label class="" for="wayBillTempachievepersons">联系人</label>
+										</div>
+										<div class="col-xs-7">
+											<input type="text" name="achieveperson" class="form-control saveInput" placeholder="请输入0-200个字符"
+												   id="wayBillTempachievepersons" maxlength="200" /> 
+											 <span class="look-formPanel hidden" name="achieveperson"></span>	   
+										</div>
+									</div>
+									<div class="col-xs-3">
+										<div class="col-xs-4">
+											<label for="wayBillTempachievephone">联系电话</label>
+										</div>
+										<div class="col-xs-7">
+											<input type="telormobile" name="achievephone" class="form-control saveInput" id="wayBillTempachievephone"
+												pattern="^1\d{10}$|^((0\d{2,3}-?)|(\(0\d{2,3}\))?)[1-9]\d{4,7}(-\d{1,4})?$|^\d{1,5}$"
+										        error-msg="请输入手机或座机号码" maxlength="20" placeholder="请输入手机或座机号码"/>
+										    <span class="look-formPanel hidden" name="achievephone"></span>
+										</div>
+									</div>
+								</div>
+
+								<div class="row twoSpan">
+									<div class="col-xs-9">
+										<div class="col-xs-4">
+											<label for="wayBillTempachieveaddress">收货地址</label>
+										</div>
+										<div class="col-xs-7">
+											<input type="text" name="achieveaddress" class="form-control saveInput" placeholder="请输入0-200个字符"
+												   id="wayBillTempachieveaddress" maxlength="200"/>
+											 <span class="look-formPanel hidden" name="achieveaddress"></span>   
+										</div>
+									</div>
+									<div class="col-xs-3">
+										<div class="col-xs-4">
+											<label class="must mustFlag" for="Tempachievetime">卸货时间</label>
+										</div>
+										<div class="col-xs-7">
+											<input type="text" name="achievetime" class="form-control Wdate saveInput inputMust"
+												   onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'Tempdeliveryunittime\')}'})" id="Tempachievetime" maxlength="100" required readOnly/> 
+											 <span class="look-formPanel hidden" name="achievetime"></span>	   
+										</div>
+									</div>
+								</div>
+
+								<div class="subtitle">
+									<div class="subtitleIco"></div>
+									<span class="subSpan">企业相关信息</span>
+									<div class="subClear" style=""></div>
+								</div>
+								<!-- <div class="row fourSpan">
+									<div class="col-xs-3">
+										<div class="col-xs-4">
+											<label class="must mustFlag">车牌号</label>
+										</div>
+										<div class="col-xs-7">
+											<select class="form-control saveInput inputMust" name="carno" id="wayBillTempCarNo" required>
+											</select>
+											<span class="look-formPanel hidden" name="carno"></span>
+										</div>
+									</div>
+									<div class="col-xs-3">
+										<div class="col-xs-4 fourLabel">
+											<label>挂车车牌</label>
+										</div>
+										<div class="col-xs-7">
+											<input type="text" name="handcarno" class="form-control saveInput"
+												   id="alarmNo-add" pattern="^[\u4e00-\u9fa5]{1}[A-Z]{1}[A-Z_0-9]{5}$">
+											<span class="look-formPanel hidden hidden" name="handcarno"></span>
+										</div>
+									</div>
+									<div class="col-xs-3"></div>
+									<div class="col-xs-3"></div>
+								</div> -->
+								<div id="wayBillTempEtperInfor">
+									<div class="row threeSpan">
+									<div class="col-xs-6">
+										<div class="col-xs-4">
+											<label class="must mustFlag">物流企业名称</label>
+										</div>
+										<div class="col-xs-7">
+											<select class="form-control saveInput inputMust" name="logisticsId" id="wayBillTempLogisticsId" required>
+											</select>
+											<span class="look-formPanel hidden" name="logisticsId"></span>
+										</div>
+									</div>
+									<div class="col-xs-3">
+										<div class="col-xs-4">
+											<label class="must mustFlag firstlabel">车牌号</label>
+										</div>
+										<div class="col-xs-8">
+											<select class="form-control saveInput inputMust firstinput" name="carno" id="wayBillTempCarNo" required>
+											</select>
+											<span class="look-formPanel hidden firstspan" name="carno"></span>
+										</div>
+									</div>
+									<div class="col-xs-3">
+										<div class="col-xs-4">
+											<label class="secondlabel">挂车车牌</label>
+										</div>
+										<div class="col-xs-7"> 
+											<input type="text" name="handcarno" id="wayBillTemphandcarno" class="form-control saveInput secondinput"
+												    pattern="^[\u4e00-\u9fa5]{1}[A-Z]{1}[A-Z_0-9]{5}$">
+											<span class="look-formPanel hidden secondspan" name="handcarno"></span>
+										</div>
+									</div>
+								</div>
+								<div class="row fourSpan">
+									<div class="col-xs-3">
+										<div class="col-xs-4">
+											<label class="must mustFlag">驾驶员</label>
+										</div>
+										<div class="col-xs-7">
+											<select class="form-control saveInput inputMust" name="driverId" id="wayBillTempDriver" required>
+											</select>
+											 <span class="look-formPanel hidden" name="driver"></span>
+										</div>
+									</div>
+									<div id="wayBillTempDrivChange">
+										<div class="col-xs-3">
+											<div class="col-xs-4 fourLabel">
+												<label class="must mustFlag" for="wayBillTempDriverphone">联系电话</label>
+											</div>
+											<div class="col-xs-7">
+												<input type="telormobile" name="driverphone" class="form-control saveInput inputMust" id="wayBillTempDriverphone" 
+												    pattern="^1\d{10}$|^((0\d{2,3}-?)|(\(0\d{2,3}\))?)[1-9]\d{4,7}(-\d{1,4})?$|^\d{1,5}$"
+										            error-msg="请输入手机或座机号码" maxlength="20" placeholder="请输入手机或座机号码" required readonly/>
+												<span class="look-formPanel hidden hidden" name="driverphone"></span>
+											</div>
+										</div>
+										<div class="col-xs-3">
+											<div class="col-xs-4 fourLabel">
+												<label class="must mustFlag">身份证号</label>
+											</div>
+											<div class="col-xs-7">
+												<input type="text" name="driverid" class="form-control saveInput inputMust"
+													   id="wayBillTempDriverid" maxlength="100" readonly />
+												<span class="look-formPanel hidden hidden" name="driverid"></span>
+											</div>
+										</div>
+										<div class="col-xs-3">
+											<div class="col-xs-4 fourLabel">
+												<label class="must mustFlag">从业证号</label>
+											</div>
+											<div class="col-xs-7">
+												<input type="text" name="driverno" class="form-control saveInput inputMust"
+													   id="wayBillTempDriverno" maxlength="100" required readonly/>
+												<span class="look-formPanel hidden" name="driverno"></span>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="row fourSpan">
+									<div class="col-xs-3">
+										<div class="col-xs-4">
+											<label class="must mustFlag">押运员</label>
+										</div>
+										<div class="col-xs-7">
+											<select  class="form-control saveInput inputMust" name="escortId" id="wayBillTempEscort" required>
+											</select>
+											<span class="look-formPanel hidden" name="escort"></span>
+										</div>
+									</div>
+									<div id="wayBillTempEscortChange">
+										<div class="col-xs-3">
+										<div class="col-xs-4 fourLabel">
+											<label class="must mustFlag" for="wayBillTempEscortphone">联系电话</label>
+										</div>
+										<div class="col-xs-7">
+											<input type="driverphone" name="escortphone" class="form-control saveInput inputMust" id="wayBillTempEscortphone"
+											    pattern="^1\d{10}$|^((0\d{2,3}-?)|(\(0\d{2,3}\))?)[1-9]\d{4,7}(-\d{1,4})?$|^\d{1,5}$"
+										        error-msg="请输入手机或座机号码" maxlength="20" placeholder="请输入手机或座机号码" required readonly/>
+											<span class="look-formPanel hidden" name="escortphone"></span>
+										</div>
+									</div>
+									<div class="col-xs-3">
+										<div class="col-xs-4 fourLabel">
+											<label class="must mustFlag">身份证号</label>
+										</div>
+										<div class="col-xs-7">
+											<input type="text" name="escortid" class="form-control saveInput inputMust"
+												   id="wayBillTempEscortid" maxlength="100"  required readonly/>
+											<span class="look-formPanel hidden" name="escortid"></span>
+										</div>
+									</div>
+									<div class="col-xs-3">
+										<div class="col-xs-4 fourLabel">
+											<label class="must mustFlag">从业证号</label>
+										</div>
+										<div class="col-xs-7">
+											<input type="text" name="escortno" class="form-control saveInput inputMust"
+												   id="wayBillTempEscortno" maxlength="100"  required readonly/>
+											<span class="look-formPanel hidden" name="escortno"></span>
+										</div>
+									</div>
+									</div>
+								</div>
+								<div class="row" style="margin-left: -17px;">
+									<div class="col-xs-2">
+										<label class="" for="wayBillTempremark">备注</label>
+									</div>
+									<div class="col-xs-9">
+									<textarea type="text" name="remark" class="form-control saveInput" placeholder="请输入0-1000个字符"
+											  id="wayBillTempremark" maxlength="1000" ></textarea>
+										<span class="look-formPanel hidden" name="remark"></span>
+									</div>
+								</div>
+								<div class="subtitle">
+									<div class="subtitleIco"></div>
+									<span class="subSpan">货物信息</span>  
+									<div class="subClear" style=""></div>
+								</div>
+								<div>
+									<button type="button" class="btn btn-success" id="wayBillTempGoodsAddBtn" style="margin: 10px;">
+										<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;新增
+									</button>
+								</div>
+								<div id="goodsTablePlace" style="width:1000px">
+									<div>
+										<table id="wayBillTempGoodsTable"></table>
+										<div id="wayBillTempGoodsTablePage"></div>
+									</div>
+									
+								</div>
+							</div>
+							<div class="panel-footer">
+								<button type="submit" class="btn btn-cyan" id="wayBillTemp-submmitBtn">保存</button>
+								<button type="reset" class="btn btn-border cancel" id="wayBillTemp-cancelBtn">取消</button>
+							</div>
+						</div>
+						</div>
+					</form>
+				</div>
+				
+				
+				<!--模板--货物信息弹框-->
+				<div class="panel panel-gray-sm" id="wayBillGoodsTemp-panel" style="z-index:2600">
+					<div class="panel-heading">
+						<span class="panel-title">货物信息</span>
+					</div>
+					<form id="wayBillGoodsTemp-form">
+						<div class="panel-body">
+							<div class="panel-body-content verify-park-info">
+								<div class="row">
+									<div class="col-xs-6">
+										<input type="text" class="form-control hidden" name="id">
+										<div class="col-xs-3">
+											<label class="must mustFlag" for="wayBillgoodTempsname" id="tempGoodsNameMustAdd">品名</label>
+										</div>
+										<div class="col-xs-6">
+											<input type="text" name="goodsname" class="form-control saveInput" id="wayBillgoodTempsname" placeholder="请输入0-200个字符"
+												maxlength="200" required/>
+										</div>
+									</div>
+									<div class="col-xs-6">
+										<div class="col-xs-3">
+											<label class="must mustFlag" for="wayBillGoodTempspack">包装</label>
+										</div>
+										<div class="col-xs-6">
+											<input type="text" name="pack" class="form-control saveInput" id="wayBillGoodTempspack" placeholder="请输入0-200个字符"
+												maxlength="200" required/>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-6">
+										<div class="col-xs-3">
+											<label class="must mustFlag" for="wayBillGoodTempquantity">数量</label>
+										</div>
+										<div class="col-xs-6">
+											<input type="text" name="quantity" class="form-control saveInput" id="wayBillGoodTempquantity"
+												pattern="^(0|10000|[1-9]\d{0,3})$" error-msg="请输入0-10,000以内的整数" placeholder="请输入0-10,000以内的整数" required/>
+										</div>
+									</div>
+									<div class="col-xs-6">
+										<div class="col-xs-3">
+											<label class="must mustFlag" for="wayBillGoodTempweight">重量</label>
+										</div>
+										<div class="col-xs-6">
+										<input type="text" name="weight" class="form-control saveInput" id="wayBillGoodTempweight"
+											pattern="^((([1-9]\d{0,3}|0)(\.\d{1,2})?))?$|^((10000)|(10000(\.[0]{1,2})))?$" 
+											error-msg="请输入0-10,000.00以内的数(最多含2位小数)" placeholder="请输入0-10,000.00以内的数(最多含2位小数)"  required/>
+											
+										</div>
+										<div class="col-xs-3">
+											<label style="text-align:left">吨</label>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-6">
+										<div class="col-xs-3">
+											<label for="wayBillGoodTempformat">规格</label>
+										</div>
+										<div class="col-xs-6">
+											<input type="text" name="format" class="form-control saveInput" id="wayBillGoodTempformat" placeholder="请输入0-200个字符" 
+												maxlength="200"/>
+										</div>
+										
+									</div>
+									<div class="col-xs-6">
+										<div class="col-xs-3">
+											<label class="" for="wayBillGoodTempsvolume">体积</label>
+										</div>
+										<div class="col-xs-6">
+											<input type="text" name="volume" class="form-control saveInput" id="wayBillGoodTempsvolume"
+												pattern="^((([1-9]\d{0,3}|0)(\.\d{1,2})?))?$|^((10000)|(10000(\.[0]{1,2})))?$" 
+											error-msg="请输入0-10,000.00以内的数(最多含2位小数)"  placeholder="请输入0-10,000.00以内的数(最多含2位小数)"/>
+										</div>
+										<div class="col-xs-3">
+											<label style="text-align:left">立方米</label>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-6">
+										<div class="col-xs-3">
+											<label for="wayBillGoodsTempbatch">批次</label>
+										</div>
+										<div class="col-xs-6">
+											<input type="text" name="batch" class="form-control saveInput" id="wayBillTempGoodsbatch" placeholder="请输入整数"
+												maxlength="200"/>
+										</div>
+									</div>
+									<div class="col-xs-6"></div>
+								</div>
+								
+							</div>
+						</div>
+						<div class="panel-footer">
+							<button type="submit" class="btn btn-cyan" id="">确定</button>
+							<button type="reset" class="btn btn-border" id="wayBillGoodTempCanel">取消</button>
+						</div>
+					</form>
+				</div>
+				
+				
+				
+			</div>
+		</div>
+	</div>
+	<!--js引用-->
+	<script src="../../js/lib/jquery/jquery-1.11.2.min.js"></script>
+	<script src="../../js/lib/jquery/jquery-ui.min.js"></script>
+	<script src="../../js/lib/jquery/jquery.base64.js"></script>
+	<script src="../../js/lib/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+	<script src="../../js/lib/bootstrap-3.3.4/js/bootstrap-typeahead.js"></script>
+	<script src="../../js/lib/jqGrid/jquery.jqGrid.min.js"></script>
+	<script src="../../js/lib/jqGrid/grid.locale-cn.js"></script>
+	<script src="../../js/lib/datePicker/WdatePicker.js"></script>
+	<script src="../../js/lib/uploadFile/jquery.Huploadify.js"></script>
+	<script src="../../js/lib/thrjs/Math.uuid.js"></script>
+	<script src="../../js/module/jquery-html5Validate.js"></script>
+	<script src="../../js/module/message-2.0.0.js"></script>
+	<script src="../../js/module/base.js"></script>
+	<script src="../../js/module/tools.js"></script>
+	<script src="../../js/module/topMenu.js"></script>
+	<script src="../../js/view/goodsTrade/wayBillManage.js"></script>
+	<script src="../../js/view/goodsTrade/wayBilTemplManage.js"></script>
+	
+</body>
+</html>

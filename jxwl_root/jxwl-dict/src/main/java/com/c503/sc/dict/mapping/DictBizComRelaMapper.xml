@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.c503.sc.dict.dao.IDictBizComRelaDao">
+	<resultMap id="DictDataResultMap" type="com.c503.sc.dict.vo.DictDataVo">
+		<id     column="CODE"    property="code"   jdbcType="VARCHAR" />
+		<result column="PCODE"   property="pcode"  jdbcType="VARCHAR" />
+		<result column="EN_NAME" property="enName" jdbcType="VARCHAR" />
+		<result column="NAME"    property="name"   jdbcType="VARCHAR" />
+		<result column="REMARK"  property="remark" jdbcType="VARCHAR" />
+		<result column="ORDERS"  property="orders" jdbcType="DECIMAL" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, bizid, comid, create_by, create_time, update_by, update_time, remove
+	</sql>
+	<!-- 通过业务编码查询业务模块下的常量分类集合 -->
+	<select id="findByCond" resultMap="DictDataResultMap" parameterType="java.util.HashMap">
+		SELECT
+			(
+				SELECT
+					COALESCE (
+						(
+							SELECT
+								tc.code
+							FROM
+								t_dictionary_type tc
+							WHERE
+								tc.id = tdt.pid
+							AND tc.remove =  #{remove,jdbcType=VARCHAR}
+						),
+						'0'
+					)
+			 FROM DUAL) pcode,
+			tdt.code,
+			tdt.name,
+			tdt.en_name,
+			0 orders
+		FROM
+			t_dictionary_bizcom_relation tdbr
+		LEFT JOIN t_dictionary_type tdt ON tdbr.comid = tdt.id
+		WHERE
+			tdbr.bizid = (
+				SELECT
+					dt.id
+				FROM
+					t_dictionary_type dt
+				WHERE
+					dt.code =  #{code,jdbcType=VARCHAR}
+				AND dt.remove =  #{remove,jdbcType=VARCHAR}
+			)
+		AND tdt.remove = #{remove,jdbcType=VARCHAR}
+	</select>
+	
+</mapper>

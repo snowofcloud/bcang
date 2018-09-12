@@ -1,0 +1,562 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>嘉兴物流微信公众号</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <link rel="stylesheet" href="../js/lib/AmazeUI-2.7.1/assets/css/amazeui.min.css">
+    <link rel="stylesheet" href="../js/lib/AmazeUI-2.7.1/assets/css/app.css">
+    <link rel="stylesheet" href="../js/lib/AmazeUI-2.7.1/assets/css/jquery.raty.css">
+    <!--业务样式-->
+    <link rel="stylesheet" href="../css/module/appCommon.css">
+</head>
+<body>
+<!--页面头部-->
+<div class="header">
+    <a href="#leftMenu" data-am-offcanvas class="pageTitle-icon">
+        <i class="am-menu-toggle-icon am-icon-bars"></i>
+    </a>
+    <div class="pageTitle">企业列表</div>
+</div>
+<!--内容-->
+<div class="am-tabs mainContainer" data-am-tabs="{noSwipe:1}" id="enterpriseMessage">
+   	<div class="top-search">
+   		<span class="rela_span">
+	   		<input type="text" class="am-form-field search-input search_width" id="businessName-search" style="display: inline;" placeholder="搜索 企业名称/法人代码">
+	        <span class="clear-x">×</span>
+   		</span>
+        <button id="enp_search"  type="button" class="mysearch-btn">搜索</button>
+   	</div>
+    <div class="am-tabs-bd">
+        <!--企业列表-->
+        <div class="am-tab-panel am-active" style="padding: 0px 10px 15px">
+            <!--数据展示区-->
+            <div id="enterpriseMessageData" class="showData">
+            </div>
+            <!--按钮区-->
+            <div class="pageFooter">
+                <button class="am-btn am-btn-default btn-Footer" id="moreMsg-btn">点击加载更多</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<!--企业数据列表模板-->
+<section class="hidden" id="enterpriseMessage-htmlTemplate">
+    <div class="content horizontal-line">
+        <div class="am-g">
+        	<div class="hidden" id="corporateNo">{corporateNo}</div>
+            <div class="am-u-sm-12">{enterpriseName} ({corporateNo})</div>
+        </div>
+    </div>
+</section>
+
+
+<!--企业信息详情界面查看PANEL-->
+<div class="panel am-modal am-modal-no-btn" tabindex="1" id="enterprise-detail-panel">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">详情
+            <a href="javascript:void(0)" class="am-close am-close-spin" data-am-modal-close>＜</a>
+        </div>
+        <div class="detail-head">企业基本信息</div>
+        <div class="am-modal-bd detail-backcolor" id="enterprise-detail-bd"></div>
+        <div>
+            <button id="order_search_btn" class="am-u-sm-6">订单查询</button>
+            <button id="waybill_search_btn" class="am-u-sm-6">运单查询</button>   
+        </div>
+    </div>
+</div>
+
+<!--企业信息详情查看数据模板-->
+<section class="hidden" id="enterprise-detail-htmlTemplate">
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">企业名称</div>
+        <div class="am-u-sm-7">{enterpriseName}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">法人代码</div>
+        <div id="corporate_noo" class="am-u-sm-7">{corporateNo}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">行业类型</div>
+        <div class="am-u-sm-7">{enterpriseType}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">跨域类型</div>
+        <div class="am-u-sm-7">{crossDomainType4Enter}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">法人代表</div>
+        <div class="am-u-sm-7">{corporateRep}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">登记机关</div>
+        <div class="am-u-sm-7">{registerOffice}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">注册资本</div>
+        <div class="am-u-sm-7">{logonCapital}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">车辆数量</div>
+        <div class="am-u-sm-7">{vehicleNum}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">成立时间</div>
+        <div class="am-u-sm-7">{establishDate}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">开户行</div>
+        <div class="am-u-sm-7">{openAccountBank}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">工商注册号</div>
+        <div class="am-u-sm-7">{registrationNo}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">税务证号</div>
+        <div class="am-u-sm-7">{taxationNo}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">经营区域</div>
+        <div class="am-u-sm-7">{operateArea}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">网址</div>
+        <div class="am-u-sm-7">{networkAddr}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">联系电话</div>
+        <div class="am-u-sm-7">{telephone}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">经营地址</div>
+        <div class="am-u-sm-7">{address}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">主营路线</div>
+        <div class="am-u-sm-7">{majorBusinessRoute}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">主营业务</div>
+        <div class="am-u-sm-7">{professionalWork}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">企业简介</div>
+        <div class="am-u-sm-7">{enterpriseIntroduce}</div>
+    </div>
+</section>
+
+
+
+
+
+<!-- **********************************************订单查询***************************************** -->
+<!-- 订单列表 -->
+<div class="panel am-modal am-modal-no-btn" tabindex="1" id="enterprise_order_panel">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">订单列表
+            <a href="javascript:void(0)" class="am-close am-close-spin" data-am-modal-close>＜</a>
+        </div>
+	   	<div class="top-search">
+	   		<span class="rela_span">
+	        	<input type="text" class="am-form-field search-input search_width" id="order_search" style="display: inline;" placeholder="搜索 订单号">
+	        	        <span class="clear-x">×</span>
+   			</span>
+	        <button id="orders_search"  type="button" class="mysearch-btn">搜索</button>
+	   	</div>
+        <div class="am-modal-bd list-top-padding" id="order_data"></div>
+        <!--按钮区-->
+        <div class="pageFooter">
+            <button class="am-btn am-btn-default btn-Footer" id="more_order_btn">点击加载更多</button>
+        </div>
+    </div>
+</div>
+
+<!--订单数据列表模板-->
+<section class="hidden" id="order_htmlTemplate">
+    <div class="content horizontal-wideline">
+        <div class="am-g">
+            <div class="am-u-sm-8">订单号：{ORDER_NO}</div>
+            <div class="am-u-sm-4 order-NoStatus">{TRADE_STATUS}</div>
+        </div>
+        <div class="am-g">
+            <div class="am-u-sm-8">货单号：{WAYBILLL_NO}</div>
+        </div>
+    </div>
+</section>
+
+
+
+
+<!--订单详情-->
+<div class="panel am-modal am-modal-no-btn" tabindex="1" id="order_detail_panel">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">订单详情
+            <a href="javascript:void(0)" class="am-close am-close-spin" data-am-modal-close>＜</a>
+        </div>
+        <div class="detail-head">基本信息</div>
+        <div class="am-modal-bd detail-backcolor" id="order_detail_data"></div>
+    </div>
+</div>
+
+<!--订单详情查看数据模板-->
+<section class="hidden" id="order-detail-htmlTemplate">
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">订单号</div>
+        <div class="am-u-sm-7">{orderNo}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">货单号</div>
+        <div id="corporate_noo" class="am-u-sm-7">{waybilllNo}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">订单生成日期</div>
+        <div class="am-u-sm-7">{orderDate}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">截止日期</div>
+        <div class="am-u-sm-7">{endDate}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">起点</div>
+        <div class="am-u-sm-7">{startPoint}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">终点</div>
+        <div class="am-u-sm-7">{endPoint}</div>
+    </div>
+    
+    <div class="detail-head" style="margin-left: -9px; margin-right: 0px;">交易信息</div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">交易状态</div>
+        <div class="am-u-sm-7" id="trade-status">{tradeStatus}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">交易对象</div>
+        <div class="am-u-sm-7">{tradeObject}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">联系方式</div>
+        <div class="am-u-sm-7">{traderobjTel}</div>
+    </div>
+    
+    <div class="detail-head" style="margin-left: -9px; margin-right: 0px;">发货单位信息</div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">发货单位</div>
+        <div class="am-u-sm-7">{senderCompany}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">联系电话</div>
+        <div class="am-u-sm-7">{senderTel}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">发货地址</div>
+        <div class="am-u-sm-7">{senderAddr}</div>
+    </div>
+    
+    <div class="detail-head" style="margin-left: -9px; margin-right: 0px;">收货单位信息</div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">收货单位</div>
+        <div class="am-u-sm-7">{receiverCompany}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">联系电话</div>
+        <div class="am-u-sm-7">{receiverTel}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">收货地址</div>
+        <div class="am-u-sm-7">{receiverAddr}</div>
+    </div>
+</section>
+<!--订单详情货物模板-->
+<section class="hidden" id="order_detail_goods_htmlTemplate">
+    <div class="detail-head" style="margin-left: -9px; margin-right: 0px;">货物信息</div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">货物序号</div>
+        <div class="am-u-sm-7">{goodsSerialNo}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">品名</div>
+        <div class="am-u-sm-7">{goodsName}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">包装</div>
+        <div class="am-u-sm-7">{pack}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">数量</div>
+        <div class="am-u-sm-7">{amount}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">重量</div>
+        <div class="am-u-sm-7">{weight}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">体积</div>
+        <div class="am-u-sm-7">{volume}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">单价</div>
+        <div class="am-u-sm-7">{unitPrice}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">货物价值</div>
+        <div class="am-u-sm-7">{goodsWorth}</div>
+    </div>
+</section>
+<!--订单评价模板-->
+<section class="hidden" id="order_comment_htmlTemplate">
+    <div class="detail-head" style="margin-left: -9px; margin-right: 0px;">订单评价</div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">评价用户</div>
+        <div class="am-u-sm-7">{tradeObject}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">评价时间</div>
+        <div class="am-u-sm-7">{createTime}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">星级评分</div>
+        <div class="am-u-sm-7" id="com_score"></div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">评价内容</div>
+        <div class="am-u-sm-7">{content}</div>
+    </div>
+</section>
+<!--订单投诉模板-->
+<section class="hidden" id="order_complain_htmlTemplate">
+    <div class="detail-head" style="margin-left: -9px; margin-right: 0px;">订单投诉</div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">投诉用户</div>
+        <div class="am-u-sm-7">{tradeObject}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">投诉时间</div>
+        <div class="am-u-sm-7">{createTime}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">投诉内容</div>
+        <div class="am-u-sm-7">{content}</div>
+    </div>
+</section>
+
+
+
+
+
+
+<!-- **********************************************运单查询***************************************** -->
+<!-- 运单列表 -->
+<div class="panel am-modal am-modal-no-btn" tabindex="1" id="enterprise_waybill_panel">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">运单列表
+            <a href="javascript:void(0)" class="am-close am-close-spin" data-am-modal-close>＜</a>
+        </div>
+	   	<div class="top-search">
+	   		<span class="rela_span">
+		        <input type="text" class="am-form-field search-input search_width" id="waybill_search" style="display: inline;" placeholder="搜索 运单号">
+	   			<span class="clear-x">×</span>
+	   		</span>
+	        <button id="wbi_search"  type="button" class="mysearch-btn">搜索</button>
+	   	</div>
+        <div class="am-modal-bd list-top-padding" id="waybill_data"></div>
+        <!--按钮区-->
+        <div class="pageFooter">
+            <button class="am-btn am-btn-default btn-Footer" id="more_waybill_btn">点击加载更多</button>
+        </div>
+    </div>
+</div>
+
+<!--运单数据列表模板-->
+<section class="hidden" id="waybill_htmlTemplate">
+    <div class="content horizontal-wideline">
+        <div class="am-g">
+            <div class="am-u-sm-8" style="font-size: 1.4rem;">运单号 {CHECKNO}</div>
+            <div class="am-u-sm-4 waybill-pst">{PST}</div>
+        </div>
+        <div class="am-g">
+            <div class="am-u-sm-8" style="font-size: 1.4rem;">客户单号 {CONSUMERNO}</div>
+            <div class="am-u-sm-8"></div>
+        </div>
+    </div>
+</section>
+
+
+
+
+<!--运单详情-->
+<div class="panel am-modal am-modal-no-btn" tabindex="1" id="waybill_detail_panel">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">运单详情
+            <a href="javascript:void(0)" class="am-close am-close-spin" data-am-modal-close>＜</a>
+        </div>
+        <div class="detail-head">基本信息</div>
+        <div class="am-modal-bd detail-backcolor" id="waybill_detail_data"></div>
+    </div>
+</div>
+
+<!--运单详情查看数据模板-->
+<section class="hidden" id="waybill-detail-htmlTemplate">
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">运单号</div>
+        <div class="am-u-sm-7">{checkno}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">客户单号</div>
+        <div id="corporate_noo" class="am-u-sm-7">{consumerno}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">起点</div>
+        <div class="am-u-sm-7">{startpoint}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">到点</div>
+        <div class="am-u-sm-7">{endpoint}</div>
+    </div>
+    
+    <div class="detail-head" style="margin-left: -9px; margin-right: 0px;">发货单位信息</div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">发货单位</div>
+        <div class="am-u-sm-7">{deliveryunit}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">联系人</div>
+        <div class="am-u-sm-7">{deliveryunitperson}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">联系电话</div>
+        <div class="am-u-sm-7">{deliveryunitphone}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">发货地址</div>
+        <div class="am-u-sm-7">{deliveryunitaddress}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">发货时间</div>
+        <div class="am-u-sm-7">{deliveryunittime}</div>
+    </div>
+    
+    <div class="detail-head" style="margin-left: -9px; margin-right: 0px;">收货单位信息</div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">收货单位</div>
+        <div class="am-u-sm-7">{achieveuint}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">联系人</div>
+        <div class="am-u-sm-7">{achieveperson}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">联系电话</div>
+        <div class="am-u-sm-7">{achievephone}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">收货地址</div>
+        <div class="am-u-sm-7">{achieveaddress}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">卸货时间</div>
+        <div class="am-u-sm-7">{achievetime}</div>
+    </div>
+    
+    <div class="detail-head" style="margin-left: -9px; margin-right: 0px;">企业相关信息</div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">物流企业</div>
+        <div class="am-u-sm-7">{wlEnterpriseName}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">车牌号</div>
+        <div class="am-u-sm-7">{carno}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">挂车车牌</div>
+        <div class="am-u-sm-7">{handcarno}</div>
+    </div>
+    
+    <div class="detail-head" style="margin-left: -9px; margin-right: 0px;">驾驶员信息</div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">驾驶员</div>
+        <div class="am-u-sm-7">{driver}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">联系电话</div>
+        <div class="am-u-sm-7">{driverphone}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">身份证号</div>
+        <div class="am-u-sm-7">{driverid}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">从业证号</div>
+        <div class="am-u-sm-7">{driverno}</div>
+    </div>
+    
+    <div class="detail-head" style="margin-left: -9px; margin-right: 0px;">押运员信息</div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">押运员</div>
+        <div class="am-u-sm-7">{escort}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">联系电话</div>
+        <div class="am-u-sm-7">{escortphone}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">身份证号</div>
+        <div class="am-u-sm-7">{escortid}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">从业证号</div>
+        <div class="am-u-sm-7">{escortno}</div>
+    </div>
+</section>
+<!--运单详情货物模板-->
+<section class="hidden" id="waybill_detail_goods_htmlTemplate">
+    <div class="detail-head" style="margin-left: -9px; margin-right: 0px;">货物信息</div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">品名</div>
+        <div class="am-u-sm-7">{goodsname}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">包装</div>
+        <div class="am-u-sm-7">{pack}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">数量</div>
+        <div class="am-u-sm-7">{quantity}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">重量</div>
+        <div class="am-u-sm-7">{weight}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">体积</div>
+        <div class="am-u-sm-7">{volume}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">规格</div>
+        <div class="am-u-sm-7">{format}</div>
+    </div>
+    <div class="am-g detail-horizontal-line">
+        <div class="am-u-sm-5">批次</div>
+        <div class="am-u-sm-7">{batch}</div>
+    </div>
+</section>
+
+
+
+
+<script src="../js/lib/AmazeUI-2.7.1/assets/js/jquery.min.js"></script>
+<script src="../js/lib/AmazeUI-2.7.1/assets/js/jquery.raty.js"></script>
+<script src="../js/lib/AmazeUI-2.7.1/assets/js/amazeui.js"></script>
+<script src="../js/lib/AmazeUI-2.7.1/assets/js/handlebars.min.js"></script>
+<script src="../js/lib/AmazeUI-2.7.1/assets/js/amazeui.widgets.helper.js"></script>
+<script src="../js/module/appBase.js"></script>
+<script src="../js/app/enterpriseMessage.js"></script>
+</html>

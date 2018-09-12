@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>交易大厅</title>
+<link rel="stylesheet"
+	href="../../js/lib/bootstrap-3.3.4/css/bootstrap.css" />
+<link rel="stylesheet" href="../../js/lib/jquery/css/jquery-ui.css" />
+<link rel="stylesheet" href="../../js/lib/jqGrid/ui.jqgrid.css" />
+<link rel="stylesheet" href="../../css/module/module.css" />
+<link rel="stylesheet" href="../../js/lib/uploadFile/Huploadify.css" />
+<link rel="stylesheet" href="../../css/view/carMonitor/inforManage.css" />
+<link rel="stylesheet" href="../../css/view/goodsTrade/orderTrade.css" />
+<link rel="stylesheet" href="../../css/view/goodsTrade/checkGoodsSource.css" />
+<!-- 媒体查询，只能放在最后 -->
+<link rel="stylesheet" href="../../css/view/media.css"/>
+</head>
+<body>
+	<div class="right-content">
+		<div role="tabpanel" class="">
+			<!-- Nav tabs -->
+			<ul class="nav nav-tabs" role="tablist" id="tradeHall-tabs">
+				<li role="presentation" class="active" data-module="goodsSource">
+					<a href="#goodsSource" aria-controls="goodsSource" role="tab" data-toggle="tab" data-module-name="goodsSource">货源管理</a>
+				</li>
+				<li role="presentation" data-module="goodsSourceDetail">
+				    <a href="#goodsSourceDetail" aria-controls="goodsSourceDetail" role="tab" data-toggle="tab" data-module-name="goodsSourceDetail">查看货源</a>
+				</li>
+				<li role="presentation" id="employeeTabLi" data-module="vehicleSource">
+				    <a href="#vehicleSource" aria-controls="vehicleSource" role="tab" data-toggle="tab"
+					data-module-name="vehicleSource">车源管理</a>
+				</li>
+				<li role="presentation" data-module="leaveMessage">
+				    <a href="#leaveMessage" aria-controls="leaveMessage" role="tab" data-toggle="tab" data-module-name="leaveMessage">留言管理</a>
+				</li>
+			</ul>
+
+			<!-- Tab panes -->
+			<div class="tab-content">
+				<!--货源管理-->
+				<div role="tabpanel" class="tab-pane active" id="goodsSource"
+					data-module="goodsSource">
+					<!--货源搜索栏区域-->
+					<div class="searchBox">
+						<div class="line-searchBox" id="goods_search">
+							<div class="item-searchBox col-xs-3">
+								<label class="horizontal-span">货单号</label> 
+								<input name="waybilllNo" id="waybilllNo_search" type="text" class="form-control" placeholder="请输入货单号">
+							</div>
+
+							<div class="item-searchBox col-xs-5">
+								<label class="horizontal-span">录入时间</label>
+								<input type="text" class="form-control Wdate" id="serach_startTime"
+									onclick="WdatePicker({dateFmt:'yyyy-MM-dd', maxDate:'#F{$dp.$D(\'serach_endTime\')}'})" readonly="readonly">
+								<span class="split-Wdate left-span">&nbsp;&nbsp;到&nbsp;&nbsp;</span>
+								<input type="text" class="form-control Wdate" id="serach_endTime" 
+									onclick="WdatePicker({dateFmt:'yyyy-MM-dd', minDate:'#F{$dp.$D(\'serach_startTime\')}'})" readonly="readonly">
+							</div>
+
+							<div class="item-searchBox col-xs-3">
+								<button type="button" class="btn btn-lemon" id="srcGoods-searchBtn" data-func="goodsSource-findByPage">
+									<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;查询
+								</button>
+								&nbsp;&nbsp;
+								<button type="button" class="btn btn-success" id="srcGoods-addBtn" data-func="goodsSource-save">
+									<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;新增
+								</button>
+								&nbsp;&nbsp;
+							</div>
+						</div>
+					</div>
+					<!--表格展示-->
+					<table id="srcGoodsTable"></table>
+					<div id="srcGoodsPage"></div>
+
+
+					<!--物流企业搜索栏区域-->
+					<div class="searchBox" style="margin-top: 20px">
+						<span><h4>物流企业信息</h4></span>
+						<div class="line-searchBox" id="enpre_search">
+							<div class="item-searchBox col-xs-3">
+								<label class="horizontal-span">企业名称</label>
+								<input name="enterpriseName" id="enterpriseName-search" type="text" class="form-control" placeholder="企业名称/法人代码">
+							</div>
+							
+							<div class="item-searchBox col-xs-3">
+								<label class="horizontal-span" for="">匹配条件</label>
+								<select class="form-control" id="match-condition">
+									<option value="001">车辆数</option>
+									<option value="002">总评分</option>
+									<option value="003">交易数</option>
+								</select>
+							</div>
+
+							<div class="item-searchBox col-xs-2">
+								<button type="button" class="btn btn-lemon" id="enpre-searchBtn" data-func="goodsSource-findByPage">
+									<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;查询
+								</button>
+								&nbsp;&nbsp;
+							</div>
+						</div>
+					</div>
+					<!--表格展示-->
+					<table id="wlEnterpriseTable"></table>
+					<div   id="wlEnterprisePage"></div>
+				</div>
+
+
+				<!--货源信息-->
+				<div role="tabpanel" class="tab-pane" id="goodsSourceDetail"
+					data-module="goodsSourceDetail">
+					<!--搜索栏区域展示-->
+					<div class="searchBox" id="">
+						<div class="line-searchBox">
+							<div class="item-searchBox col-xs-3">
+								<label class="horizontal-span">货单号</label> 
+								<input  id="waybilllNo_forCheck" type="text" class="form-control" placeholder="请输入0-200字符的货单号" maxlength="200">
+							</div>
+							
+							<div class="item-searchBox col-xs-6">
+								<label class="horizontal-span">发布时间</label>
+								<input type="text" class="form-control Wdate" id="serach_startTimeForMessage"
+									onclick="WdatePicker({dateFmt:'yyyy-MM-dd', maxDate:'#F{$dp.$D(\'serach_endTimeForMessage\')}'})" readonly="readonly">
+								<span class="split-Wdate left-span">&nbsp;&nbsp;到&nbsp;&nbsp;</span>
+								<input type="text" class="form-control Wdate" id="serach_endTimeForMessage" 
+									onclick="WdatePicker({dateFmt:'yyyy-MM-dd', minDate:'#F{$dp.$D(\'serach_startTimeForMessage\')}'})" readonly="readonly">
+							</div>
+							<div class="item-searchBox col-xs-2">
+								<button type="button" class="btn btn-lemon"  id="goodsSource_search" data-func="goodsSourceDetail-findByPage">
+									<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;查询
+								</button>
+							</div>
+						</div>
+					</div>
+					<!--表格展示-->
+					<table id="goodsSourceDetailTable"></table>
+					<div id="goodsSourceDetailPage"></div>
+				</div>
+
+
+				<!--车源管理-->
+				<div role="tabpanel" class="tab-pane" id="vehicleSource" data-module="vehicleSource">
+					<!--搜索栏区域展示-->
+					<div class="searchBox">
+							<div class="line-searchBox" id="dangerCar-search">
+								<div class="item-searchBox col-xs-3">
+									<label class="horizontal-span">企业名称</label>
+									<input name="corporateName-Code" id="enterpriseName-vehicleSource" type="text" class="form-control" placeholder="企业名称/法人代码">
+								</div>
+								<div class="item-searchBox col-xs-3">
+									<label class="horizontal-span">车牌号</label>
+									<input name="" id="licenseNo-search" type="text" class="form-control">
+								</div>
+								<div class="item-searchBox col-xs-3">
+									<label class="horizontal-span" for="">跨域类型</label> <select
+										class="form-control" id="cross-type">
+										<option value="">全部</option>
+									</select>
+								</div>
+								<div class="item-searchBox col-xs-3">
+									<button type="button" class="btn btn-lemon" id="car-searchBtn"
+										data-func="vehicleSource-findByPage">
+										<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;查询
+									</button>
+									&nbsp;&nbsp;
+									<button type="button" class="btn btn-success" id="car-addBtn"
+										data-func="vehicleSource-save">
+										<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;新增
+									</button>
+									&nbsp;&nbsp;
+									<button type="button" class="btn btn-info" id="car-export"
+										data-func="vehicleSource-export">
+										<span class="glyphicon glyphicon-export"></span>&nbsp;&nbsp;导出
+									</button>
+								</div>
+							</div>
+					</div>
+					<!--表格展示-->
+					<table id="vehicleSourceTable"></table>
+					<div id="vehicleSourcePage"></div>
+				</div>
+
+
+				<!--留言管理-->
+				<div role="tabpanel" class="tab-pane" id="leaveMessage" data-module="leaveMessage">
+					<!--搜索栏区域展示-->
+					<div class="searchBox" id="">
+						<div class="line-searchBox">
+							<div class="item-searchBox col-xs-7">
+								<label class="horizontal-span">留言时间</label>
+								<input type="text"	class="form-control Wdate" id="search_startTime"
+									   onclick="WdatePicker({dateFmt:'yyyy-MM-dd', onSelect:leaveMessage.searchHandler(), maxDate:'#F{$dp.$D(\'search_endTime\')}'})"
+									   readonly="readonly">
+								&nbsp;&nbsp;
+								<span class="split-Wdate left-span">&nbsp;&nbsp;到&nbsp;&nbsp;</span>
+								<input type="text" class="form-control Wdate" id="search_endTime" 
+									   onclick="WdatePicker({dateFmt:'yyyy-MM-dd', onSelect:leaveMessage.searchHandler(), minDate:'#F{$dp.$D(\'search_startTime\')}'})"
+									   readonly="readonly">
+								&nbsp;&nbsp;
+								<button type="button" class="btn btn-lemon" id="leaveMessage-searchBtn" data-func="leaveMessage-findByPage">
+									<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;查询
+								</button>
+							</div>
+						</div>
+					</div>
+					<!--表格展示-->
+					<table id="leaveMessageTable"></table>
+					<div id="leaveMessagePage"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 货源已删除的弹框 -->
+	<div class="panel panel-gray-lg" id="srcGoodsDeletedPanel" style="width:450px;">
+		<div class="panel-heading">
+			<span class="panel-title">货源信息</span>
+		</div>
+		<div class="panel-body">
+			<div class="panel-body-content">
+				<div class="row">
+					<div class="col-xs-3"></div>
+					<div class="col-xs-6">
+						<label style="font-size:25px;text-align:center;">该货源已被删除</label>
+					</div>
+					<div class="col-xs-3"></div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+		
+	<!--货源弹框-->
+	<div class="panel panel-gray-sl" id="src-goods-panel">
+		<div class="panel-heading">
+			<span class="panel-title">货源信息</span>
+		</div>
+		<form id="srcGoodsForm">
+			<div class="panel-body">
+				<div class="panel-body-content">
+					<div id="module1">
+						<div class="row twoSpan" id="goods-waybilllno">
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="" for="waybilllNo">货单号</label>
+								</div>
+								<div class="col-xs-7">
+									<span class="look-formPanel hidden" name="waybilllNo"></span>
+								</div>
+							</div>
+						</div>
+						<div class="row twoSpan">
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="must mustFlag" for="startPoint">起点</label>
+								</div>
+								<div class="col-xs-7">
+									<input type="text" name="startPoint" maxlength="200" class="form-control saveInput" placeholder="请输入0-200个字符" id="startPoint" data-max="200" required/>
+									<span class="look-formPanel hidden" name="startPoint"></span>
+									<input type="text" class="form-control hidden" name="startLng" id="startLngInput">
+									<input type="text" class="form-control hidden" name="startLat" id="startLatInput">
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="must mustFlag" for="endPoint">到点</label>
+								</div>
+								<div class="col-xs-7">
+									<input type="text" name="endPoint" maxlength="200" class="form-control saveInput"  placeholder="请输入0-200个字符" id="endPoint" data-max="200" required/>
+									<span class="look-formPanel hidden" name="endPoint"></span>
+									<input type="text" class="form-control hidden" name="endLng" id="endLngInput">
+									<input type="text" class="form-control hidden" name="endLat" id="endLatInput">
+								</div>
+							</div>
+						</div>
+						<div class="row twoSpan">
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="must mustFlag" for="carType">所需车辆类型</label>
+								</div>
+								<div class="col-xs-7">
+									<select id="carType" class="form-control saveInput" name="carType"></select>
+									<span class="look-formPanel hidden" name="carType"></span>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="must mustFlag" for="carLength">车长（米）</label>
+								</div>
+								<div class="col-xs-7">
+									<input type="text" name="carLength" class="form-control saveInput" id="carLength" maxlength="5"
+		                               pattern="^((([1-9]\d{0,1}|0)(\.\d{1,2})?))?$|^((100)|(100(\.[0]{1,2})))?$"
+		                               error-msg="请输入0-100.00以内的数" placeholder="请输入0-100.00以内的数(最多含2位小数)"  required/>
+									<span class="look-formPanel hidden" name="carLength"></span>
+								</div>
+							</div>							
+						</div>
+
+						<div class="moduleLine">发货人信息<div class="moduleSpanLine"></div></div>
+						<div class="row twoSpan">
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="must mustFlag" for="senderCompany">发货单位</label>
+								</div>
+								<div class="col-xs-7">
+									<input type="text" name="senderCompany" maxlength="200" class="form-control saveInput" placeholder="请输入0-200个字符" id="senderCompany" data-max="200" required />
+									<span class="look-formPanel hidden" name="senderCompany"></span>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="" for="senderLinker">联系人</label>
+								</div>
+								<div class="col-xs-7">
+									<input type="text" name="senderLinker" maxlength="200" class="form-control saveInput" placeholder="请输入0-200个字符" id="senderLinker" data-max="200" />
+									<span class="look-formPanel hidden" name="senderLinker"></span>
+								</div>
+							</div>							
+						</div>
+						<div class="row twoSpan">
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="must mustFlag" for="senderTel">联系电话</label>
+								</div>
+								<div class="col-xs-7">
+									<input type="text" name="senderTel" class="form-control saveInput" id="senderTel"
+										pattern="^1\d{10}$|^((0\d{2,3}-?)|(\(0\d{2,3}\))?)[1-9]\d{4,7}(-\d{1,4})?$|^\d{1,5}$"
+										error-msg="请输入手机或座机号码" maxlength="20" placeholder="请输入手机或座机号码" required/>
+									<span class="look-formPanel hidden" name="senderTel"></span>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="" for="senderAddr">发货地址</label>
+								</div>
+								<div class="col-xs-7">
+									<input type="text" name="senderAddr" maxlength="200" class="form-control saveInput" placeholder="请输入0-200个字符" id="senderAddr" data-max="200" />
+									<span class="look-formPanel hidden" name="senderAddr"></span>
+								</div>
+							</div>							
+						</div>						
+
+						<div class="moduleLine">收货人信息<div class="moduleSpanLine"></div></div>
+						<div class="row twoSpan">
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="must mustFlag" for="receiverCompany">收货单位</label>
+								</div>
+								<div class="col-xs-7">
+									<input type="text" name="receiverCompany" maxlength="200" class="form-control saveInput" placeholder="请输入0-200个字符" id="receiverCompany" data-max="200" required />
+									<span class="look-formPanel hidden" name="receiverCompany"></span>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="" for="receiverLinker">联系人</label>
+								</div>
+								<div class="col-xs-7">
+									<input type="text" name="receiverLinker" maxlength="200" class="form-control saveInput" placeholder="请输入0-200个字符" id="receiverLinker" data-max="200" />
+									<span class="look-formPanel hidden" name="receiverLinker"></span>
+								</div>
+							</div>							
+						</div>
+						<div class="row twoSpan">
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="must mustFlag" for="receiverTel">联系电话</label>
+								</div>
+								<div class="col-xs-7">
+									<input type="text" name="receiverTel" class="form-control saveInput" id="receiverTel"
+										pattern="^1\d{10}$|^((0\d{2,3}-?)|(\(0\d{2,3}\))?)[1-9]\d{4,7}(-\d{1,4})?$|^\d{1,5}$"
+										error-msg="请输入手机或座机号码" maxlength="20" placeholder="请输入手机或座机号码" required/>
+									<span class="look-formPanel hidden" name="receiverTel"></span>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="" for="receiverAddr">收货地址</label>
+								</div>
+								<div class="col-xs-7">
+									<input type="text" name="receiverAddr" maxlength="200" class="form-control saveInput" placeholder="请输入0-200个字符" id="receiverAddr" data-max="200" />
+									<span class="look-formPanel hidden" name="receiverAddr"></span>
+								</div>
+							</div>							
+						</div>	
+					</div>
+
+					<div class="moduleLine">货物信息<div class="moduleSpanLine"></div></div>
+					<div>
+						<button type="button" class="btn btn-success" id="goodAdd" style="margin: 10px;">
+							<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;新增
+						</button>
+					</div>
+					
+					<div id="goodsTabDiv">
+						<table id="goodsTable"></table>
+						<div id="goodsTablePage"></div>
+					</div>
+				
+					<div id="keepTalks" class="hidden">					
+						<div class="moduleLine">留言记录信息<div class="moduleSpanLine"></div></div>
+						<div class="row centerSytle" id="leaveMessageTime" >
+							<div class="col-xs-2">
+								<span class="must mustFlag centerSytle" for="messageContent">留言企业</span>
+							</div>
+							<div class="col-xs-3 centerSytle">
+								<span>留言时间</span>
+							</div>
+							<div class="col-xs-7">
+								<span class="must mustFlag centerSytle" for="messageContent">留言内容</span>
+							</div>
+						</div>
+						<div id= "talkMsgs" class="centerSytle"></div>  <!-- 把 talkMsgs 内嵌在 keepTalks 里而不是跟 keepTalks 并列 -->
+					</div>
+				</div>
+			</div>
+			<div class="panel-footer">
+				<button type="submit" class="btn btn-cyan" id="saveBtn">保存</button>
+				<button type="submit" class="btn btn-cyan" id="saveAndPublishBtn">保存并发布</button>
+				<button type="reset" class="btn btn-border cancel">取消</button>
+			</div>
+		</form>
+	</div>
+	
+	
+	
+	<!-- 货源--新增多个货物弹框 -->
+	<div class="panel panel-gray-lg" id="goods-panel" style="z-index:2600">
+		<div class="panel-heading">
+			<span class="panel-title">货物信息</span>
+		</div>
+		<form id="goods-form">
+			<div class="panel-body">
+				<div class="panel-body-content verify-park-info">
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-4">
+								<label>货物序号</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" name="goodsSerialNo"></span>
+							</div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="goodsName">品名</label>
+							</div>
+							<div class="col-xs-7">
+								<input type="text" name="goodsName" maxlength="200" class="form-control saveInput" placeholder="请输入0-200个字符" id="goodsName" data-max="200"  required/>
+								<span class="look-formPanel hidden" name="goodsName"></span>
+							</div>
+						</div>
+					</div>
+
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-4">
+								<label class="" for="pack">包装</label>
+							</div>
+							<div class="col-xs-7">
+								<input type="text" name="pack" maxlength="200" class="form-control saveInput" placeholder="请输入0-200个字符" id="pack" data-max="200" />
+								<span class="look-formPanel hidden" name="pack"></span>
+							</div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="amount">数量</label>
+							</div>
+							<div class="col-xs-7">
+								<input type="text" name="amount" class="form-control saveInput" id="amount" maxlength="5"
+									pattern="^([1-9]\d{0,3}|10000|0)$" error-msg="请输入0-10,000以内的整数" placeholder="请输入0-10,000以内的整数" required/>
+								<span class="look-formPanel hidden" name="amount"></span>
+							</div>
+						</div>
+					</div>
+
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-4">
+								<label class="" for="weight">重量（吨）</label>
+							</div>
+							<div class="col-xs-7">
+								<input type="text" name="weight" class="form-control saveInput" id="weight" maxlength="8"
+	                               pattern="^((([1-9]\d{0,3}|0)(\.\d{1,2})?))?$|^((10000)|(10000(\.[0]{1,2})))?$"
+	                               error-msg="请输入0-10,000.00以内的数" placeholder="请输入0-10,000.00以内的数(最多含2位小数)"/>
+								<span class="look-formPanel hidden" name="weight"></span>
+							</div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-4">
+								<label class="" for="volume">体积（<span class="unit">m<sup>3</sup></span>）</label>
+							</div>
+							<div class="col-xs-7">
+								<input type="text" name="volume" class="form-control saveInput" id="volume" maxlength="8"
+	                               pattern="^((([1-9]\d{0,3}|0)(\.\d{1,2})?))?$|^((10000)|(10000(\.[0]{1,2})))?$"
+	                               error-msg="请输入0-10,000.00以内的数" placeholder="请输入0-10,000.00以内的数(最多含2位小数)"/>
+								<span class="look-formPanel hidden" name="volume"></span>
+							</div>
+						</div>
+					</div>
+
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-4">
+								<label class="" for="unitPrice">单价（万元）</label>
+							</div>
+							<div class="col-xs-7">
+								<input type="text" name="unitPrice" class="form-control saveInput" id="unitPrice" maxlength="10"
+	                               pattern="^((([1-9]\d{0,5}|0)(\.\d{1,2})?))?$|^((1000000)|(1000000(\.[0]{1,2})))?$"
+	                               error-msg="请输入0-1,000,000.00以内的数" placeholder="请输入0-1,000,000.00以内的数(最多含2位小数)" />
+								<span class="look-formPanel hidden" name="unitPrice"></span>
+							</div>
+						</div>						
+						<div class="col-xs-6">
+							<div class="col-xs-4">
+								<label class="" for="goodsWorth">货物价值（万元）</label>
+							</div>
+							<div class="col-xs-7">
+								<input type="text" name="goodsWorth" class="form-control saveInput" id="goodsWorth" maxlength="13"
+	                               pattern="^((([1-9]\d{0,8}|0)(\.\d{1,2})?))?$|^((1000000000)|(1000000000(\.[0]{1,2})))?$"
+	                               error-msg="请输入0-1,000,000,000.00以内的数" placeholder="请输入0-1,000,000,000.00以内的数(最多含2位小数)" />								
+								<span class="look-formPanel hidden" name="goodsWorth"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel-footer">
+				<button type="submit" class="btn btn-cyan"   id="goodsSubmitBtn">确定</button>
+				<button type="reset"  class="btn btn-border" id="goodsCancleBtn">取消</button>
+			</div>
+		</form>
+	</div>
+	
+	
+    <!-- 货源--选中企业的所有车辆信息 -->
+	<div class="panel panel-gray-lg" id="selectedEnpCars">
+		<div class="panel-heading">
+			<span class="panel-title">企业所有车辆</span>
+		</div>
+		<form>
+			<div class="panel-body">
+				<div class="panel-body-content">
+					<div id="carsTableDiv">
+						<table id="scarsTable"></table>
+						<div id="scarsTablePage"></div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	
+	<!-- 货源--车辆详情 -->
+	<div class="panel panel-gray-sm" id="scarDetailPanel" style="z-index:2600">
+		<div class="panel-heading">
+			<span class="panel-title">车辆详情</span>
+		</div>
+		<form id="scarDetailForm">
+			<div class="panel-body">
+				<div class="panel-body-content">
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-4"><label>车牌号</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="licencePlateNo"></span></div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-5"><label>车辆类型</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="vehicleType"></span></div>
+						</div>
+					</div>
+					
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-4"><label>车辆品牌</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="vehicleBrand"></span></div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-5"><label>车辆品牌型号</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="vehicleBrandType"></span></div>
+						</div>
+					</div>
+
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-4"><label>车辆排量</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="vehicleOutput"></span></div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-5"><label>发动机号码</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="motorNo"></span></div>
+						</div>
+					</div>
+					
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-4"><label>底盘号码</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="graduadedNo"></span></div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-5"><label>车辆编码</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="vehicleNo"></span></div>
+						</div>
+					</div>
+					
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-4"><label>跨域类型</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="crossDomainType"></span></div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-5"><label>车辆状态</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="status"></span></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel-footer">
+<!-- 				<button type="submit" class="btn btn-cyan">确定</button> -->
+<!-- 				<button type="reset" class="btn btn-border cancel">取消</button> -->
+			</div>
+		</form>
+	</div>	
+	
+	
+
+	<!-- 车源---车源信息弹框-->
+	<div class="panel panel-gray-sm" id="dangercarinfor-panel">
+		<div class="panel-heading">
+			<span class="panel-title">新增车辆</span>
+		</div>
+		<form id="dangercarinfor-form">
+			<div class="panel-body">
+				<div class="panel-body-content">
+					<div class="row twoSpan detailShow">
+						<div class="col-xs-6">
+							<div class="col-xs-4">
+								<label>企业名称</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" id="carSourceName" name="enterpriseName"></span>
+							</div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-4">
+								<label>法人代码</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" id="carSourceNo" name="corporateNo"></span>
+							</div>
+						</div>
+					</div>
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="licencePlateNo-add">车牌号</label>
+							</div>
+							<div class="col-xs-7">
+								<input type="text" name="licencePlateNo" data-params="ni" placeholder="请输入1~200个字符" pattern="^[\u4E00-\u9FA5]{1}[A-Z]{1}[0-9A-Z]{5}$" class="form-control saveInput" id="licencePlateNo-add" maxlength="200" required/> 
+								<span class="look-formPanel hidden hidden" name="licencePlateNo"></span>
+							</div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="vehicleType-add">车辆类型</label>
+							</div>
+							<div class="col-xs-7">
+								<select class="form-control saveInput" name="vehicleType" id="vehicleType-add" required>
+									<!-- <option value=""></option> -->
+								</select> 
+								<span class="look-formPanel hidden" name="" id="vehicleTypeStr"></span>
+							</div>
+						</div>
+					</div>
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="vehicleBrand-add">车辆品牌</label>
+							</div>
+							<div class="col-xs-7">
+								<input type="text" name="vehicleBrand" placeholder="请输入1~200个字符" class="form-control saveInput" id="vehicleBrand-add" maxlength="200" required/> 
+									<span class="look-formPanel hidden" name="vehicleBrand"></span>
+							</div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-4">
+								<label for="vehicleBrandType-add">品牌型号</label>
+							</div>
+							<div class="col-xs-7">
+								<input type="text" name="vehicleBrandType" placeholder="请输入0~200个字符" class="form-control saveInput" id="vehicleBrandType-add" maxlength="200"/> 
+									<span class="look-formPanel hidden" name="vehicleBrandType"></span>
+							</div>
+						</div>
+					</div>
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-4">
+								<label for="vehicleOutput-add">车辆排量(L)</label>
+							</div>
+							<div class="col-xs-7">
+								<input type="text" name="vehicleOutput" placeholder="请输入0~200个字符" class="form-control saveInput" id="vehicleOutput-add" maxlength="200"/> 
+									<span class="look-formPanel hidden" name="vehicleOutput"></span>
+							</div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-4">
+								<label for="motorNo-add">发动机号码</label>
+							</div>
+							<div class="col-xs-7">
+								<input type="text" name="motorNo" placeholder="请输入0~200个字符" class="form-control saveInput" id="motorNo-add" maxlength="200"/> 
+								<span class="look-formPanel hidden" name="motorNo"></span>
+							</div>
+						</div>
+					</div>
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="graduadedNo-add">底盘号码</label>
+							</div>
+							<div class="col-xs-7">
+								<input type="text" name="graduadedNo" placeholder="请输入1~200个字符" class="form-control saveInput" id="graduadedNo-add" maxlength="200" required/> 
+									<span class="look-formPanel hidden" name="graduadedNo"></span>
+							</div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-4">
+								<label for="vehicleNo-add">车辆颜色</label>
+							</div>
+							<div class="col-xs-7">
+								<input type="text" name="vehicleColor" placeholder="请输入0~200个字符" class="form-control saveInput" id="vehicleColor-add" maxlength="200"/> 
+								<span class="look-formPanel hidden" name="vehicleColor"></span>
+							</div>
+						</div>
+					</div>
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="crossType-add">跨域类型</label>
+							</div>
+							<div class="col-xs-7">
+								<select class="form-control saveInput" name="crossDomainType"
+									id="crossType-add" required>
+									<!-- <option value=""></option> -->
+								</select> <span class="look-formPanel hidden" id="crossDomainTypeStr"></span>
+							</div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="maxLoadWeight-add">最大载重</label>
+							</div>
+							<div class="col-xs-7">
+								 <input type="text" name="maxLoadWeight" class="form-control saveInput" id="maxLoadWeight-add" maxlength="200"/>
+								 <span class="look-formPanel hidden" name="maxLoadWeight"></span>
+							</div>
+							<div class="col-xs-1"><span>(吨)</span></div>
+						</div>
+					<!-- 	<div class="col-xs-6 twoSpan detailShow">
+							<div class="col-xs-4">
+								<label>车辆状态</label>
+							</div>
+							<div class="col-xs-7">
+								<span class="look-formPanel" id="statusStr"></span>
+							</div>
+						</div> -->
+					</div>
+					<div class="row goodstype_and_quantity">
+						<div class="col-xs-2">
+							<label class="must mustFlag">可运输货物类别和数量</label>
+						</div>
+						<div class="vehicle-source-label-class"><span>类别：</span></div>
+						<div class="col-xs-4">
+							<input type="text" name="goodstype" class="form-control saveInput" id="" maxlength="200"/>
+							<span class="look-formPanel hidden" ></span>
+						</div>
+						<div class="vehicle-source-label-class"><span>数量：</span></div>
+						<div class="col-xs-2">
+							<input type="text" name="quantity" class="form-control saveInput" id="" maxlength="200"/>
+							<span class="look-formPanel hidden" ></span>
+						</div>
+					</div>
+					<div class="row goodstype_and_quantity">
+						<div class="col-xs-2">
+						</div>
+						<div class="vehicle-source-label-class"><span>类别：</span></div>
+						<div class="col-xs-4">
+							<input type="text" name="goodstype" class="form-control saveInput" id="" maxlength="200"/>
+							<span class="look-formPanel hidden" ></span>
+						</div>
+						<div class="vehicle-source-label-class"><span>数量：</span></div>
+						<div class="col-xs-2">
+							<input type="text" name="quantity" class="form-control saveInput" id="" maxlength="200"/>
+							<span class="look-formPanel hidden" ></span>
+						</div>
+					</div>
+					<div class="row goodstype_and_quantity">
+						<div class="col-xs-2">
+						</div>
+						<div class="vehicle-source-label-class"><span>类别：</span></div>
+						<div class="col-xs-4">
+							<input type="text" name="goodstype" class="form-control saveInput" id="" maxlength="200"/>
+							<span class="look-formPanel hidden" ></span>
+						</div>
+						<div class="vehicle-source-label-class"><span>数量：</span></div>
+						<div class="col-xs-2">
+							<input type="text" name="quantity" class="form-control saveInput" id="" maxlength="200"/>
+							<span class="look-formPanel hidden" ></span>
+						</div>
+					</div>
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-4">
+								<label class="must mustFlag" for="contactPhone-add">联系方式</label>
+							</div>
+							<div class="col-xs-7">
+								<input type="text" name="contactPhone" class="form-control saveInput" id="contactPhone-add" maxlength="200"/>
+								<span class="look-formPanel hidden" name="contactPhone"></span>
+							</div>
+						</div>
+						<div class="col-xs-6" id="publishDateAdd">
+							<div class="col-xs-4">
+								<label>发布日期</label>
+							</div>
+							<div class="col-xs-7">
+								 <span class="look-formPanel hidden" name="publishDate"></span>  <!--  -->
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-2">
+							<label class="must mustFlag" for="transportRoute-add">运输线路</label>
+						</div>
+						<div class="col-xs-8">
+							<textarea type="text" name="transportRoute" rows="5"
+								class="form-control saveInput" id="transportRoute-add" data-min="1" data-max="1000" required >
+							</textarea>
+							<span class="look-formPanel hidden" name="transportRoute"></span>
+						</div>
+					</div>
+					<!-- <div class="row">
+						<div class="col-xs-2">
+							<label class="">附件</label>
+						</div>
+						<div class="col-xs-9" id="file_addOrUpdate">
+							<div id="fileUpload_0"></div>
+							<small>请上传png/jpeg/bmp/jpg类型的文件，大小不超过10M</small> <input id="fileUp" type="hidden"
+								name="fileIds">
+						</div>
+						<div class="col-xs-9 fileDetails" id="fileUpload_see">
+							<div id="detailCarInfoFiles_see"></div>
+						</div>
+					</div> -->
+					<div class="row noie9filesmuliple" id="">
+	                    <div class="col-xs-2"><label>附件</label></div>
+	                    <div class="col-xs-9" id="file_addOrUpdate">
+	                        <div id="fileUpload_0"></div>
+	                        <small>请上传png/jpeg/bmp/jpg类型的文件，大小不超过10M</small>
+	                    </div>
+	                </div>
+	                
+	                <input id="fileUp" type="hidden" name="fileIds"><!-- 新增时，附件集合存放在这个隐藏域中 -->
+					
+					<div class="row ie9filesmuliplebox" id="">
+	                 	<div class="col-xs-2"><label>附件</label></div>
+	                 	<div class="col-xs-9" id="ie9_file_addOrUpdate">
+	                 		<ul id="showFileListMul_1" class="iegetfiles"></ul> <!-- 详情展示和编辑时，附件id集合存放在ul下的li中，li元素由iframe加载时生成，隐藏域中 -->
+	                 		<small>请上传png/jpeg/bmp/jpg类型的文件，大小不超过10M</small>
+	                 	</div>
+	                </div>
+	                <div class="col-xs-9 fileDetails" id="fileUpload_see">  
+						<div id="detailCarInfoFiles_see"></div>   
+					</div>
+				</div>
+			</div>
+			<div class="panel-footer">
+				<button type="submit" class="btn btn-cyan">确定</button>
+				<button type="reset" class="btn btn-border cancel">取消</button>
+			</div>
+		</form>
+		<!-- 避免上传的文件跳转到其他页面 -->
+        <iframe style="display:none" name="multipatFile_1" id="fileIframe_1"></iframe>
+	    <form class="ie9filesmuliplebox" target="multipatFile_1" id="" action="/JXWL/rest/vehicleSource/uploadFile" 
+	    			enctype="multipart/form-data" method="POST" style="position:absolute;top:360px;left:101px;">
+			<div class="iefileChoicebutton">选择文件
+				<input class="ieuploadsfile" type="file" id="ieuploadsfile_1" name="file"/>
+			</div>
+			<input type="submit" value="提交" id="iefilesubmit_1" style="display:none"/>
+		</form>
+	</div>
+
+	<!--车源---预览车源车辆附件弹框-->
+	<div class="panel panel-gray-md" id="previewDangercarFile-panel" style="z-index:2600">
+		<div class="panel-heading">
+			<span class="panel-title">车辆照片</span>
+		</div>
+		<form id="dangercarinfor-form">
+			<div class="panel-body">
+				<div class="panel-body-content">
+					<div class="imgContent">
+						<img id="dangercarFile"></img>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	
+	<!-- 留言/货源---查看货源和留言信息详情弹框-->
+	<div class="panel panel-gray-lg" id="goodsMessageForm-panel">
+		<div class="panel-heading">
+			<span class="panel-title">货源信息</span>
+		</div>
+		<div class="panel-body">
+			<form id="goodsMessageForm">
+				<div class="panel-body1">
+					<div class="panel-body-content">
+						<div class="row twoSpan">
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="" for="waybilllNo">货单号</label>
+								</div>
+								<div class="col-xs-7 waybilllNoo">
+									<span class="" name="waybilllNo" id="waybilllNo"></span>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label>所需车辆类型</label>
+								</div>
+								<div class="col-xs-7">
+									<span class="look-formPanel hidden" name="carType"></span>
+								</div>
+							</div>
+						</div>
+						
+						<div class="row twoSpan">
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="" for="startPoint1">起点</label>
+								</div>
+								<div class="col-xs-7">
+									<span class="look-formPanel hidden" name="startPoint"></span>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="" for="endPoint1">到点</label>
+								</div>
+								<div class="col-xs-7">
+									<span class="look-formPanel hidden" name="endPoint"></span>
+								</div>
+							</div>
+						</div>	
+						<div class="row twoSpan">
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="" for="carLength1">车长(米)</label>
+								</div>
+								<div class="col-xs-7">
+									<span class="look-formPanel hidden" name="carLength"></span>
+								</div>
+							</div>
+							<div class="col-xs-6">
+							</div>
+						</div>					
+	
+						<div class="moduleLine">发货人信息<div class="moduleSpanLine"></div></div>
+						<div class="row twoSpan">
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="must mustFlag" for="senderCompany">发货单位</label>
+								</div>
+								<div class="col-xs-7">
+									<span class="look-formPanel hidden" name="senderCompany"></span>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="" for="senderLinker">联系人</label>
+								</div>
+								<div class="col-xs-7">
+									<span class="look-formPanel hidden" name="senderLinker"></span>
+								</div>
+							</div>							
+						</div>
+						
+						<div class="row twoSpan">
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="must mustFlag" for="senderTel">联系电话</label>
+								</div>
+								<div class="col-xs-7">
+									<span class="look-formPanel hidden" name="senderTel"></span>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="" for="senderAddr">发货地址</label>
+								</div>
+								<div class="col-xs-7">
+									<span class="look-formPanel hidden" name="senderAddr"></span>
+								</div>
+							</div>							
+						</div>						
+	
+						<div class="moduleLine">收货人信息<div class="moduleSpanLine"></div></div>
+						<div class="row twoSpan">
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="must mustFlag" for="receiverCompany">收货单位</label>
+								</div>
+								<div class="col-xs-7">
+									<span class="look-formPanel hidden" name="receiverCompany"></span>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="" for="receiverLinker">联系人</label>
+								</div>
+								<div class="col-xs-7">
+									<span class="look-formPanel hidden" name="receiverLinker"></span>
+								</div>
+							</div>							
+						</div>
+						
+						<div class="row twoSpan">
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="must mustFlag" for="receiverTel">联系电话</label>
+								</div>
+								<div class="col-xs-7">
+									<span class="look-formPanel hidden" name="receiverTel"></span>
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div class="col-xs-4">
+									<label class="" for="receiverAddr">收货地址</label>
+								</div>
+								<div class="col-xs-7">
+									<span class="look-formPanel hidden" name="receiverAddr"></span>
+								</div>
+							</div>							
+						</div>	
+	
+						<div class="moduleLine">货物信息<div class="moduleSpanLine"></div></div>
+						<div id="lgoodsTabDiv">
+							<table id="lgoodsTable"></table>
+							<div id="lgoodsTablePage"></div>
+						</div>					
+						
+						<div id="keepTalksForgoodMessage">
+										
+						</div>
+					</div>
+				</div>
+			</form>
+			<div class="hiddenForMessage" id="leaveMessage-panel" >
+			<form id="leaveMessage-form">
+				<div class="panel-body1" id="leaveMessageRecords">
+					<div class="panel-body-content">					
+						<div class="moduleLine">留言记录信息<div class="moduleSpanLine"></div></div>
+						<div class="row hiddenForMessage" id="leaveMessageTime">
+							<div class="col-xs-2">
+								<label>留言时间</label>
+							</div>
+							<div class="col-xs-6">
+								<span class="look-formPanel " id="TimeForCheck" name="createdTime"></span>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-2">
+								<label>留言内容</label>
+							</div>
+							<div class="col-xs-9">
+								<span class="look-formPanel " id="contentForCheck" name="messageContent"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		</div>
+ </div> 
+	<!-- 留言---编辑留言弹框（单独出来） -->
+	<div class="panel panel-gray-sm" id="leaveMessageEdit-Panel" >
+		<div class="panel-heading">
+			<span class="panel-title">修改留言</span>
+		</div>
+		<form id="leaveMessageEdit-Form">
+			<div class="panel-body">
+				<div class="panel-body-content">					
+					<div class="moduleLine">留言记录信息<div class="moduleSpanLine"></div></div>
+					<div class="row">
+						<div class="col-xs-3">
+							<label class="must mustFlag" for="messageContent">留言内容</label>
+						</div>
+						<div class="col-xs-8">
+							<textarea type="text" name="messageContent" rows="5"
+								class="form-control saveInput" id="messageContent" data-min="1" data-max="1000" required >
+							</textarea>
+							<span class="look-formPanel hidden" name="messageContent"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel-footer" id="leaveMessagePanelFooter">
+				<button type="submit" class="btn btn-cyan" >保存</button>
+				<button type="reset" class="btn btn-border cancel">取消</button>
+			</div>
+		</form>
+	</div>
+		
+	<!-- 留言---新建留言信息-->
+	<div class="panel panel-gray-sm" id="creatMessageForm-panel">
+		<div class="panel-heading">
+			<span class="panel-title">新建留言</span>
+		</div>
+		<form id="creatMessageForm">
+			<div class="panel-body">
+				<div class="panel-body-content">
+					<div class="row">
+						<div class="col-xs-3">
+							<label class="" for="waybilllNo">货单号</label>
+						</div>
+						<div class="col-xs-7 waybilllNoo">
+							<span class="" name="waybilllNo" id="waybilllNo"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-3">
+						    <label class="must mustFlag" for="contentForMessageCreate">留言内容</label>
+						</div>
+						<div class="col-xs-8 ">
+							<textarea style="height:150px;" class="form-control saveInput"  name ="messageContent" id="contentForMessageCreate"  data-min="1" data-max="1000" 
+							maxlength="400" placeholder="留言内容长度不超过400个字符" required></textarea>
+					   </div>
+					</div>
+			</div>
+		</div>
+		<div class="panel-footer">
+			<button type="submit" class="btn btn-cyan" id="saveBtnForMessage">保存</button>
+			<button type="reset" class="btn btn-border cancel">取消</button>
+		</div>
+		</form>
+	</div>
+	
+	
+	
+	<!-- 留言---已建留言信息提示-->
+	<div class="panel panel-gray-sm" id="hasMessageForm-panel">
+		<div class="panel-heading">
+			<span class="panel-title">留言提示</span>
+		</div>
+		<form id="hasMessageForm">
+			<div class="panel-body">
+				<div class="panel-body-content">
+					<div class="row">
+						<p style="margin: 10px 10px 10px 186px;">该企业已建一条留言</p>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+
+
+    <!--企业信息弹框-->
+	<div class="panel panel-gray-sm" id="enterprise-msg-panel">
+		<div class="panel-heading">
+			<span class="panel-title">企业信息</span>
+		</div>
+		<form id="enterprise-msg-form">
+		<div class="panel-body">
+			<div class="panel-body-content">
+				<div class="row twoSpan">
+					<div class="col-xs-6">
+						<div class="col-xs-5">
+							<label>企业名称</label>
+						</div>
+						<div class="col-xs-7">
+							<span class="look-formPanel hidden" name="enterpriseName"></span>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="col-xs-5">
+							<label>主营业务</label>
+						</div>
+						<div class="col-xs-7">
+							<span class="look-formPanel hidden" name="professionalWork"></span>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="col-xs-5">
+							<label>企业简介</label>
+						</div>
+						<div class="col-xs-7">
+							<span class="look-formPanel hidden" name="enterpriseIntroduce"></span>
+						</div>
+					</div>
+				</div>					
+
+				<div class="row twoSpan">
+					<div class="col-xs-6">
+						<div class="col-xs-5">
+							<label>企业类型</label>
+						</div>
+						<div class="col-xs-7">
+							<span class="look-formPanel hidden" name="enterpriseType"></span>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="col-xs-5">
+							<label>法人代表</label>
+						</div>
+						<div class="col-xs-7">
+							<span class="look-formPanel hidden" name="corporateRep"></span>
+						</div>
+					</div>							
+				</div>
+				<div class="row twoSpan">
+					<div class="col-xs-6">
+						<div class="col-xs-5">
+							<label>登记机关</label>
+						</div>
+						<div class="col-xs-7">
+							<span class="look-formPanel hidden" name="registerOffice"></span>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="col-xs-5">
+							<label>注册资本</label>
+						</div>
+						<div class="col-xs-7">
+							<span class="look-formPanel hidden" name="logonCapital"></span>
+						</div>
+					</div>							
+				</div>						
+
+				<div class="row twoSpan">
+					<div class="col-xs-6">
+						<div class="col-xs-5">
+							<label>主营路线</label>
+						</div>
+						<div class="col-xs-7">
+							<span class="look-formPanel hidden" name="majorBusinessRoute"></span>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="col-xs-5">
+							<label>车辆数量</label>
+						</div>
+						<div class="col-xs-7">
+							<span class="look-formPanel hidden" name="vehicleNum"></span>
+						</div>
+					</div>							
+				</div>
+				<div class="row twoSpan">
+					<div class="col-xs-6">
+						<div class="col-xs-5">
+							<label>成立时间</label>
+						</div>
+						<div class="col-xs-7">
+							<span class="look-formPanel hidden" name="establishDate"></span>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="col-xs-5">
+							<label>开户行</label>
+						</div>
+						<div class="col-xs-7">
+							<span class="look-formPanel hidden" name="openAccountBank"></span>
+						</div>
+					</div>							
+				</div>	
+
+				<div class="row twoSpan">
+					<div class="col-xs-6">
+						<div class="col-xs-5">
+							<label>工商注册号</label>
+						</div>
+						<div class="col-xs-7">
+							<span class="look-formPanel hidden" name="registrationNo"></span>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="col-xs-5">
+							<label>税务证号</label>
+						</div>
+						<div class="col-xs-7">
+							<span class="look-formPanel hidden" name="taxationNo"></span>
+						</div>
+					</div>
+				</div>
+
+				<div class="row twoSpan">
+					<div class="col-xs-6">
+						<div class="col-xs-5">
+							<label>联系方式</label>
+						</div>
+						<div class="col-xs-7">
+							<span class="look-formPanel hidden" name="telephone"></span>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="col-xs-5">
+							<label>网址</label>
+						</div>
+						<div class="col-xs-7">
+							<span class="look-formPanel hidden" name="networkAddr"></span>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="col-xs-5">
+							<label>经营地址</label>
+						</div>
+						<div class="col-xs-7">
+							<span class="look-formPanel hidden" name="address"></span>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		</form>
+	</div>
+
+	
+
+	<!--js引用-->
+	<script src="../../js/lib/jquery/jquery-1.11.2.min.js"></script>
+	<script src="../../js/lib/jquery/jquery-ui.min.js"></script>
+	<script src="../../js/lib/jquery/jquery.base64.js"></script>
+	<script src="../../js/lib/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+	<script src="../../js/lib/bootstrap-3.3.4/js/bootstrap-typeahead.js"></script>
+	<script src="../../js/lib/jqGrid/jquery.jqGrid.min.js"></script>
+	<script src="../../js/lib/jqGrid/grid.locale-cn.js"></script>
+	<script src="../../js/lib/datePicker/WdatePicker.js"></script>
+	<script src="../../js/lib/uploadFile/jquery.Huploadify.js"></script>
+	<script src="../../js/lib/thrjs/Math.uuid.js"></script>
+	<script src="../../js/module/jquery-html5Validate.js"></script>
+	<script src="../../js/module/message-2.0.0.js"></script>
+	<script src="../../js/module/base.js"></script>
+	<script src="../../js/module/topMenu.js"></script>
+	<script src="../../js/view/goodsTrade/sourceOfGoods.js"></script>
+	<script src="../../js/view/goodsTrade/goodsSourceManage.js"></script> <!-- 货源管理 -->
+	<script src="../../js/view/goodsTrade/goodsSourceInfo.js"></script><!-- 货源信息  -->
+	<script src="../../js/view/goodsTrade/vehicleSource.js"></script>
+	<script src="../../js/view/goodsTrade/leaveMessage.js"></script>
+</body>
+</html>

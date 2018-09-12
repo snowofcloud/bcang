@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>首页</title>
+    <link rel="stylesheet" href="../js/lib/bootstrap-3.3.4/css/bootstrap.css"/>
+    <link rel="stylesheet" href="../js/lib/jquery/css/jquery-ui.css"/>
+    <link rel="stylesheet" href="../js/lib/jqGrid/ui.jqgrid.css"/>
+    <link rel="stylesheet" href="../css/module/module.css"/>
+	<!-- 地图css files -->
+    <link type="text/css" rel="stylesheet" href="../map/base/ol3.13.1/ol.css">
+    <link type="text/css" rel="stylesheet" href="../map/base/css/map.css">
+    <link type="text/css" rel="stylesheet" href="../map/business/css/boatPopup.css">
+    <link type="text/css" rel="stylesheet" href="../map/business/css/bizCommon.css">
+    <link type="text/css" rel="stylesheet" href="../map/business/css/alarmOnMap.css">
+    <link type="text/css" rel="stylesheet" href="../map/business/css/leftEnpCars.css">
+    <link type="text/css" rel="stylesheet" href="../map/extend/areaRestrictBusiness/css/electRail.css">
+    <link type="text/css" rel="stylesheet" href="../css/view/index.css"/>
+    <link type="text/css" rel="stylesheet" href="../map/extend/trackReplay/css/trackReplay.css">
+    <!-- 媒体查询，只能放在最后 -->
+	<link rel="stylesheet" href="../css/view/media.css"/>		
+</head>
+<body>
+<div class="right-content">
+    <div class="container-fluid">
+   		 <!-- 地图信息 -->
+    	 <div id='map' class="map" style="background-color: #fff;background-image: none;"></div>
+		<!--  右下角---车辆上下线情况弹窗 -start------->
+		 <!--  上线 -->
+	   	<div class="panel panel-gray-xs onofflineStatus" id="onlineStatus" >
+	       	<div class="panel-heading">
+	        	<span class="panel-title">车辆上线通知</span>
+	        	<span class="panel-close"></span>
+	    	</div>
+		    <form id=" onlineStatus-form">
+		        <div class="panel-body">
+		            <div class="panel-body-content" id="onlineHtml">
+		            </div>
+		        </div>
+		        <div class="panel-footer">
+		            <button type="button" data="" id="onlineMintor" class="btn btn-cyan" >监控</button>
+		        </div> 
+		    </form>
+	    </div>
+	    
+	     <!--   下线 -->
+	    <div class="panel panel-gray-xs onofflineStatus" id="offlineStatus">
+	       	<div class="panel-heading">
+	        	<span class="panel-title">车辆下线通知</span>
+	        	<span class="panel-close"></span>
+	    	</div>
+		    <form id="offlineStatus-form">
+		        <div class="panel-body">
+		            <div class="panel-body-content"  id="offlineHtml">
+		            </div>
+		        </div>
+		    </form>
+	    </div>
+	   <!--  右下角---车辆上下线情况弹窗 -------end-->
+	   
+	   <!--  右下角---报警通知情况弹窗 -start------->
+	   	<div class="panel panel-gray-xs" id="carAlarmStatus">
+	       	<div class="panel-heading">
+	        	<span class="panel-title">报警通知</span>
+	        	<span class="panel-close"></span>
+	    	</div>
+		    <form id="carAlarmStatus-form">
+		        <div class="panel-body">
+		            <div class="panel-body-content">
+		            	<div class="row">
+							<span class="carinforfont">车牌号:</span>
+							 <span class="look-formPanel carinforfont" name="carrierName"></span>
+						</div>
+						<div class="row">
+								<span class="carinforfont">所属物流企业 :</span>
+								 <span class="look-formPanel carinforfont" name="enterpriseName"> </span>
+						</div>
+						<div class="row">
+							<span class="carinforfont">报警简述 :</span>
+							 <span class="look-formPanel carinforfont" name="alarmDetails"></span>
+						</div>
+		            </div>
+		        </div>
+		        <div class="panel-footer">
+		            <button type="button" data="" id="carAlarmMintor" class="btn btn-cyan" 
+		            onclick="getCarOnlineStatus();">监控</button>
+		        </div>
+		    </form>
+	    </div>
+	   <!--  右下角---报警通知情况弹窗 -------end-->
+	   
+	   <!--   管道 -->
+	   <div class="footer-panel" id="pipeLine" style="display:none" >
+	   		<div role="tabpanel" class="">
+				<div class="panel-heading " style="height: 24px;">
+					<span class="panel-title"></span><span class="panel-close" onclick="removePanel('','pipeLine')"></span>
+				</div>
+	   			<div class="panel-body">
+	   				<div class="tab-content" style="" id="pipe-coen">
+	   					<div class="row">
+							<label class="carinforfont pipeLineLabel">管道编号&nbsp;:</label>
+							 <span class="look-formPanel carinforfont" name=pipeNo></span>
+						</div>
+						<div class="row">
+								<label class="carinforfont">管道名称&nbsp;:</label>
+								 <span class="look-formPanel carinforfont" name="pipeName"> </span>
+						</div>
+						<div class="row">
+							<label class="carinforfont">管道位置&nbsp;:</label>
+							 <span class="look-formPanel carinforfont" name="address"></span>
+						</div>
+						<!-- <div class="row">
+							<label class="carinforfont">地理坐标:</label>
+							 <span class="look-formPanel carinforfont" name="carrierName"></span>
+						</div> -->
+						<div class="row">
+							<label class="carinforfont">流量(m<sup>3</sup>/h)&nbsp;:</label>
+							 <span class="look-formPanel carinforfont" name="flow"></span>
+						</div>
+						<div class="row">
+								<label class="carinforfont">危险品名称&nbsp;:</label>
+								 <span class="look-formPanel carinforfont" name="dangerName"> </span>
+								 <label class="carinforfont" style="margin-left: 104px;">危险品类型 :</label>
+								 <span class="look-formPanel carinforfont" name="dangerType"> </span>
+						</div>
+						<div class="row">
+							<label class="carinforfont">责任人&nbsp;:</label>
+							<span class="look-formPanel carinforfont" name="dutyPerson"></span>
+							<label class="carinforfont" style="margin-left: 150px;">联系电话&nbsp;:</label>
+							<span class="look-formPanel carinforfont" name="telephone"> </span>
+						</div>
+					</div>
+	   				<div class="realInfor-content" style=""id="pipe-dyn">
+	   				</div>
+	   			</div>
+	   	   		</div>
+	   </div>
+
+	   <!--储罐 -->
+	   <div class="footer-panel" id="storagetank" style="display:none" >
+	   		<div role="tabpanel" class="">
+				<div class="panel-heading " style="height: 24px;">
+					<span class="panel-title"></span><span class="panel-close" onclick="removePanel('','storagetank')"></span>
+				</div>
+	   			<div class="panel-body">
+	   				<div class="tab-content"  id="stor-coen">
+	   					<div class="row">
+							<label class="carinforfont">储罐编号&nbsp;:</label>
+							 <span class="look-formPanel carinforfont" name="pipeNo" ></span>
+						</div>
+						<div class="row">
+								<label class="carinforfont">储罐名称&nbsp;:</label>
+								 <span class="look-formPanel carinforfont" name="pipeName" > </span>
+						</div>
+						<div class="row">
+							<label class="carinforfont">储罐位置&nbsp;:</label>
+							 <span class="look-formPanel carinforfont" name="address" ></span>
+						</div>
+						<!-- <div class="row">
+							<label class="carinforfont">地理坐标:</label>
+							 <span class="look-formPanel carinforfont" name="carrierName" ></span>
+						</div> -->
+						<div class="row">
+								<label class="carinforfont">危险品名称&nbsp;:</label>
+								 <span class="look-formPanel carinforfont" name="dangerName" > </span>
+								 <label class="carinforfont" style="margin-left: 104px;">危险品类型 :</label>
+								 <span class="look-formPanel carinforfont" name="dangerType" > </span>
+						</div>
+						<div class="row">
+							<label class="carinforfont">液位(m)&nbsp;:</label>
+							<span class="look-formPanel carinforfont" name="liquidLevel" ></span>
+							<label class="carinforfont" style="margin-left: 199px;">存量(m<sup>3</sup>)&nbsp;:</label>
+							<span class="look-formPanel carinforfont" name="stockAllowance" > </span>
+						</div>
+						<div class="row">
+							<label class="carinforfont">储罐容量(m<sup>3</sup>)&nbsp;:</label>
+							<span class="look-formPanel carinforfont" name="stockVolume" ></span>
+							<label class="carinforfont" style="margin-left: 175px;">材质 :</label>
+							<span class="look-formPanel carinforfont" name="material"> </span>
+						</div>
+					</div>
+	   				<div class="realInfor-content" id="stor-dyn">
+	   				</div>
+	   			</div>
+	   
+	   
+	   
+	   		</div>
+	   </div>
+	   
+	   <!-- 地图下方显示的弹框 -start----->
+		<div class="footer-panel" id="footer-panel" style="display:none" >
+			<div class="narrow-down"></div>
+			<div role="tabpanel" class="">
+				<div>
+					<span class="panel-title"></span>
+					<span class="panel-close" onclick="removeBottom()" ;=""></span>
+				</div>
+		        <ul class="nav nav-tabs" role="tablist" id="footer-tabs">
+		            <li role="presentation"  id ="cargoMonitor-tab" class="active">
+		                <a href="#cargoMonitor" aria-controls="cargoMonitor" role="tab" data-toggle="tab">货物动态监控</a>
+		            </li>
+		            <li role="presentation" id ="alarmLog-tab">
+		                <a href="#alarmLog" aria-controls="alarmLog" role="tab" data-toggle="tab">报警记录
+		                 	<span class="badge" style="background-color:rgba(255, 102, 0, 1);" id="recordArlam">0</span>
+		                 </a>
+		            </li>
+		        </ul>
+		        <div class="tab-content" id="footer-tabcontent">
+		            <div role="tabpanel" class="tab-pane active" id="cargoMonitor">
+					   	<div role="tabpanel" class="footer-subpanel" id="footer-subpanel">
+					        <ul class="nav nav-tabs" role="tablist" id="footer-subtabs" style="overflow-x:auto;white-space:nowrap;overflow-y:hidden">
+					        </ul>
+					        <div class="tab-content" id="cargoInfor">
+					    	</div>
+						</div>
+		            	<div class="realInfor-content" id="realInfor-content">
+				            <div class="realInfor ">
+				            	<div class="fontStyle">当前温度</div><div class="fontStyle"><span name="temperature"><span></div>
+				            	<div class="fontStyle">℃</div><div class="fontStyle">(摄氏度)</div>
+				           	</div>
+				           <div class="realInfor">
+				           		<div class="fontStyle">当前压力</div><div class="fontStyle" style="color: #FF6633"><span name="pressure"></span></div>
+				            	<div class="fontStyle">KPa</div><div class="fontStyle">(千帕)</div>
+				            </div>
+				            <div class="realInfor">
+				            	<div class="fontStyle">当前液位</div><div class="fontStyle" style="color: #00CCFF"><span name="liquidLevel"></span></div>
+				            	<div class="fontStyle">mm</div><div class="fontStyle">(毫米)</div>
+				            </div>
+				            <div class="realInfor">
+				            	<div class="fontStyle">当前时速</div><div class="fontStyle"  style="color: #FFCC00"><span name="speed"></span></div>
+				            	<div class="fontStyle">km/h</div><div class="fontStyle">(公里/时)</div>
+				            </div>
+				            <div class="realInfor">
+				            	<div class="fontStyle">当前胎压</div><div class="fontStyle"  style="color: #FFCC00"><span name="tirePressure"></span></div>
+				            	<div class="fontStyle">MPa</div><div class="fontStyle">(兆帕)</div>
+				            </div>
+			            </div>
+		            </div>
+		            <!--报警记录-->
+		            <div role="tabpanel" class="tab-pane" id="alarmLog">
+		            	 <!--表格展示-->
+		               <div class="tab-tablecontent">
+			               <table id="alarmLogTable"></table>
+			                <div id="alarmLogPager"></div>
+		               </div>
+		                
+		            </div>
+		    	</div>
+			</div>
+		</div>
+	     <!-- 地图下方显示的弹框 -end----->
+    </div>
+    
+	<!-- 车辆搜索 -start----->
+	<div id="mapSearchPlace" data-module="rtLocation" data-func="rtLocation-getCarAlarm"  >
+		<div class="mapSearchIcon" >
+			<i><img id="mapIdexCarSearchBigBtn" style="" src="../map/business/img/carInfor/top-search-icon2.png"></i>	
+		</div>
+		<div class="row hidden" id="mapSearch" >
+			<div class="col-sm-2">
+				<select id="mapSearchType" class="form-control">
+					<option value="车辆">车辆</option>
+					<!-- <option value="企业">企业</option> -->
+					<!-- <option value="管道">管道</option> -->
+				</select>
+			</div>
+	  		<div class="col-lg-5">
+	    		<div class="input-group">
+	    			<input type="text" class="form-control" id="vehicle-search" placeholder="请输入车牌号或运单号查询" maxlength="200" style="z-index:0">
+	      			<span class="input-group-btn">
+	       				<button class="btn btn-default" type="button" >
+	       	 				<img src="../map/business/img/carInfor/top-search-icon1.png">
+	        			</button>
+	      			</span>
+		    </div><!-- /input-group -->
+		  </div><!-- /.col-lg-6 -->
+		</div><!-- /.row -->
+		<div class="search-content hidden">
+			 <!-- 查询渔船列表信息 -->
+	        <div id="carsearch-content" class="search-content-message">
+				<div class="panel-heading">
+					<span class="panel-title">搜索结果</span>
+					<span class="panel-close" onclick="mapIdexCarSearch.panelClose()"></span>
+				</div>
+				<!-- 车辆信息显示区域 -->
+				<div id="vehicleMessageShow">
+				</div>
+	        </div>
+		</div>
+	</div>
+	<!-- 车辆搜索 -end----->
+	
+	<!--车辆查询结果显示数据模板 -->
+	<div class="hidden" id="vehicleMessage">
+		<div class="searchInfor">
+			<div class="searchRow">
+				<div class="carnumber">
+					<label>车牌号：</label>
+					<span>{licencePlateNo}</span>
+				</div>
+				<div class="">
+					<span>{onlineStatus}</span>
+				</div>
+			</div>
+			<div class="searchRow">
+				<label>运输公司：</label>
+				<span class="company" title="{enterpriseName}">{enterpriseName}</span>
+			</div>
+			<div class="searchRow">
+				<label>当前运单号</label>
+				<span>{checkno}</span>
+			</div>
+		</div>
+	</div>
+	<!--车辆查询结果显示数据模板 end-->
+	
+	<!-- 自定义区域 -->
+	<div class="panel panel-gray-sm" id="addUserDefinedArea-panel">
+	    <div class="panel-heading">
+	        <span class="panel-title">新增自定义区域</span>
+	        <span class="panel-close"></span>
+	    </div>
+	    <form id="save-userDefinedArea-form">
+	        <div class="panel-body">
+	            <div class="panel-body-content">
+	                <div class="row">
+	                    <div class="col-xs-3"><label for="reaDefinedArea-name">自定义区域名称:</label></div>
+	                    <div class="col-xs-7"><input type="text" class="form-control saveInput" 
+	                    		name="areaName" id="userDefinedArea-name" required data-min="1" data-max="200"/>
+	              			 <span class="look-formPanel hidden" name="areaName"></span>
+	              		 </div>
+	                </div>
+	            </div>
+	        </div>
+	        <div class="panel-footer">
+	            <button type="submit" class="btn btn-cyan">确定</button>
+	            <button type="reset" class="btn btn-border cancel">取消</button>
+	        </div>
+	    </form>
+	</div>
+	
+	<!-- 自定义线条 -->
+	<div class="panel panel-gray-sm" id="addUserDefinedLine-panel">
+	    <div class="panel-heading">
+	        <span class="panel-title">新增自定义线条</span>
+	        <span class="panel-close"></span>
+	    </div>
+	    <form id="save-userDefinedLine-form">
+	        <div class="panel-body">
+	            <div class="panel-body-content">
+	                <div class="row">
+	                    <div class="col-xs-3"><label for="reaDefinedLine-name">自定义线条名称:</label></div>
+	                    <div class="col-xs-7"><input type="text" class="form-control saveInput" 
+	                    		name="lineName" id="userDefinedLine-name" required data-min="1" data-max="200"/>
+	              			 <span class="look-formPanel hidden" name="lineName"></span>
+	              		 </div>
+	                </div>
+	            </div>
+	        </div>
+	        <div class="panel-footer">
+	            <button type="submit" class="btn btn-cyan">确定</button>
+	            <button type="reset" class="btn btn-border cancel">取消</button>
+	        </div>
+	    </form>
+	</div>
+	
+	<!-- 自定义设施 -->
+	<!-- <div class="panel panel-gray-sm" id="addUserDefinedFacility-panel">
+	    <div class="panel-heading">
+	        <span class="panel-title">自定义设施</span>
+	        <span class="panel-close"></span>
+	    </div>
+	    <form id="save-userDefinedLine-form">
+	        <div class="panel-body">
+	            <div class="panel-body-content">
+	                <div class="row">
+	                    <div class="col-xs-3"><label for="reaDefinedLine-name">自定义线条名称:</label></div>
+	                    <div class="col-xs-7"><input type="text" class="form-control saveInput" 
+	                    		name="lineName" id="userDefinedLine-name" required data-min="1" data-max="200"/>
+	              			 <span class="look-formPanel hidden" name="lineName"></span>
+	              		 </div>
+	                </div>
+	            </div>
+	        </div>
+	        <div class="panel-footer">
+	            <button type="submit" class="btn btn-cyan">确定</button>
+	            <button type="reset" class="btn btn-border cancel">取消</button>
+	        </div>
+	    </form>
+	</div> -->
+	
+	<!-- 区域限制 -->
+	<div class="panel panel-gray-sm" id="addAreaRestrict-panel">
+	    <div class="panel-heading">
+	        <span class="panel-title">新增限制区域</span>
+	        <span class="panel-close"></span>
+	    </div>
+	    <form id="save-enterpriseRight-form">
+	        <div class="panel-body">
+	            <div class="panel-body-content">
+	                <div class="row">
+	                    <div class="col-xs-3"><label for="reaRestrict-name">限制区域名称:</label></div>
+	                    <div class="col-xs-7"><input type="text" class="form-control saveInput" 
+	                    		name="limitName" id="reaRestrict-name" required data-min="1" data-max="200"/>
+	              			 <span class="look-formPanel hidden" name="limitName"></span>
+	              		 </div>
+	                </div>
+	                <div class="row">
+	                    <div class="col-xs-3"><label for="reaRestrict-type">限制类型:</label></div>
+	                    <div class="col-xs-7">
+		                    <select type="text" class="form-control saveInput" name="limitType" id="reaRestrict-type" required>
+		                   		<option value="112001001">限速</option>
+		                   		<option value="112001002">限停</option>
+		                   		<option value="112001003">限驶入</option>
+		                    </select>
+		                    <span class="look-formPanel hidden" name="limitType"></span>
+	                    </div>
+	                </div>
+	                <div class="row" id="reaRestrict-speed-place">
+	                    <div class="col-xs-3"><label for="reaRestrict-speed">速度限制:</label></div>
+	                    <div class="col-xs-5">
+	                    	<input type="text" class="form-control saveInput" name="limitSpeed" id="reaRestrict-speed"
+	                    		 pattern="^(([1-9]\d{0,6}(\.\d{0,2})?)||(0\.\d{0,2})||^(0{1}))$" data-min="1" data-max="10"
+	                    		 error-msg="只能输入长度为10,小数点2位的正数"/> 
+	              		    <span class="look-formPanel hidden" name="limitSpeed"></span>
+	                    </div>
+	                    <div class="col-xs-2"><label class="right">(公里/时)</label></div>
+	                </div>
+	            </div>
+	        </div>
+	        <div class="panel-footer">
+	            <button type="submit" class="btn btn-cyan">确定</button>
+	            <button type="reset" class="btn btn-border cancel">取消</button>
+	        </div>
+	    </form>
+	</div>
+	
+	<!-- 车辆调度 -->
+	<div class="panel panel-gray-sm" id="carDispatch-panel">
+	    <div class="panel-heading">
+	        <span class="panel-title">车辆调度</span>
+	    </div>
+	    <form id="save-carDispatch-form">
+	        <div class="panel-body">
+	            <div class="panel-body-content">
+	                <div class="row hidden" id="carDisp">
+	                    <div class="col-xs-2"><label for="">调度信息</label></div>
+	                    <div class="col-xs-9">
+	                    	<div class="form-control look-formPanel" id="mapCarDispatchMsg"  style="height:350px; border: solid #ccc 1px; overflow-y: auto;"></div>
+	                    </div>
+	                </div>	            
+	                <div class="row">
+	                    <div class="col-xs-2"><label for="mapCarDispatchInfor">车辆信息</label></div>
+	                    <div class="col-xs-9">
+	                    	<textarea  class="form-control saveInput must" 
+	                    		 id="mapCarDispatchInfor" rows="4" placeholder="请输入500个以内的汉字" required=""></textarea>
+	                    </div>
+	                </div>
+	                <div class="row">
+	                    <div class="col-xs-2"></div>
+	                    <div class="col-xs-10">
+	    					<div class="col-xs-1">
+	      					 	<input type="checkbox" class="" id="mapCarDispatchFlag" value="4" name="CarDispatchFlag">
+	  						</div> 
+	   						<div class="col-xs-3 carDispatchFlag">终端显示器显示</div>
+	   						<div class="col-xs-1">
+	      					 	<input type="checkbox" class="" id="mapCarDispatchFlag" value="8" name="CarDispatchFlag">
+	  						</div> 
+	   						<div class="col-xs-3 carDispatchFlag">终端TTS播读</div>
+	   						<div class="col-xs-1">
+	      					 	<input type="checkbox" class="" id="mapCarDispatchFlag" value="16" name="CarDispatchFlag">
+	  						</div> 
+	   						<div class="col-xs-3 carDispatchFlag">广告屏显示</div>
+	 					</div>
+	                </div>
+	            </div>
+	        </div>
+	        <div class="panel-footer">
+	            <button type="submit" class="btn btn-cyan">发送</button>
+	        </div>
+	    </form>
+	</div>
+	<!--  右下角---订单日志提醒弹窗  -start------->
+	   	<div class="panel panel-gray-lg" id="logRemindRightPanel">
+	       	<div class="panel-heading">
+	        	<span class="panel-title">订单状态变更提醒</span>
+	    	</div>
+		    <form id="logRemindRightForm">
+		        <div class="panel-body">
+				<div class="panel-body-content">
+					<div id="logRemindRightDiv">
+						<table id="logRemindRightTable">
+							<th>
+								<td>订单号</td>
+								<td>记录时间</td>
+								<td>日志内容</td>
+							</th>
+						</table>
+					<div id="logRemindRightPage"></div>
+					</div>	
+				</div>
+			    </div>
+				<div class="panel-footer">
+					<button type="button" class="btn btn-cyan" id="logRemindRightSubmitBtn">全部已读</button>
+				</div>
+		    </form>
+	    </div>
+	   <!--  右下角---订单日志提醒弹窗  -------end-->
+	<!-- 历史视频 -->
+	<div class="panel panel-gray-lg" id="historyVideo-panel" style="background-color: rgb(45, 60, 87)">
+	    <div class="panel-heading">
+	        <span class="panel-title">历史视频</span>
+	    </div>
+	    <div class="searchBox">
+	         <form class="form" id="historyVideo-form">
+	             <div class="line-searchBox">
+	                <div class="item-searchBox" style="flex:4">
+	                     <label class="horizontal-span" for="">记录时间</label>
+	                     <input type="text" class="form-control Wdate" id="historyVideo_startTime" 
+	                     		onclick="WdatePicker({dateFmt:'yyyy-MM-dd', maxDate:'#F{$dp.$D(\'historyVideo_endTime\')}'})" readonly="readonly">
+	                     <span class="split-Wdate left-span">&nbsp;&nbsp;到&nbsp;&nbsp;</span>
+	                     <input type="text" class="form-control Wdate" id="historyVideo_endTime" 
+	                     		onclick="WdatePicker({dateFmt:'yyyy-MM-dd', minDate:'#F{$dp.$D(\'historyVideo_startTime\')}'})" readonly="readonly">
+	                 </div>
+	                 <div class="item-searchBox" style="flex:2">
+	                     <label class="horizontal-span">车牌号</label>
+	                     <input name="" id="historyVideo-name" type="text" class="form-control">
+	                 </div>
+	                 <div class="item-searchBox" style="flex:1">
+	                     <button type="button" class="btn btn-lemon" id="historyVideo_searchBtn">
+	                         <span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;查询
+	                     </button> 
+	                 </div>
+	             </div>
+	         </form>
+	     </div>
+	    <!--表格展示-->
+	    <div class="historyTableplace" style="width:800px">
+	    	<table id="historyVideoTable"></table>
+	    	<div id="historyVideoPager"></div>
+	    </div>	
+	</div>
+	<!-- 视屏播放弹窗 -->
+	<div class="panel panel-gray-lg" id="showVideo-panel" style="background-color: rgb(45, 60, 87);z-index:2600">
+	    <div class="panel-heading">
+	        <span class="panel-title">视频播放</span>
+	    </div>
+	    <div id="videoConetent">
+	    	<video width="960" height="450" controls="controls">
+	    		<source src="" type="video/mp4"></source>
+	    	</video>
+	    </div>
+	    <div class="panel-body">
+	            <div class="panel-body-content">
+	                <div class="row">
+	                <div class="col-xs-2"></div>
+	                	<div class="col-xs-4">
+	                		<div class="col-xs-3"><label for="">车牌号:</label></div>
+		                    <div class="col-xs-7">
+		                    	 <span class="look-formPanel carinforfont" name="licencePlateNo" id="voideLicencePlateNo"> </span>
+		                    </div>
+	                	</div>
+	                	<div class="col-xs-6">
+	                		<div class="col-xs-3"><label for=" ">记录时间:</label></div>
+		                    <div class="col-xs-7">
+		                    	 <span class="look-formPanel carinforfont" name="vehicleType" id="voideRecodTime"> </span>
+		                    </div>
+	                	</div>
+	                </div>
+	            </div>
+	        </div>
+	</div>
+	
+	<!-- 历史轨迹 -->
+	<div class="panel panel-gray-xs" id="track-panel" style="background-color: rgb(45, 60, 87)">
+	    <div class="panel-heading">
+	        <span class="panel-title">历史轨迹</span>
+	    </div>
+		<form id="track-form">
+			<div class="panel-body">
+			        <div class="panel-body-content">
+			            <div class="row">
+			           		<div class="col-xs-3"><label for="historyTrack_startTime">开始时间:</label></div>
+			                <div class="col-xs-7">
+			               	  <input type="text" class="form-control Wdate" id="historyTrack_startTime" 
+			                		onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss', maxDate:'#F{$dp.$D(\'historyVideo_endTime\')}'})" readonly="readonly">
+			              </div>
+			          </div>
+			          <div class="row">
+			         		<div class="col-xs-3"><label for="historyTrack_endtTime">截止时间:</label></div>
+			              <div class="col-xs-7">
+			              	 <input type="text" class="form-control Wdate" id="historyTrack_endtTime" 
+			              		onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss', minDate:'#F{$dp.$D(\'historyTrack_startTime\')}'})" readonly="readonly">
+			              </div>
+			          </div>
+			      </div>
+			  </div>
+			   <div class="panel-footer">
+			      <button type="submit" class="btn btn-cyan">查询</button>
+			  </div>
+		 </form>
+	</div>
+	<!--终端尚未开放弹窗 -->
+	<div class="panel panel-gray-xs" id="notFinal-panel" style="background-color: rgb(45, 60, 87)">
+	    <div class="panel-heading">
+	        <span class="panel-title"></span>
+	    </div>
+		<div class="panel-body">
+	        <div class="panel-body-content" style="text-align:center;font-size:18px;padding:15px 0">
+	        	终端尚未开放
+	        </div>
+		</div>
+	    <div class="panel-footer">
+	     	<button type="reset" class="btn btn-border cancel">确定</button>
+	    </div>
+	</div>
+</div>
+
+<div id="toolcarclearPath" class="olToolcarClear hidden">
+	<div id="clearPath">
+		<div class="clearPathInactivate ol-unselectable">
+			<button title="关闭跟踪">关闭跟踪</button>
+		</div>
+	</div>
+</div>
+
+<script src="../js/lib/jquery/jquery-1.11.2.min.js"></script>
+<script src="../js/lib/jquery/jquery-ui.min.js"></script>
+<script src="../js/lib/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+<script src="../js/lib/jqGrid/jquery.jqGrid.min.js"></script>
+<script src="../js/lib/jqGrid/grid.locale-cn.js"></script>
+<script src="../js/module/jquery-html5Validate.js"></script>
+<script src="../js/lib/datePicker/WdatePicker.js"></script>
+<script src="../js/lib/highcharts.js"></script>
+<script src="../js/module/base.js"></script>
+<script src="../js/module/tools.js"></script>
+<script src="../js/module/message-2.0.0.js"></script>
+<script src="../js/module/topMenu.js"></script>
+<script src="../map/proj4.js"></script>
+<script src="../map/JXWLMapJs.js"></script>
+<script src="../map/business/js/cargoMonitor.js"></script>
+<script src="../js/map.js"></script>
+<script src="../map/business/js/carSearchByCon.js"></script>
+<script src="../map/business/js/pipeLine.js"></script>
+<script src="../map/business/js/markerEdit.js"></script>
+<script src="../map/business/js/mapIMGShow.js"></script>
+<script src="../map/base/js/lib/MapChange.js"></script>
+</body>
+</html>

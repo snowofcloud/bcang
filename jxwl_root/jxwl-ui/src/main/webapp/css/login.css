@@ -1,0 +1,176 @@
+@charset "UTF-8";
+
+body {
+    box-sizing: content-box;
+    font-size: 12px;
+    font-family: "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background-image: url("../images/login-bg.png");
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-size: cover;
+    overflow: hidden;
+    color: #FFF;
+    height: calc(100vh);
+}
+
+.login-container {
+    width: 640px;
+    height: auto;
+    margin-top: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+@media screen and (max-width: 1400px) {
+    .login-container {
+        margin-top: 100px;
+    }
+}
+
+.login-title .login-top-title {
+	display: block;
+	font-size: 75px;
+	letter-spacing: 5px;
+	text-align: center;
+	width: 720px
+}
+
+@media screen and (max-width: 1400px) {
+    .login-title .login-top-title{
+        font-size: 50px;
+    }
+}
+
+.login-title .login-sub-title {
+	font-size: 27px;
+	text-align: left;
+	display: block;
+	letter-spacing: 45px;
+	width: 800px;
+}
+
+.login-title .login-sub-sub-title {
+	font-size: 22px;
+	text-align: left;
+	display: block;
+	width: 800px;
+}
+
+.login-box {
+    width: 100%;
+    height: auto;
+    margin-top: 80px;
+}
+
+@media screen and (max-width: 1400px) {
+    .login-box{
+        margin-top: 60px;
+    }
+}
+
+.login-box .row {
+    margin-bottom: 15px;
+}
+
+.row .col-xs-6 {
+
+}
+
+.col-xs-6 button {
+    border-radius: 3px;
+}
+
+.row input {
+    border-radius: 3px;
+    background-color: rgba(127, 132, 147, 0.46);
+    border: 1px solid rgba(145, 155, 183, 0.25);
+    color: #FFF;
+}
+
+.row .input-group-btn button {
+    background-color: rgb(92, 184, 92);
+    border: 1px solid rgb(92, 184, 92);
+}
+
+.form-control::-moz-placeholder {
+    color: rgba(255, 255, 255, 0.43);
+    opacity: 1
+}
+
+.form-control:-ms-input-placeholder {
+    color: rgba(255, 255, 255, 0.43);
+}
+
+.form-control::-webkit-input-placeholder {
+    color: rgba(255, 255, 255, 0.43);
+}
+
+.login-box .info-msg {
+    margin-bottom: 10px;
+    margin-top: -10px;
+}
+
+.login-box .info-msg div {
+    color: red;
+    text-align: center;
+    font-size: 17px;
+}
+
+.login-box .row .copyright {
+    position: relative;
+    color: #8895A6;
+}
+
+.login-box .line {
+    height: 1px;
+    border: 1px solid #8895A6;
+    width: 45px;
+    position: absolute;
+}
+
+.login-box .line-left {
+    left: 5%;
+    top: 7px;
+}
+
+.login-box .line-right {
+    top: 7px;
+    right: 15px;
+}
+
+.login-box .row .btn-block {
+    letter-spacing: 10px;
+    text-align: center;
+}
+
+.input-group-addon {
+	background-color: rgb(92, 184, 92);
+  	border: 1px solid rgb(92, 184, 92);
+}
+
+.login-logoimg {
+	margin:0 auto;
+	width:43px;
+}
+
+@media (max-width: 767px)
+.login-container img {
+  margin: 0 auto;
+  left: 0;
+}
+
+@media (max-width: 767px)
+.visible-xs {
+  display: block!important;
+}
+
+@media (max-width: 767px)
+.hidden-xs {
+  display: none!important;
+}
+
+.login-container>img {
+  position: relative;
+  left: 30px;
+}

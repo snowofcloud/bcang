@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.c503.sc.filemanage.dao.IFileManageDao">
+	<resultMap id="BaseResultMap" type="com.c503.sc.filemanage.bean.FileInfoEntity">
+		<id     column="ID"                property="id"              jdbcType="VARCHAR" />
+		<result column="FILE_GROUP"        property="fileGroup"       jdbcType="VARCHAR" />
+		<result column="FILE_NAME"         property="fileName"        jdbcType="VARCHAR" />
+		<result column="FILE_PATH"         property="filePath"        jdbcType="VARCHAR" />
+		<result column="FILE_SIZE"         property="fileSize"        jdbcType="DECIMAL" />
+		<result column="REMARK"            property="remark"          jdbcType="VARCHAR" />
+		<result column="CREATE_BY"         property="createBy"        jdbcType="VARCHAR" />
+		<result column="CREATE_TIME"       property="createTime"      jdbcType="TIMESTAMP" />
+		<result column="UPDATE_BY"         property="updateBy"        jdbcType="VARCHAR" />
+		<result column="UPDATE_TIME"       property="updateTime"      jdbcType="TIMESTAMP" />
+		<result column="REMOVE"            property="remove"          jdbcType="CHAR" />
+	</resultMap>
+
+    <sql id="Base_Column_List" >
+      ID, FILE_GROUP, FILE_NAME, FILE_PATH, UPLOAD_TIME, CREATE_BY, CREATE_TIME, UPDATE_BY, 
+      UPDATE_TIME, REMOVE
+    </sql>
+  
+    <!-- 分页查询 -->
+  	<select id="findByParams" parameterType="map" resultMap="BaseResultMap">
+	  SELECT
+	    <include refid="Base_Column_List"/>
+	  FROM
+	    T_FILE_UPLOAD
+	  WHERE
+	        remove        = #{remove}
+	  <if test="fileName != null and fileName != ''">
+        AND FILE_NAME LIKE CONCAT(CONCAT('%',#{fileName}),'%')
+	  </if>
+	  <if test="fileCode != null and fileCode != ''">
+        AND FILE_CODE     = #{fileCode}
+	  </if>
+	</select>
+
+	<!-- 根据list插入一条或多条记录 -->
+	<insert id="saveBatch" parameterType="java.util.List">
+		insert into T_FILE_UPLOAD(
+		<include refid="Base_Column_List" />
+		) values
+		<foreach collection="records" item="item" separator=",">
+			(#{item.id,jdbcType=VARCHAR},
+			#{item.fileGroup, jdbcType=VARCHAR},
+			#{item.orgFileName,jdbcType=VARCHAR},
+			#{item.fileName,jdbcType=VARCHAR},
+			#{item.filePath,jdbcType=VARCHAR},
+			#{item.fileSize,jdbcType=DECIMAL},
+			#{item.remark,jdbcType=VARCHAR},
+			#{item.createBy,jdbcType=VARCHAR},
+			#{item.createTime,jdbcType=TIMESTAMP},
+			#{item.updateBy,jdbcType=VARCHAR},
+			#{item.updateTime,jdbcType=TIMESTAMP},
+			#{item.remove,jdbcType=CHAR})
+		</foreach>
+	</insert>
+
+	<!-- 根据list集合物理批量删除 -->
+	<delete id="deleteBatch" parameterType="java.util.Map">
+		BEGIN
+			DELETE FROM T_FILE_UPLOAD
+			<where>
+				<foreach collection="ids" item="item" index="index"  open="id in(" separator="," close=")">
+					#{item}
+				</foreach>
+			</where>;
+			<!--企业信息中修改企业信息时，删除一张或多张图片时，必须同时将 T_ENTERPRISE_FILE_RELA表中图片ID对应的行的remove置为0，-->
+			<!-- 否则会导致虽然物理图片已删除，但是形象展示页面加载图片信息时得到的图片数目还是原来的个数，而没有减少 -->
+			UPDATE T_ENTERPRISE_FILE_RELA
+			SET REMOVE = '1'
+			<where>
+				<foreach collection="ids" item="item" index="index"  open="FILE_ID in(" separator="," close=")">
+					#{item}
+				</foreach>
+			</where>;
+			
+			EXCEPTION
+		    WHEN OTHERS THEN
+		      ROLLBACK;
+		END;
+	</delete>
+
+
+	<!-- 根据id查询单条记录 -->
+	<select id="findById" parameterType="java.lang.String" resultMap="BaseResultMap">
+	  SELECT
+		<include refid="Base_Column_List" />
+	  FROM T_FILE_UPLOAD
+	  WHERE ID = #{id,jdbcType=VARCHAR} 
+	    AND remove = '0'
+	</select>
+	
+	<!-- 根据文件类型CODE查询 -->
+	<select id="findByFileCode" parameterType="String" resultMap="BaseResultMap">
+      SELECT *
+        FROM (SELECT *
+                FROM T_FILE_UPLOAD
+               WHERE FILE_CODE = #{fileCode}
+                 AND REMOVE = '0'
+               ORDER BY UPDATE_TIME DESC) TMP
+        WHERE ROWNUM = 1
+	</select>
+	
+
+	<!-- 根据id数组查询一条或多条记录 -->
+	<select id="findByIds" parameterType="java.util.Map" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from T_FILE_UPLOAD
+		<where>
+			remove = #{remove}
+			<foreach collection="ids" item="item" open="and id in(" separator="," close=")">
+				#{item}
+			</foreach>
+		</where>
+	</select>
+
+
+	<!-- 根据id，修改一条记录 -->
+	<update id="updateById" parameterType="com.c503.sc.filemanage.bean.FileInfoEntity">
+      UPDATE T_FILE_UPLOAD SET 
+        FILE_GROUP        = #{fileGroup,jdbcType=VARCHAR},
+        FILE_NAME         = #{fileName,jdbcType=VARCHAR},
+        FILE_PATH         = #{filePath,jdbcType=VARCHAR},
+        UPLOAD_TIME       = SYSDATE,
+        UPDATE_BY         = #{updateBy,jdbcType=VARCHAR},
+        UPDATE_TIME       = #{updateTime,jdbcType=TIMESTAMP},
+        REMOVE            = #{remove,jdbcType=CHAR},
+        FILE_SIZE         = #{fileSize,jdbcType=DECIMAL}
+      WHERE ID = #{id,jdbcType=VARCHAR}
+  </update>
+
+
+	<!-- 保存一条记录 -->
+    <insert id="saveOne" parameterType="com.c503.sc.filemanage.bean.FileInfoEntity">
+      INSERT INTO T_FILE_UPLOAD (ID, FILE_GROUP, FILE_NAME, 
+        FILE_PATH, UPLOAD_TIME, CREATE_BY, 
+        CREATE_TIME, UPDATE_BY, UPDATE_TIME, 
+        REMOVE,  FILE_SIZE)
+      VALUES (#{id,jdbcType=VARCHAR},     #{fileGroup,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}, 
+        #{filePath,jdbcType=VARCHAR},     SYSDATE,                       #{createBy,jdbcType=VARCHAR}, 
+        #{createTime},                    #{updateBy,jdbcType=VARCHAR},  #{updateTime},
+        #{remove,jdbcType=CHAR},          #{fileSize,jdbcType=DECIMAL})
+    </insert>
+
+	<!-- ******************************************* 以下未用 ******************************************************** -->
+	<!-- 根据id数组物理批量删除 -->
+	<delete id="deleteByIds" parameterType="Object[]">
+		DELETE FROM T_FILE_UPLOAD
+		<where>
+			<foreach collection="array" item="item" open="id in (" separator="," close=")">
+				#{item}
+			</foreach>
+		</where>
+	</delete>
+
+</mapper>

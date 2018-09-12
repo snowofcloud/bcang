@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.c503.sc.jxwl.transacation.dao.IWayBillTempDao" >
+  <resultMap id="BaseResultMap" type="com.c503.sc.jxwl.transacation.bean.WayBillTempEntity" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DRIVER_ID" property="driverId" jdbcType="VARCHAR" />
+    <result column="ESCORT_ID" property="escortId" jdbcType="VARCHAR" />
+    <result column="CHEMICAL_ID" property="chemicalId" jdbcType="VARCHAR" />
+    <result column="LOGISTICS_ID" property="logisticsId" jdbcType="VARCHAR" />
+    <result column="TEMPNAME" property="tempname" jdbcType="VARCHAR" />
+    <result column="VEHICLE_ID" property="vehicleId" jdbcType="VARCHAR" />
+    <result column="CHECKNO" property="checkno" jdbcType="VARCHAR" />
+    <result column="CONSUMERNO" property="consumerno" jdbcType="VARCHAR" />
+    <result column="STARTPOINT" property="startpoint" jdbcType="VARCHAR" />
+    <result column="ENDPOINT" property="endpoint" jdbcType="VARCHAR" />
+    <result column="DELIVERYUNIT" property="deliveryunit" jdbcType="VARCHAR" />
+    <result column="DELIVERYUNITPERSON" property="deliveryunitperson" jdbcType="VARCHAR" />
+    <result column="CHECKSTATUS" property="checkstatus" jdbcType="VARCHAR" />
+    <result column="DELIVERYUNITADDRESS" property="deliveryunitaddress" jdbcType="VARCHAR" />
+    <result column="DELIVERYUNITTIME" property="deliveryunittime" jdbcType="DATE" />
+    <result column="ACHIEVEUINT" property="achieveuint" jdbcType="VARCHAR" />
+    <result column="ACHIEVEPERSON" property="achieveperson" jdbcType="VARCHAR" />
+    <result column="ACHIEVEPHONE" property="achievephone" jdbcType="VARCHAR" />
+    <result column="DELIVERYUNITPHONE" property="deliveryunitphone" jdbcType="VARCHAR" />
+    <result column="ACHIEVEADDRESS" property="achieveaddress" jdbcType="VARCHAR" />
+    <result column="ACHIEVETIME" property="achievetime" jdbcType="DATE" />
+    <result column="DRIVER" property="driver" jdbcType="VARCHAR" />
+    <result column="DRIVERPHONE" property="driverphone" jdbcType="VARCHAR" />
+    <result column="DRIVERID" property="driverid" jdbcType="VARCHAR" />
+    <result column="DRIVERNO" property="driverno" jdbcType="VARCHAR" />
+    <result column="ESCORT" property="escort" jdbcType="VARCHAR" />
+    <result column="ESCORTPHONE" property="escortphone" jdbcType="VARCHAR" />
+    <result column="HANDCARNO" property="handcarno" jdbcType="VARCHAR" />
+    <result column="ESCORTNO" property="escortno" jdbcType="VARCHAR" />
+    <result column="ESCORTID" property="escortid" jdbcType="VARCHAR" />
+    <result column="CARNO" property="carno" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_BY" property="updateBy" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="REMOVE" property="remove" jdbcType="CHAR" />
+    <result column="GOODSNAME" property="goodsname" jdbcType="VARCHAR" />
+    <result column="WLENTERPRISENAME" property="wlEnterpriseName" jdbcType="VARCHAR" />
+    <result column="START_LNG" property="startLng" jdbcType="VARCHAR" />
+    <result column="START_LAT" property="startLat" jdbcType="VARCHAR" />
+    <result column="END_LNG" property="endLng" jdbcType="VARCHAR" />
+    <result column="END_LAT" property="endLat" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DRIVER_ID, ESCORT_ID, CHEMICAL_ID, LOGISTICS_ID, TEMPNAME, VEHICLE_ID, CHECKNO, 
+    CONSUMERNO, STARTPOINT, ENDPOINT, DELIVERYUNIT, DELIVERYUNITPERSON, CHECKSTATUS, 
+    DELIVERYUNITADDRESS, DELIVERYUNITTIME, ACHIEVEUINT, ACHIEVEPERSON, ACHIEVEPHONE, 
+    DELIVERYUNITPHONE, ACHIEVEADDRESS, ACHIEVETIME, DRIVER, DRIVERPHONE, DRIVERID, DRIVERNO, 
+    ESCORT, ESCORTPHONE, HANDCARNO, ESCORTNO, ESCORTID, CARNO, REMARK, CREATE_BY, CREATE_TIME, 
+    UPDATE_BY, UPDATE_TIME, REMOVE, START_LNG, START_LAT, END_LNG, END_LAT
+  </sql>
+  
+  <sql id="Base_Column_List2" >
+    ID, 				CHECKNO, 				GOODSNAME, 				PACK, 
+    QUANTITY, 			WEIGHT, 				VOLUME, 				FORMAT, 
+    WAYBILL_ID, 		CREATE_BY,				CREATE_TIME, 			UPDATE_BY, 
+    UPDATE_TIME, 		REMOVE, 				BATCH
+  </sql>
+  	<!-- 分页查询运单信息 -->
+	<select id="findByParams" resultMap="BaseResultMap" parameterType="java.util.Map">
+		WITH TB AS(
+	          SELECT WAYBILL_TEMP_ID,LISTAGG(GOODSNAME,',')
+	               WITHIN GROUP (ORDER BY WAYBILL_TEMP_ID) 
+	               AS GOODSNAME FROM T_WAYBILL_GOODS_TEMP GT WHERE REMOVE='0' 
+	               GROUP BY WAYBILL_TEMP_ID
+	           )
+	    SELECT  TC.TEMPNAME,TC.STARTPOINT,TC.ENDPOINT,
+	        	TC.CARNO,TC.CREATE_TIME,TC.CHEMICAL_ID,
+	        	TC.LOGISTICS_ID,TC.ID,TC.CHECKSTATUS, TC.REMARK,
+	        	TB.GOODSNAME, TP.PERSON_NAME driver
+          FROM T_WAYBILL_TEMP TC LEFT JOIN TB ON TC.ID = TB.WAYBILL_TEMP_ID
+          LEFT JOIN T_OCCUPATION_PERSON TP ON TC.DRIVER_ID = TP.ID
+         WHERE TC.REMOVE = '0'
+		      <if test="chemicalId != null and chemicalId != ''">
+		  	   AND TC.CHEMICAL_ID = #{chemicalId,jdbcType=VARCHAR}
+		  	  </if>
+		     <if test="logisticsId != null and logisticsId != ''">
+		  	   AND TC.LOGISTICS_ID = #{logisticsId,jdbcType=VARCHAR}
+		  	  </if>
+		  	  <if test="driverid != null and driverid != ''">
+		  	   AND TC.DRIVERID = #{driverid,jdbcType=VARCHAR}
+		  	  </if>
+			 <if test="checkstatus != null and checkstatus != ''">
+		  	   AND TC.CHECKSTATUS = #{checkstatus,jdbcType=VARCHAR}
+		  	  </if>
+		  	  <if test="carno != null and carno != ''"> 
+		  	   AND TC.CARNO LIKE CONCAT(CONCAT('%',#{carno,jdbcType=VARCHAR}),'%')
+		  	  </if>
+		     <if test="startTime != null">
+		       AND TC.CREATE_TIME &gt;= #{startTime,jdbcType=DATE}
+		     </if>
+		     <if test="endTime != null">
+		       AND TC.CREATE_TIME &lt;= #{endTime,jdbcType=DATE}
+		     </if> 
+		      ORDER BY TC.CREATE_TIME DESC
+	<!-- 	
+		SELECT
+			<include refid="Base_Column_List" />
+		FROM T_WAYBILL_TEMP
+		WHERE REMOVE = '0'
+	 		 <if test="chemicalId != null and chemicalId != ''">
+		  	   AND CHEMICAL_ID = #{chemicalId}
+		  	  </if>
+		     <if test="logisticsId != null and logisticsId != ''">
+		  	   AND LOGISTICS_ID = #{logisticsId}
+		  	  </if>
+			 <if test="checkstatus != null and checkstatus != ''">
+		  	   AND CHECKSTATUS = #{checkstatus}
+		  	  </if>
+		     <if test="startTime != null">
+		       AND CREATE_TIME &gt;= #{startTime}
+		     </if>
+		     <if test="endTime != null">
+		       AND CREATE_TIME &lt;= #{endTime}
+		     </if>
+		ORDER BY CREATE_TIME DESC -->
+	</select>
+  
+	<insert id="save" parameterType="com.c503.sc.jxwl.transacation.bean.WayBillTempEntity" >
+    insert into T_WAYBILL_TEMP ( 
+    		<include refid="Base_Column_List" />
+    	 )
+    values (#{id,jdbcType=VARCHAR}, #{driverId,jdbcType=VARCHAR}, #{escortId,jdbcType=VARCHAR}, 
+      #{chemicalId,jdbcType=VARCHAR}, #{logisticsId,jdbcType=VARCHAR}, #{tempname,jdbcType=VARCHAR}, 
+      #{vehicleId,jdbcType=VARCHAR}, #{checkno,jdbcType=VARCHAR}, #{consumerno,jdbcType=VARCHAR}, 
+      #{startpoint,jdbcType=VARCHAR}, #{endpoint,jdbcType=VARCHAR}, #{deliveryunit,jdbcType=VARCHAR}, 
+      #{deliveryunitperson,jdbcType=VARCHAR}, #{checkstatus,jdbcType=VARCHAR}, #{deliveryunitaddress,jdbcType=VARCHAR}, 
+      #{deliveryunittime,jdbcType=DATE}, #{achieveuint,jdbcType=VARCHAR}, #{achieveperson,jdbcType=VARCHAR}, 
+      #{achievephone,jdbcType=VARCHAR}, #{deliveryunitphone,jdbcType=VARCHAR}, #{achieveaddress,jdbcType=VARCHAR}, 
+      #{achievetime,jdbcType=DATE}, #{driver,jdbcType=VARCHAR}, #{driverphone,jdbcType=VARCHAR}, 
+      #{driverid,jdbcType=VARCHAR}, #{driverno,jdbcType=VARCHAR}, #{escort,jdbcType=VARCHAR}, 
+      #{escortphone,jdbcType=VARCHAR}, #{handcarno,jdbcType=VARCHAR}, #{escortno,jdbcType=VARCHAR}, 
+      #{escortid,jdbcType=VARCHAR}, #{carno,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{remove,jdbcType=CHAR}, #{startLng,jdbcType=VARCHAR},
+      #{startLat,jdbcType=VARCHAR}, #{endLng,jdbcType=VARCHAR}, #{endLat,jdbcType=VARCHAR})
+  </insert>
+  
+   <!-- 逻辑删除货源 -->
+  <update id="delete" parameterType="map" >
+   BEGIN
+      UPDATE T_WAYBILL_TEMP SET 
+        REMOVE      = '1',
+        UPDATE_BY   = #{updateBy,jdbcType=VARCHAR},
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
+      WHERE ID = #{id,jdbcType=VARCHAR};
+
+   UPDATE T_WAYBILL_GOODS_TEMP SET 
+      REMOVE      = '1',
+      UPDATE_BY   = #{updateBy,jdbcType=VARCHAR},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
+    WHERE WAYBILL_TEMP_ID = #{id,jdbcType=VARCHAR};
+
+   <!-- 异常处理 -->
+     EXCEPTION
+     WHEN OTHERS THEN
+       ROLLBACK;  
+
+   END;
+  </update>
+  
+  <update id="update" parameterType="com.c503.sc.jxwl.transacation.bean.WayBillTempEntity" >
+    update T_WAYBILL_TEMP
+    set DRIVER_ID = #{driverId,jdbcType=VARCHAR},
+      ESCORT_ID = #{escortId,jdbcType=VARCHAR},
+      LOGISTICS_ID = #{logisticsId,jdbcType=VARCHAR},
+      TEMPNAME = #{tempname,jdbcType=VARCHAR},
+      VEHICLE_ID = #{vehicleId,jdbcType=VARCHAR},
+      CHECKNO = #{checkno,jdbcType=VARCHAR},
+      CONSUMERNO = #{consumerno,jdbcType=VARCHAR},
+      STARTPOINT = #{startpoint,jdbcType=VARCHAR},
+      ENDPOINT = #{endpoint,jdbcType=VARCHAR},
+      DELIVERYUNIT = #{deliveryunit,jdbcType=VARCHAR},
+      DELIVERYUNITPERSON = #{deliveryunitperson,jdbcType=VARCHAR},
+      CHECKSTATUS = #{checkstatus,jdbcType=VARCHAR},
+      DELIVERYUNITADDRESS = #{deliveryunitaddress,jdbcType=VARCHAR},
+      DELIVERYUNITTIME = #{deliveryunittime,jdbcType=DATE},
+      ACHIEVEUINT = #{achieveuint,jdbcType=VARCHAR},
+      ACHIEVEPERSON = #{achieveperson,jdbcType=VARCHAR},
+      ACHIEVEPHONE = #{achievephone,jdbcType=VARCHAR},
+      DELIVERYUNITPHONE = #{deliveryunitphone,jdbcType=VARCHAR},
+      ACHIEVEADDRESS = #{achieveaddress,jdbcType=VARCHAR},
+      ACHIEVETIME = #{achievetime,jdbcType=DATE},
+      DRIVER = #{driver,jdbcType=VARCHAR},
+      DRIVERPHONE = #{driverphone,jdbcType=VARCHAR},
+      DRIVERID = #{driverid,jdbcType=VARCHAR},
+      DRIVERNO = #{driverno,jdbcType=VARCHAR},
+      ESCORT = #{escort,jdbcType=VARCHAR},
+      ESCORTPHONE = #{escortphone,jdbcType=VARCHAR},
+      HANDCARNO = #{handcarno,jdbcType=VARCHAR},
+      ESCORTNO = #{escortno,jdbcType=VARCHAR},
+      ESCORTID = #{escortid,jdbcType=VARCHAR},
+      CARNO = #{carno,jdbcType=VARCHAR},
+      REMARK = #{remark,jdbcType=VARCHAR},
+      UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      REMOVE = #{remove,jdbcType=CHAR},
+      START_LNG = #{startLng,jdbcType=VARCHAR},
+	  START_LAT = #{startLat,jdbcType=VARCHAR},         
+	  END_LNG = #{endLng,jdbcType=VARCHAR},                 
+	  END_LAT = #{endLat,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+  <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+   select temp.*, Q.person_name escort from (SELECT TWT.DRIVER_ID,
+       TWT.ESCORT_ID,
+       TWT.CHEMICAL_ID,
+       TWT.LOGISTICS_ID,
+       TWT.TEMPNAME,
+       TWT.VEHICLE_ID,
+       TWT.CHECKNO,
+       TWT.CONSUMERNO,
+       TWT.STARTPOINT,
+       TWT.ENDPOINT,
+       TWT.DELIVERYUNIT,
+       TWT.DELIVERYUNITPERSON,
+       TWT.CHECKSTATUS,
+       TWT.DELIVERYUNITADDRESS,
+       TWT.DELIVERYUNITTIME,
+       TWT.ACHIEVEUINT,
+       TWT.ACHIEVEPERSON,
+       TWT.ACHIEVEPHONE,
+       TWT.DELIVERYUNITPHONE,
+       TWT.ACHIEVEADDRESS,
+       TWT.ACHIEVETIME,
+       TWT.DRIVERPHONE,
+       TWT.DRIVERID,
+       TWT.DRIVERNO,
+       TWT.ESCORTPHONE,
+       TWT.HANDCARNO,
+       TWT.ESCORTNO,
+       TWT.ESCORTID,
+       TWT.CARNO,
+       TWT.REMOVE,
+       TWT.REMARK,
+       TWT.START_LNG,
+       TWT.START_LAT,
+       TWT.END_LNG,
+       TWT.END_LAT,
+       TE.ENTERPRISE_NAME AS WLENTERPRISENAME,
+       p.person_name driver
+  FROM T_WAYBILL_TEMP TWT
+  LEFT JOIN T_ENTERPRISE TE
+    ON TWT.LOGISTICS_ID = TE.CORPORATE_NO
+    left join  t_occupation_person p on p.id = TWT.driver_id
+   AND TE.REMOVE = '0'
+ WHERE TWT.ID = #{id,jdbcType=VARCHAR}
+   AND TWT.REMOVE = '0') TEMP
+   left join  t_occupation_person Q on Q.id = temp.escort_id
+  </select>
+  
+   <insert id="saveWayBill" parameterType="com.c503.sc.jxwl.transacation.bean.WayBillTempEntity" >
+	    insert into T_WAYBILL (ID, 				DRIVER_ID, 				ESCORT_ID, 			CHEMICAL_ID, 			LOGISTICS_ID, 
+    VEHICLE_ID, 		CHECKNO, 				CONSUMERNO, 		STARTPOINT, 			ENDPOINT,
+    DELIVERYUNIT, 		DELIVERYUNITPERSON, 	CHECKSTATUS,	 	DELIVERYUNITADDRESS,	DELIVERYUNITTIME,
+    ACHIEVEUINT, 		ACHIEVEPERSON, 			ACHIEVEPHONE, 		DELIVERYUNITPHONE, 		ACHIEVEADDRESS, 
+    ACHIEVETIME, 		DRIVER, 				DRIVERPHONE, 		DRIVERID, 				DRIVERNO, 
+    ESCORT, 			ESCORTPHONE, 			HANDCARNO, 			ESCORTNO, 				ESCORTID, 
+    CARNO, 				REMARK, 				CREATE_BY, 			CREATE_TIME, 			UPDATE_BY, 
+    UPDATE_TIME, 	 	REMOVE)
+    values (#{id,jdbcType=VARCHAR}, 		#{driverId,jdbcType=VARCHAR}, 				#{escortId,jdbcType=VARCHAR}, 
+      #{chemicalId,jdbcType=VARCHAR}, 		#{logisticsId,jdbcType=VARCHAR}, 			#{vehicleId,jdbcType=VARCHAR}, 
+      #{checkno,jdbcType=VARCHAR}, 			#{consumerno,jdbcType=VARCHAR}, 			#{startpoint,jdbcType=VARCHAR}, 
+      #{endpoint,jdbcType=VARCHAR}, 		#{deliveryunit,jdbcType=VARCHAR}, 			#{deliveryunitperson,jdbcType=VARCHAR}, 
+      #{checkstatus,jdbcType=VARCHAR}, 		#{deliveryunitaddress,jdbcType=VARCHAR}, 	#{deliveryunittime,jdbcType=DATE}, 
+      #{achieveuint,jdbcType=VARCHAR}, 		#{achieveperson,jdbcType=VARCHAR}, 			#{achievephone,jdbcType=VARCHAR}, 
+      #{deliveryunitphone,jdbcType=VARCHAR},#{achieveaddress,jdbcType=VARCHAR}, 		#{achievetime,jdbcType=DATE}, 
+      #{driver,jdbcType=VARCHAR}, 			#{driverphone,jdbcType=VARCHAR}, 			#{driverid,jdbcType=VARCHAR}, 
+      #{driverno,jdbcType=VARCHAR}, 		#{escort,jdbcType=VARCHAR}, 				#{escortphone,jdbcType=VARCHAR}, 
+      #{handcarno,jdbcType=VARCHAR}, 		#{escortno,jdbcType=VARCHAR}, 				#{escortid,jdbcType=VARCHAR}, 
+      #{carno,jdbcType=VARCHAR}, 			#{remark,jdbcType=VARCHAR}, 				#{createBy,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, 	#{updateBy,jdbcType=VARCHAR}, 				#{updateTime,jdbcType=TIMESTAMP}, 
+      #{remove,jdbcType=CHAR})
+  	</insert>
+    <insert id="saveWayBillVal" parameterType="java.util.List">
+     INSERT INTO T_WAYBILL_GOODS (
+       <include refid="Base_Column_List2" />
+     )
+	<foreach  collection="list" item="item" separator="union all">
+		  SELECT
+		      #{item.id,jdbcType=VARCHAR}, 		     #{item.checkno,jdbcType=VARCHAR}, 		    #{item.goodsname,jdbcType=VARCHAR}, 
+		      #{item.pack,jdbcType=VARCHAR}, 		 #{item.quantity,jdbcType=VARCHAR}, 		#{item.weight,jdbcType=VARCHAR}, 
+		      #{item.volume,jdbcType=VARCHAR},		 #{item.format,jdbcType=VARCHAR}, 			#{item.waybillId,jdbcType=VARCHAR}, 
+		      #{item.createBy,jdbcType=VARCHAR}, 	 #{item.createTime,jdbcType=TIMESTAMP}, 	#{item.updateBy,jdbcType=VARCHAR}, 
+		      #{item.updateTime,jdbcType=TIMESTAMP}, #{item.remove,jdbcType=CHAR}, 				#{item.batch,jdbcType=VARCHAR} FROM DUAL
+	</foreach>
+  </insert>
+  
+  <!-- 查询模板名称是否重复 -->
+	<select id="isExistTempName" resultType="String" parameterType="java.util.Map">
+		select Distinct t.TEMPNAME
+	  from T_WAYBILL_TEMP t
+	 where t.TEMPNAME = #{tempName,jdbcType=VARCHAR}
+	   AND t.remove = '0'
+	</select>
+  
+  <!-- 模糊匹配地名 -->
+	<select id="placeAndPoi" resultType="java.util.Map" parameterType="String">
+		SELECT DISTINCT PLACE name, LONGITUDE longitude, LATITUDE latitude
+		FROM T_PLACE_POI
+		WHERE PLACE like '%'||#{tempName,jdbcType=VARCHAR}||'%'
+	</select>
+	  
+</mapper>

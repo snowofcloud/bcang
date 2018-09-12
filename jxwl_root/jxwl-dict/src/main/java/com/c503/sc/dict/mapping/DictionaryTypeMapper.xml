@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.c503.sc.dict.dao.IDictionaryTypeDao" >
+  <resultMap id="DictDataResultMap" type="com.c503.sc.dict.vo.DictDataVo" >
+    <id     column="CODE"    property="code"  jdbcType="VARCHAR" />
+    <result column="PCODE"   property="pcode"  jdbcType="VARCHAR" />
+    <result column="EN_NAME" property="enName" jdbcType="VARCHAR" />
+    <result column="NAME"    property="name"   jdbcType="VARCHAR" />
+    <result column="REMARK"  property="remark" jdbcType="VARCHAR" />
+    <result column="ORDERS"  property="orders" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, PID, CODE, TYPE, EN_NAME, NAME, DESCRIBE, REMARK, CREATE_BY, CREATE_TIME, UPDATE_BY, 
+    UPDATE_TIME, REMOVE
+  </sql>
+  
+  <!-- 获得数据字典对象 -->
+  <sql id="DictData_Column_List" >
+    CODE, PCODE, EN_NAME, NAME, REMARK, ORDERS
+  </sql>
+  <select id="findAllDictData" parameterType="java.util.HashMap" resultMap="DictDataResultMap">
+     SELECT
+     <include refid="DictData_Column_List" />
+	  FROM (SELECT COALESCE((SELECT tc.code
+	                     FROM t_dictionary_type tc
+	                    WHERE tc.id = tdt.pid
+	                      AND tc.remove = #{remove,jdbcType=VARCHAR}),
+	                   '0') pcode,
+	               tdt.code,
+	               tdt.name,
+	               tdt.en_name,
+	               tdt.describe remark,
+	               0 orders
+	          FROM t_dictionary_type tdt
+	         WHERE tdt.remove = #{remove,jdbcType=VARCHAR}
+	        UNION ALL
+	        SELECT tdv.type_code pcode,
+	               tdv.value code,
+	               tdv.name,
+	               tdv.en_name,
+	               tdv.remark,
+	               tdv.orders
+	          FROM t_dictionary_value tdv
+	         WHERE tdv.remove = #{remove,jdbcType=VARCHAR}) d
+	         <where>
+	         	<if test="pcode != null and pcode != ''">
+		             AND pcode = #{pcode,jdbcType=VARCHAR}
+		         </if>
+		         <if test="code != null and code != ''">
+		             AND code LIKE CONCAT(#{code,jdbcType=VARCHAR},'%')
+		         </if>
+	         </where>
+	 ORDER BY orders ASC,code ASC
+  </select>
+</mapper>

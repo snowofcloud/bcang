@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.c503.sc.jxwl.vehiclemonitor.dao.IUserSynchronizeDao" >
+  <resultMap id="BaseResultMap" type="com.c503.sc.jxwl.vehiclemonitor.bean.UserSynchronizeEntity" >
+    <result column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="ACCOUNT" property="account" jdbcType="VARCHAR" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="MOBILE" property="mobile" jdbcType="VARCHAR" />
+    <result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+    <result column="ORGAN_ID" property="organId" jdbcType="VARCHAR" />
+    <result column="SEX" property="sex" jdbcType="VARCHAR" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_BY" property="updateBy" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="REMOVE" property="remove" jdbcType="CHAR" />
+    <result column="FLAG" property="flag" jdbcType="CHAR" />
+  </resultMap>
+  
+  <!-- 批量保存 -->
+  <insert id="batchSave" parameterType="java.util.List">
+    INSERT INTO T_SYNCHRONIZE_USER (
+	    ID,
+	    ACCOUNT, 
+	    NAME,
+	    PASSWORD,
+	   <!--  ORGAN_ID, -->
+	  <!--   SEX, -->
+	    MOBILE,
+	    CREATE_BY,
+	    CREATE_TIME,
+	    UPDATE_BY,
+	    UPDATE_TIME,
+	    REMOVE,
+	    FLAG
+    ) 
+	<foreach collection="list" item="item" separator="union all">
+	  select
+		  #{item.id,jdbcType=VARCHAR}, 
+		  #{item.account,jdbcType=VARCHAR}, 
+		  #{item.name,jdbcType=VARCHAR}, 
+		  #{item.password,jdbcType=VARCHAR},
+		<!--   #{item.organId,jdbcType=VARCHAR}, -->
+		<!--   #{item.sex,jdbcType=CHAR}, -->
+		  #{item.mobile,jdbcType=VARCHAR},
+		  #{item.createBy,jdbcType=VARCHAR},
+          #{item.createTime,jdbcType=TIMESTAMP},
+          #{item.updateBy,jdbcType=VARCHAR},
+          #{item.updateTime,jdbcType=TIMESTAMP},
+		  #{item.remove,jdbcType=CHAR},
+		  #{item.flag,jdbcType=CHAR}
+		  from dual
+	</foreach>
+  </insert>
+  
+  
+  <!--查询新增同步的用户数据记录 -->
+	<select id="findNewUserByParams" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select
+		ID,	    ACCOUNT, 	    NAME,	    PASSWORD,	    ORGAN_ID,
+	    SEX,	    MOBILE,	    FLAG,	    UPDATE_TIME
+		from T_SYNCHRONIZE_USER
+		where remove = #{remove,jdbcType=VARCHAR}
+		<trim>
+			<if test="name !=null">
+				AND ACCOUNT LIKE CONCAT(CONCAT('%',#{name,jdbcType=VARCHAR}),'%')
+			</if>
+		</trim>
+		AND flag = #{flag,jdbcType=VARCHAR}
+		 order by UPDATE_TIME desc
+	</select>
+  <insert id="save" parameterType="com.c503.sc.jxwl.vehiclemonitor.bean.UserSynchronizeEntity" >
+    insert into T_SYNCHRONIZE_USER
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="account != null" >
+        ACCOUNT,
+      </if>
+      <if test="name != null" >
+        NAME,
+      </if>
+      <if test="mobile != null" >
+        MOBILE,
+      </if>
+      <if test="password != null" >
+        PASSWORD,
+      </if>
+      <if test="organId != null" >
+        ORGAN_ID,
+      </if>
+      <if test="sex != null" >
+        SEX,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="updateBy != null" >
+        UPDATE_BY,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="remove != null" >
+        REMOVE,
+      </if>
+      <if test="flag != null" >
+        FLAG,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="account != null" >
+        #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null" >
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="organId != null" >
+        #{organId,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=DATE},
+      </if>
+      <if test="updateBy != null" >
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=DATE},
+      </if>
+      <if test="remove != null" >
+        #{remove,jdbcType=CHAR},
+      </if>
+      <if test="flag != null" >
+        #{flag,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

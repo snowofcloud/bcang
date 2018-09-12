@@ -1,0 +1,9 @@
+{	
+	"code": 1,
+	"data": {
+		 "name":"测试名称",
+		"limitType":"1",
+		"limitSpeed":"104.12"
+		},
+	"msg": "查询成功"
+}

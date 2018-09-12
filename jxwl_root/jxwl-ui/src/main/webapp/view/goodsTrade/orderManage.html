@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">  
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>订单管理</title>
+<link rel="stylesheet" href="../../js/lib/bootstrap-3.3.4/css/bootstrap.css" />
+<link rel="stylesheet" href="../../js/lib/bootstrap-3.3.4/css/star-rating.min.css" />
+<link rel="stylesheet" href="../../js/lib/jquery/css/jquery-ui.css" />
+<link rel="stylesheet" href="../../js/lib/jqGrid/ui.jqgrid.css" />
+<link rel="stylesheet" href="../../css/module/module.css" />
+<link rel="stylesheet" href="../../js/lib/uploadFile/Huploadify.css" />
+<link rel="stylesheet" href="../../css/view/carMonitor/inforManage.css" />
+<link rel="stylesheet" href="../../css/view/goodsTrade/orderTrade.css" />
+<!-- 媒体查询，只能放在最后 -->
+<link rel="stylesheet" href="../../css/view/media.css"/>
+</head>
+<body>
+	<div class="right-content">
+		<div role="tabpanel" class="">
+			<!-- Nav tabs -->
+			<ul class="nav nav-tabs" role="tablist" id="inforMag-tabs" data-module="orderManage">
+				<li role="presentation" class="active" data-module="orderManage">
+					<a href="#orderManage" aria-controls="orderManage" role="tab" data-toggle="tab" data-module-name="orderManage">订单管理</a>
+				</li>
+				<li role="presentation" data-module="logManage">
+					<a href="#logManage" aria-controls="logManage" role="tab" data-toggle="tab" data-module-name="logManage">日志管理</a>
+				</li>
+			</ul>
+			<!-- Tab panes -->
+			<div class="tab-content">
+				<!--订单管理-->
+				<div role="tabpanel" class="tab-pane active" id="orderManage" data-module="orderManage">
+					<!--搜索栏区域展示-->
+					<div class="searchBox" id="orderManage-search">
+							<div class="line-searchBox">
+								<div class="item-searchBox col-xs-5">
+									<label class="horizontal-span">订单生成日期</label> 
+									<input type="text" class="form-control Wdate" id="orderManageStartTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd', maxDate:'#F{$dp.$D(\'orderManageEndTime\')}'})" readonly> 
+									<span class="split-Wdate left-span">&nbsp;&nbsp;到&nbsp;&nbsp;</span>
+									<input type="text" class="form-control Wdate" id="orderManageEndTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd', minDate:'#F{$dp.$D(\'orderManageStartTime\')}'})" readonly>
+								</div>
+								<div class="item-searchBox col-xs-5">
+								    <label class="horizontal-span hidden">按钮</label>
+									<button type="button" class="btn btn-lemon" id="orderManage-searchBtn" data-func="orderManage-findByPage">
+										<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;查询
+									</button>
+								</div>
+							</div>
+					</div>
+					<!--表格展示-->
+					<table id="orderManageTable"></table>
+					<div id="orderManagePage"></div>
+				</div>
+				
+				<!--日志管理-->
+				<div role="tabpanel" class="tab-pane" id="logManage" data-module="logManage">
+					<!--搜索栏区域展示-->
+					<div class="searchBox" id="logManage-search">
+							<div class="line-searchBox">
+								<div class="item-searchBox col-xs-3">
+									<label class="horizontal-span">订单号</label> 
+									<input type="text" class="form-control" id="logManage-orderNo" maxlength="20">
+								</div>
+								<div class="item-searchBox col-xs-3">
+								    <label class="horizontal-span hidden">按钮</label>
+									<button type="button" class="btn btn-lemon" id="logManage-searchBtn" data-func="logManage-findByPage">
+										<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;查询
+									</button>
+								</div>
+							</div>
+					</div>
+					<!--表格展示-->
+					<table id="logManageTable"></table>
+					<div id="logManagePage"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<!-- 订单详情 -->
+	<div class="panel panel-gray-lg" id="orderDetailPanel">
+		<div class="panel-heading"><span class="panel-title">货源信息</span></div>
+		<form id="orderDetailForm">
+			<div class="panel-body">
+				<div class="panel-body-content">
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-4"><label>订单号</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="orderNo"></span></div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-4"><label>货单号</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="waybilllNo"></span></div>
+						</div>
+					</div>
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-4"><label>订单生成日期</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="orderDate"></span></div>
+						</div>
+					</div>
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-4"><label>起点</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="startPoint"></span></div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-4"><label>到点</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="endPoint"></span></div>
+						</div>
+					</div>
+
+					<div class="moduleLine">发货人信息<div class="moduleSpanLine"></div></div>
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-4"><label>发货单位</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="senderCompany"></span></div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-4"><label>联系人</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="senderLinker"></span></div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-2"><label>联系电话</label></div>
+						<div class="col-xs-9"><span class="look-formPanel" name="senderTel"></span></div>
+					</div>
+					<div class="row">
+						<div class="col-xs-2"><label>发货地址</label></div>
+						<div class="col-xs-9"><span class="look-formPanel" name="senderAddr"></span></div>
+					</div>
+
+					<div class="moduleLine">收货人信息<div class="moduleSpanLine"></div></div>
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-4"><label>收货单位</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="receiverCompany"></span></div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-4"><label>联系人</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="receiverLinker"></span></div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-2"><label>联系电话</label></div>
+						<div class="col-xs-9"><span class="look-formPanel" name="receiverTel"></span></div>
+					</div>
+					<div class="row">
+						<div class="col-xs-2"><label>收货地址</label></div>
+						<div class="col-xs-9"><span class="look-formPanel" name="receiverAddr"></span></div>
+					</div>
+
+					<div class="moduleLine">货物信息<div class="moduleSpanLine"></div></div>
+					<div id="goodsTabDiv">
+						<table id="goodsTable"></table>
+						<div id="goodsTablePage"></div>
+					</div>						
+					
+					<div class="moduleLine">交易信息<div class="moduleSpanLine"></div></div>
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-4"><label>交易状态</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" id="tradeStatusId"></span></div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-4"><label>交易对象</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="tradeObject"></span></div>
+						</div>
+					</div>
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-4"><label>交易对象联系方式</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="traderobjTel"></span></div>
+						</div>
+						<div class="col-xs-6"></div>
+					</div>
+				    
+				    <div id="comment">
+						<div class="moduleLine">评价记录<div class="moduleSpanLine"></div></div>
+						<div class="row"><span id="comment_enp_name"></span></div>
+						<div class="row twoSpan">
+							<div class="col-xs-6">
+								<div class="col-xs-4"><label>星级评价</label></div>
+								<div class="col-xs-8" id="comment_view_score"></div>
+							</div>
+							<div class="col-xs-6">
+								<div class="col-xs-4"><label>评价时间</label></div>
+								<div class="col-xs-7"><span class="look-formPanel" name="comment_time"></span></div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-2"><label>评价内容</label></div>
+							<div class="col-xs-9"><span class="look-formPanel" name="comment_content"></span></div>
+						</div>
+					</div>
+					
+				    <div id="complain">
+						<div class="moduleLine">投诉记录<div class="moduleSpanLine"></div></div>
+						<div class="row"><span id="complain_enp_name"></span></div>
+						<div class="row">
+							<div class="col-xs-2"><label>投诉内容</label></div>
+							<div class="col-xs-8"><span class="look-formPanel" name="complain_content"></span></div>
+						</div>
+						<div class="row">
+							<div class="col-xs-2"><label>投诉时间</label></div>
+							<div class="col-xs-8"><span class="look-formPanel" name="complain_time"></span></div>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<!-- 订单日志详情 -->
+	<div class="panel panel-gray-lg" id="logDetailPanel">
+		<div class="panel-heading"><span class="panel-title">订单日志信息</span></div>
+		<form id="logDetailForm">
+			<div class="panel-body">
+				<div class="panel-body-content">
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-4"><label>订单号</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="orderNo"></span></div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-4"><label>交易状态</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" id="tradeStatusLog"></span></div>
+						</div>
+					</div>
+					<div class="row twoSpan">
+						<div class="col-xs-6">
+							<div class="col-xs-4"><label>化工企业名称</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="hgEnterpriseName"></span></div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-4"><label>化工企业名称</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="wlEnterpriseName"></span></div>
+						</div>
+					</div>
+					<div class="row twoSpan">
+					    <div class="col-xs-6">
+							<div class="col-xs-4"><label>记录日期</label></div>
+							<div class="col-xs-7"><span class="look-formPanel" name="recordTime"></span></div>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-4"><label>内容</label></div>
+							<div class="col-xs-3"><span class="look-formPanel" name="content"></span></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<!-- 订单日志提醒弹窗 -->
+	<div class="panel panel-gray-lg" id="logRemindPanel">
+		<div class="panel-heading"><span class="panel-title">订单状态变更提醒</span></div>
+		<form id="logRemindForm">
+			<div class="panel-body">
+				<div class="panel-body-content">
+					 <div id="logRemindDiv">
+						<table id="logRemindTable"></table>
+					 <div id="logRemindPage"></div>
+					</div>	
+				</div>
+			</div>
+			<div class="panel-footer">
+				<button type="submit" class="btn btn-cyan" id="logRemind-submitBtn">全部已读</button>
+			</div>
+		</form>
+	</div>
+	
+	<!--  右下角---订单日志提醒弹窗  -start------->
+	   	<!-- <div class="panel panel-gray-xs" id="logRemindRightPanel">
+	       	<div class="panel-heading">
+	        	<span class="panel-title">订单状态变更提醒</span>
+	        	<span class="panel-close"></span>
+	    	</div>
+		    <form id="logRemindRight-form">
+		        <div class="panel-body">
+				<div class="panel-body-content">
+					<div id="logRemindRightDiv">
+						<table id="logRemindRightTable"></table>
+					<div id="logRemindRightPage"></div>
+					</div>	
+				</div>
+			    </div>
+				<div class="panel-footer">
+					<button type="submit" class="btn btn-cyan" id="logRemindRight-submitBtn">全部已读</button>
+				</div>
+		    </form>
+	    </div> -->
+	   <!--  右下角---订单日志提醒弹窗  -------end-->
+	
+	<!-- 评价-->
+	<div class="panel panel-gray-sm" id="comment_panel">
+		<div class="panel-heading"><span class="panel-title">订单评价</span></div>
+		<form id="comment_form">
+			<div class="panel-body">
+				<div class="panel-body-content">
+					<div class="row">
+						<div class="col-xs-3">
+							<label class="must mustFlag" for="comment_content">评价内容</label>
+						</div>
+						<div class="col-xs-8">
+							<textarea type="text" name="content" rows="5"
+								class="form-control saveInput" id="comment_content" data-min="1" data-max="1000" required placeholder="请输入0~1000个字符">
+							</textarea>
+						</div>
+					</div>
+					
+					<div class="row">
+						<div class="col-xs-3">
+							<label class="must mustFlag comment-margin" for="comment_content">星级评价</label>
+						</div>
+						<div class="col-xs-8">
+							<input id="comment_score" value="5" type="number" class="rating" min=0 max=5 step=0.5 data-size="sm">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel-footer">
+				<button type="submit" class="btn btn-cyan" id="saveBtn">保存</button>
+				<button type="reset"  class="btn btn-border cancel">取消</button>
+			</div>
+		</form>
+	</div>
+
+
+
+
+
+	<!-- 投诉 -->
+	<div class="panel panel-gray-sm" id="complain_panel">
+		<div class="panel-heading"><span class="panel-title">订单投诉</span></div>
+		<form id="complain_form">
+			<div class="panel-body">
+				<div class="panel-body-content">
+					<div class="row">
+						<div class="col-xs-2">
+							<label class="must mustFlag" for="complain_content">投诉内容</label>
+						</div>
+						<div class="col-xs-9">
+							<textarea type="text" name="content" rows="5"
+								class="form-control saveInput" id="complain_content" data-min="1" data-max="1000" required placeholder="请输入0~1000个字符">
+							</textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel-footer">
+				<button type="submit" class="btn btn-cyan" id="saveBtn">保存</button>
+				<button type="reset"  class="btn btn-border cancel">取消</button>
+			</div>
+		</form>
+	</div>
+
+
+	
+	<!--js引用-->
+	<script src="../../js/loadScript.js"></script>
+	<script src="../../js/lib/thrjs/star-rating.min.js"></script>
+	<script src="../../js/view/goodsTrade/orderManage.js"></script>
+	<script src="../../js/view/goodsTrade/comment.js"></script>
+	<script src="../../js/view/goodsTrade/logManage.js"></script>
+</body>
+</html>

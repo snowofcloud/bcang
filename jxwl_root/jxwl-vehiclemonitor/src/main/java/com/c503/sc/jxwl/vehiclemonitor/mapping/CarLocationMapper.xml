@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.c503.sc.jxwl.vehiclemonitor.dao.ICarLocationDao" >
+  <resultMap id="BaseResultMap" type="com.c503.sc.jxwl.vehiclemonitor.bean.CarLocationEntity" >
+    <id column="CARRIER_NAME"          property="carrierName"     jdbcType="VARCHAR" />
+    <result column="POINT_SOURCE_TYPE" property="pointSourceType" jdbcType="VARCHAR" />
+    <result column="ONLINE_STATUS"     property="onlineStatus"    jdbcType="VARCHAR" />
+    <result column="POINT_TIME"        property="pointTime"       jdbcType="DATE" />
+    <result column="LONGITUDE"         property="longitude"       jdbcType="DECIMAL" />
+    <result column="LATITUDE"          property="latitude"        jdbcType="DECIMAL" />
+    <result column="ELEVATION"         property="elevation"       jdbcType="DECIMAL" />
+    <result column="SPEED"             property="speed"           jdbcType="DECIMAL" />
+    <result column="DIRECTION"         property="direction"       jdbcType="DECIMAL" />
+    <result column="TEMPERATURE"       property="temperature"     jdbcType="DECIMAL" />
+    <result column="PRESSURE"          property="pressure"        jdbcType="DECIMAL" />
+    <result column="LIQUID_LEVEL"      property="liquidLevel"     jdbcType="DECIMAL" />
+    <result column="TYRE_PRESSURE"     property="tyrePressure"    jdbcType="DECIMAL" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    CARRIER_NAME, POINT_SOURCE_TYPE, ONLINE_STATUS, POINT_TIME, LONGITUDE, LATITUDE, 
+    ELEVATION, SPEED, DIRECTION, TEMPERATURE, PRESSURE, LIQUID_LEVEL, TYRE_PRESSURE
+  </sql>
+  
+  <select id="findByCarrierName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_CAR_LOCATION
+    where CARRIER_NAME = #{carrierName,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="findAll" resultMap="BaseResultMap">
+  	SELECT
+  	  <include refid="Base_Column_List" />
+  	  FROM T_CAR_LOCATION
+  </select>
+  
+  <!-- 根据运单id查询车牌号，再根据车牌号查询当前车辆的位置 -->
+  <select id="findLocByWaybillId" parameterType="map" resultMap="BaseResultMap">
+  	SELECT
+  	  <include refid="Base_Column_List" />
+  	  FROM T_CAR_LOCATION
+     WHERE CARRIER_NAME = (SELECT CARNO
+                             FROM T_WAYBILL
+                            WHERE ID = #{id, jdbcType=VARCHAR})
+       AND ROWNUM = 1
+  </select>
+  
+  <!-- 保存车辆实时位置信息  -->
+ <insert id="save" parameterType="com.c503.sc.jxwl.common.bean.LocationEntity" >
+     insert into T_CAR_LOCATION
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="carrierName != null" >
+        CARRIER_NAME,
+      </if>
+      <if test="orgin != null" >
+        POINT_SOURCE_TYPE,
+      </if>
+      <if test="onlineStatus != null" >
+        ONLINE_STATUS,
+      </if>
+      <if test="gpstime != null" >
+        POINT_TIME,
+      </if>
+      <if test="longitude != null" >
+        LONGITUDE,
+      </if>
+      <if test="latitude != null" >
+        LATITUDE,
+      </if>
+      <if test="speed != null" >
+        SPEED,
+      </if>
+      <if test="direction != null" >
+        DIRECTION,
+      </if>
+      <if test="temperature != null" >
+        TEMPERATURE,
+      </if>
+      <if test="pressure != null" >
+        PRESSURE,
+      </if>
+      <if test="liquidLevel != null" >
+        LIQUID_LEVEL,
+      </if>
+      <if test="tirePressure != null" >
+        TYRE_PRESSURE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="carrierName != null" >
+        #{carrierName,jdbcType=VARCHAR},
+      </if>
+      <if test="orgin != null" >
+        #{orgin,jdbcType=VARCHAR},
+      </if>
+      <if test="onlineStatus != null" >
+        #{onlineStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="gpstime != null" >
+        #{gpstime,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null" >
+        #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null" >
+        #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="speed != null" >
+        #{speed,jdbcType=VARCHAR},
+      </if>
+      <if test="direction != null" >
+        #{direction,jdbcType=VARCHAR},
+      </if>
+      <if test="temperature != null" >
+        #{temperature,jdbcType=VARCHAR},
+      </if>
+      <if test="pressure != null" >
+        #{pressure,jdbcType=VARCHAR},
+      </if>
+      <if test="liquidLevel != null" >
+        #{liquidLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="tirePressure != null" >
+        #{tirePressure,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <!-- 更新车辆实时位置 -->
+  <update id="update"  parameterType="com.c503.sc.jxwl.common.bean.LocationEntity">
+  	 UPDATE T_CAR_LOCATION SET 
+  	  <trim suffixOverrides="," >
+  	  <if test="orgin != null and orgin != ''">
+       		POINT_SOURCE_TYPE 			= #{orgin,jdbcType=VARCHAR},
+      </if>
+       <if test="onlineStatus != null and onlineStatus != ''">
+       		ONLINE_STATUS				= #{onlineStatus,jdbcType=VARCHAR},
+       </if>
+       <if test="gpstime != null and gpstime != ''">
+        		POINT_TIME					= #{gpstime,jdbcType=TIMESTAMP},
+        </if>
+       <if test="longitude != null and longitude != ''">
+        		LONGITUDE					= #{longitude,jdbcType=DOUBLE},
+        </if>
+       <if test="latitude != null and latitude != ''">
+       		 	LATITUDE					= #{latitude,jdbcType=DOUBLE},
+        </if>
+       <if test="elevation != null and elevation != ''">
+        		ELEVATION					= #{elevation,jdbcType=DOUBLE},
+        </if>
+       <if test="speed != null and speed != ''">
+        		SPEED						= #{speed,jdbcType=DOUBLE},
+        </if>
+       <if test="direction != null and direction != ''">
+        		DIRECTION					= #{direction,jdbcType=DOUBLE},
+        </if>
+       <if test="temperature != null and temperature != ''">
+        		TEMPERATURE					= #{temperature,jdbcType=DOUBLE},
+        </if>
+       <if test="pressure != null and pressure != ''">
+        		PRESSURE					= #{pressure,jdbcType=DOUBLE},
+        </if>
+       <if test="liquidLevel != null and liquidLevel != ''">
+        		LIQUID_LEVEL				= #{liquidLevel,jdbcType=DOUBLE},
+        </if>
+       <if test="tirePressure != null and tirePressure != ''">
+        		TYRE_PRESSURE				= #{tirePressure,jdbcType=DOUBLE},
+        </if>
+      </trim>
+      WHERE CARRIER_NAME = #{carrierName,jdbcType=VARCHAR}
+  </update>
+  
+</mapper>

@@ -1,0 +1,202 @@
+@CHARSET "utf-8";
+
+@media screen and (width:1366px){
+	.panel {
+ 		top: 16px!important;
+ 	}
+ 	.panel .panel-body {
+ 		max-height: 550px;
+ 	}
+ 	
+ 	.header{
+ 		min-height: 107px;
+ 	}
+ 	
+ 	/* 底部版权说明行没有位于最底部 */
+ 	.footer{
+ 		margin-top: 53px;
+ 	}
+ 	
+ 	/* 影响其他所有业务页面的内容表格展示不全且没有滚动条！ */
+ 	/* .main-container .main-right {
+ 		height: 536px;
+ 	} */
+ 	
+ 	/* 大屏展示第1页最底部边框线溢出到外面 */
+ 	.container_fullScreen {
+ 		height: 496px;
+ 	}
+ 	
+ 	#tradeTrendsDataContainer {
+ 		height: 492px;
+ 	}
+ 	
+ 	/* 大屏展示第2页最底部边框线溢出到外面 */
+ 	.container-fluid{
+ 		height: 496px;
+ 	}
+ 	
+ 	/* 大屏展示第2页规章制度，通知公告内容看不到 */
+ 	.hegiht-com{
+ 		height: 49%;
+ 	}
+ 	
+ 	/* 大屏展示第4页最底部边框线溢出到外面 */
+ 	.fullScreen-right {
+ 		height: 502px;
+ 	}
+ 	
+ 	/* 大屏展示第4页滚动条， overflow:auto则是出现滚动条*/
+ 	/* #vehicleSourceDataContainer {
+ 		overflow: auto;
+ 	} */
+ 	
+ 	/* 大屏展示第4页列间距*/
+ 	.gs-rowItem-four {
+ 		padding: 5px;
+ 	}
+ 	
+	.line-searchBox .form-control {
+		/* width: 154px; */
+		max-width: 154px;
+	}
+	.btn{
+		padding: 6px 10px;
+	}
+	.line-searchBox .item-searchBox input.Wdate{
+		max-width: 154px;
+	}
+	
+	/* 形象展示tab标签文字换行问题 */
+ 	.nav-tabs>li.active>a,.nav-tabs>li.active>a:focus,.nav-tabs>li.active>a:hover {
+		padding: 10px 28px;
+	}
+ 	
+	.footer-panel{
+		min-width: 1085px;
+	}
+	
+	.footer-subpanel{
+		width: 320px;
+		height: 220px;  /* 267-47 */
+	}
+ 	
+ 	#footer-subpanel .tab-content {
+ 		width: 100%;
+ 		height: 174px;  /* 220-46 */
+		background-color: #0F4576
+ 	}
+
+ 	#cargoInfor .row{
+ 		margin: 0;
+ 	}
+ 	
+ 	#cargoInfor .row-first {
+ 		width: 120px;
+ 	}
+ 	
+ 	#cargoInfor .row-second {
+ 		width: 120px;
+ 		margin-left: 155px;
+ 	}
+ 	
+	#realInfor-content{
+ 		margin-left: 0px;
+ 	}
+ 	
+ 	.realInfor-content .realInfor{
+		width: 142px;
+		height: 220px;
+	}
+ 	
+ 	.realInfor .fontStyle:nth-child(2){
+		font-size: 42px;
+		height: 144px;
+		width: 100%;
+	}
+	
+	.realInfor .fontStyle:nth-child(2) span{
+		line-height: 144px;
+	}
+ 	
+ 	#inforMag-tabs li {
+	  width: 136px;
+	}
+	
+	#removalApp-tabs li{
+		height: 38px;
+	}
+}
+
+@media screen and (width:1280px){
+	.line-searchBox .form-control {
+		max-width: 143px;
+	}
+	.btn{
+		padding: 6px 8px;
+	}
+	.line-searchBox .item-searchBox input.Wdate{
+		max-width: 134px;
+	}
+	
+	/* 形象展示tab标签文字换行问题 */
+ 	.nav-tabs>li.active>a,.nav-tabs>li.active>a:focus,.nav-tabs>li.active>a:hover {
+		padding: 10px 28px;
+	}
+ 	
+	.footer-panel{
+		min-width: 1010px;
+	}
+	
+	.footer-subpanel{
+		width: 320px;
+		height: 220px;  /* 267-47 */
+	}
+ 	
+ 	#footer-subpanel .tab-content {
+ 		width: 100%;
+ 		height: 174px;  /* 220-46 */
+		background-color: #0F4576
+ 	}
+
+ 	#cargoInfor .row{
+ 		margin: 0;
+ 	}
+ 	
+ 	#cargoInfor .row-first {
+ 		width: 120px;
+ 	}
+ 	
+ 	#cargoInfor .row-second {
+ 		width: 120px;
+ 		margin-left: 155px;
+ 	}
+ 	
+ 	#realInfor-content{
+ 		margin-left: 0px;
+ 	}
+ 	
+ 	.realInfor-content .realInfor{
+		width: 133px;
+		height: 220px;
+		margin-left: 4px;
+	}
+ 	
+ 	.realInfor .fontStyle:nth-child(2){
+		font-size: 42px;
+		height: 137px;
+		width: 100%;
+	}
+	
+	.realInfor .fontStyle:nth-child(2) span{
+		line-height: 137px;
+	}
+	
+ 	#inforMag-tabs li {
+	  width: 136px;
+	}
+	
+	#removalApp-tabs li{
+		height: 38px;
+	}
+}

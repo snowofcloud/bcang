@@ -1,0 +1,157 @@
+@charset "UTF-8";
+
+.height-left-up {
+	height: 410px;
+	overflow: hidden;
+}
+
+.height-left-down {
+	max-height: 360px;
+	overflow: hidden;
+}
+
+.height-company {
+	max-height: 294px;
+	overflow: auto;
+}
+
+.leftUp {
+	padding: 10px 10px 10px 17px;
+}
+
+.rightUp {
+	padding: 10px 10px 10px 10px;
+}
+
+.leftDown,.rightDown {
+	padding: 10px 10px 10px 10px;
+}
+
+.companyInf {
+	width: 100%;
+	overflow-y: auto;
+	overflow-x: hidden
+}
+
+.companyInf p {
+	left: 0px;
+	top: 0px;
+	width: 76px;
+	height: 21px;
+	font-family: '微软雅黑 Bold', '微软雅黑';
+	font-weight: 700;
+	font-style: normal;
+	font-size: 16px;
+	color: #FFFFFF;
+	margin: 6px 0px 6px 0px;
+}
+
+.companyInf span {
+	left: 0px;
+	top: 40px;
+	width: 135px;
+	height: 21px;
+	font-family: '微软雅黑 Regular', '微软雅黑';
+	font-weight: 400;
+	font-style: normal;
+	font-size: 16px;
+	color: #FFFFFF;
+	margin: 6px 0 6px 0;
+	word-break: break-all;
+}
+
+.companyInf .row,.comAbstract p {
+	margin-top: 5px;
+}
+
+.blank {
+	margin-top: 8px;
+}
+
+#comInformation label { /* 	overflow: hidden; */
+	/* 	white-space: nowrap; */
+	/* 	text-overflow: ellipsis; */
+	max-width: 95%;
+}
+
+/**左下角标题head头*/
+.left-down-head,.right-down-head {
+	background-color: rgb(15, 69, 118);
+	height: 35px;
+	padding: 6px 0;
+}
+
+/**左下角head头的（投诉记录）*/
+.left-down-title1,.right-down-title1 {
+	font-size: large;
+	margin-left: 10px;
+}
+
+/**左下角head头的（查看更多）*/
+.left-down-title2,.right-down-title2 {
+	float: right;
+	font-size: initial;
+	margin-right: 15px;
+	color: #9DC737;
+}
+/**左下角head头的（查看更多鼠标移动到字上为绿色）*/
+span[class='left-down-title2']:hover,span[class='right-down-title2']:hover
+	{
+	color: rgba(255, 255, 0, 1);
+	cursor: pointer;
+}
+
+/**表格星星显示*/
+.ui-jqgrid tr.jqgrow td[aria-describedby="comments_table_score"] {
+	font-weight: normal;
+	overflow: hidden;
+	white-space: nowrap;
+	padding: 0;
+	height: 45px /*23px 统一修改样式(2016-6-23)*/;
+	border-bottom-width: 1px;
+	border-bottom-color: rgb(39, 78, 124) /*#ddd 统一修改样式(2016-6-23)*/;
+	border-bottom-style: solid;
+}
+
+/* 滚动条宽度 */
+#comInformation::-webkit-scrollbar {
+	width: 12px;
+}
+/* 滚动条拖动块 */
+#comInformation::-webkit-scrollbar-thumb {
+	background-color: white;
+	border-radius: 5px;
+}
+/* 滚动条*/
+#comInformation::-webkit-scrollbar {
+	background-color: #B4B4B4;
+	border-radius: 3px;
+}
+
+/* 星级评分显示 */
+@media screen and (max-width: 1630px) and (min-width: 1400px) {
+	#comments_table .rating-xs {
+		font-size: calc(.6vw +           10px);
+	}
+}
+
+/* 星级评分显示 */
+@media screen and (max-width: 1399px) and (min-width: 1160px) {
+	#comments_table .rating-xs {
+		font-size: calc(.4vw +           5px);
+	}
+}
+
+/* 星级评分显示 */
+@media screen and (min-width: 1630px) {
+	#comments_table .rating-xs {
+		font-size: 26px;
+	}
+}
+
+/* 星级评分显示 */
+@media screen and (max-width: 1160px) {
+	#comments_table .rating {
+		display: none;
+	}
+}

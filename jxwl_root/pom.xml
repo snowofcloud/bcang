@@ -1,0 +1,678 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.c503.sc.jxwl</groupId>
+	<artifactId>jxwl-root</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<modules>
+		<module>jxwl-dict</module>
+		<module>jxwl-filemanage</module>
+		<module>jxwl-common</module>
+		<module>jxwl-transacation</module>
+		<module>jxwl-pipelinemangnt</module>
+		<module>jxwl-zcpt</module>
+		<module>jxwl-orgdata</module>
+		<module>jxwl-vehiclemonitor</module>
+		<module>jxwl-ui</module>
+	</modules>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- spring version -->
+		<spring.version>4.1.5.RELEASE</spring.version>
+		<!-- mybatis version -->
+		<mybatis.version>3.2.8</mybatis.version>
+		<mybatis-spring.version>1.2.2</mybatis-spring.version>
+		<druid.version>1.0.9</druid.version>
+		<!-- jdk -->
+		<jdk.version>1.7</jdk.version>
+		<ehcache.version>2.7.4</ehcache.version>
+		<javax.javaee>7.0</javax.javaee>
+		<!-- jackson -->
+		<jackson.core.version>2.2.2</jackson.core.version>
+		<jackson-mapper-asl.version>1.9.2</jackson-mapper-asl.version>
+		<jackson-core-asl.version>1.9.2</jackson-core-asl.version>
+		<!-- jxwl version -->
+		<jxwl.version>0.0.1-SNAPSHOT</jxwl.version>
+		<!-- util -->
+		<c503util.version>0.1.0</c503util.version>
+		<!-- log -->
+		<c503log.version>0.1.0</c503log.version>
+		<!-- base -->
+		<c503base.version>0.1.0</c503base.version>
+		<!--auth-client -->
+		<auth.client.version>0.0.11</auth.client.version>
+		<!--json-simple -->
+		<json.simple.version>1.1.1</json.simple.version>
+		<!--mipush-server -->
+		<mipush.server.version>2.2.17</mipush.server.version>
+
+		<!-- For CI -->
+		<proName>JXWL</proName>
+
+		<proFormat>war</proFormat>
+		<deploy.host>DEPLOYHOST_1</deploy.host>
+		<deploy.host.sec>DEPLOYHOST_2</deploy.host.sec>
+		<deploy.port>8080</deploy.port>
+		<user>root</user>
+		<password>123456</password>
+		<deploy.temp.dir>/usr/tmp</deploy.temp.dir>
+
+		<compiler.version>3.1</compiler.version>
+		<help.version>2.2</help.version>
+		<resources.version>2.5</resources.version>
+		<surefire.version>2.12.4</surefire.version>
+		<clover.version>2.4.2</clover.version>
+		<checkstyle.version>2.11</checkstyle.version>
+		<pmd.version>3.4</pmd.version>
+		<findbugs.version>2.5.2</findbugs.version>
+		<war.version>2.2</war.version>
+		<cobertura.version>2.7</cobertura.version>
+		<ant.launcher.version>1.8.2</ant.launcher.version>
+		<pmd.rules>../pmdrule.xml</pmd.rules>
+		<style.rules>config/casc_cd_checks.xml</style.rules>
+
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
+
+
+	<dependencies>
+		<!-- https://mvnrepository.com/artifact/javax/javaee-api -->
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>7.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.zx.4</groupId>
+			<artifactId>zx-d</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.zx.framework.constans</groupId>
+			<artifactId>zx_developutil</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<!--小米推送java服务jar -->
+		<dependency>
+			<groupId>com.mi.push.server</groupId>
+			<artifactId>mi-push</artifactId>
+			<version>${mipush.server.version}</version>
+		</dependency>
+		<!--小米推送json-simple jar -->
+		<dependency>
+			<groupId>com.mi.json.simple</groupId>
+			<artifactId>mi-simple</artifactId>
+			<version>${json.simple.version}</version>
+		</dependency>
+
+		<!-- 注入依赖：访问访问认证平台的jar -->
+		<dependency>
+			<groupId>sc.c503.authclient</groupId>
+			<artifactId>c503-sc-authclient</artifactId>
+			<version>${auth.client.version}</version>
+		</dependency>
+		<!-- cas start -->
+		<dependency>
+			<groupId>org.jasig.cas.client</groupId>
+			<artifactId>hj-cas-client</artifactId>
+			<version>3.2.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.jasig.cas.client/cas-client-core -->
+		<dependency>
+			<groupId>org.jasig.cas.client</groupId>
+			<artifactId>cas-client-core</artifactId>
+			<version>3.2.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.c503.sc.base</groupId>
+			<artifactId>c503-sc-base</artifactId>
+			<version>${c503base.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>javaee-api</artifactId>
+					<groupId>javax</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>com.c503.sc.log</groupId>
+			<artifactId>c503-sc-log</artifactId>
+			<version>${c503log.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>javaee-api</artifactId>
+					<groupId>javax</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!--》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》-->
+		<dependency>
+			<groupId>com.c503.sc.utils</groupId>
+			<artifactId>c503-sc-utils</artifactId>
+			<version>${c503util.version}</version>   <!--0.1.0-->
+			<exclusions>
+				<exclusion>
+					<artifactId>javaee-api</artifactId>
+					<groupId>javax</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!--》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》-->
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-web</artifactId>
+			<version>2.3</version>
+		</dependency>
+
+		<!-- redis start -->
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>2.7.0</version>
+		</dependency>
+		<!-- redis end -->
+
+		<!-- apache common start -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-pool2</artifactId>
+			<version>2.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-configuration</groupId>
+			<artifactId>commons-configuration</artifactId>
+			<version>1.10</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils-core</artifactId>
+			<version>1.8.3</version>
+		</dependency>
+		<!-- common end -->
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.9</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.5.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.5.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.5.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>${jackson-mapper-asl.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
+			<version>${jackson-core-asl.version}</version>
+		</dependency>
+		<!--Jackson end -->
+
+		<!-- springframe start -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-oxm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.8.5</version>
+		</dependency>
+		<!-- springframe end -->
+
+		<!-- mybatis start -->
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>${mybatis.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+			<version>${mybatis-spring.version}</version>
+		</dependency>
+		<!-- mybatis end -->
+
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>${druid.version}</version>
+		</dependency>
+
+		<!-- EHcache start -->
+		<!-- https://mvnrepository.com/artifact/net.sf.ehcache/ehcache -->
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>${ehcache.version}</version>
+		</dependency>
+		<!--EHcache end -->
+
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.4-1201-jdbc4</version>
+		</dependency>
+
+		<!-- oracle start -->
+		<dependency>
+			<groupId>ojdbc6</groupId>
+			<artifactId>org.oracle.jdbc</artifactId>
+			<version>1.6</version>
+		</dependency>
+		<!-- oracle end -->
+
+		<!-- form Jar start -->
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.0.0.GA</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>4.3.0.Final</version>
+		</dependency>
+		<!-- form Jar end -->
+
+		<!-- upload -->
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.3.1</version>
+		</dependency>
+		<!-- upload end -->
+
+		<!-- fastjson start -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.1.15</version>
+		</dependency>
+		<!-- fastjson end -->
+		<!-- 智能接入组件 kafka -->
+		<!-- <dependency> -->
+		<!-- <groupId>AcloudageDs</groupId> -->
+		<!-- <artifactId>AcloudageDs-DMSS</artifactId> -->
+		<!-- <version>0.1.1</version> -->
+		<!-- </dependency> -->
+
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka_2.9.1</artifactId>
+			<version>0.8.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.c503.sc.kafka</groupId>
+			<artifactId>c503-sc-kafka</artifactId>
+			<version>0.0.3</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.3.6</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+			<version>4.3.3</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/javax.mail/javax.mail-api -->
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>javax.mail-api</artifactId>
+			<version>1.5.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/jline/jline -->
+		<dependency>
+			<groupId>jline</groupId>
+			<artifactId>jline</artifactId>
+			<version>0.9.94</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/freemarker/freemarker -->
+		<dependency>
+			<groupId>freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+			<version>2.3.8</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.hamcrest/hamcrest-core -->
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-core</artifactId>
+			<version>1.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.10.19</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.powermock/powermock-api-mockito -->
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-api-mockito</artifactId>
+			<version>1.6.2</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.powermock/powermock-core -->
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-core</artifactId>
+			<version>1.6.2</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<!-- available plugin -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-eclipse-plugin</artifactId>
+					<version>2.9</version>
+					<configuration>
+						<additionalProjectnatures>
+							<projectnature>org.eclipse.jdt.core.javanature</projectnature>
+						</additionalProjectnatures>
+						<additionalBuildcommands>
+							<builcommand>org.eclipse.jdt.core.javabuilder</builcommand>
+						</additionalBuildcommands>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>${resources.version}</version>
+					<configuration>
+						<encoding>${project.build.sourceEncoding}</encoding>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-help-plugin</artifactId>
+					<version>${help.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${compiler.version}</version>
+					<configuration>
+						<encoding>${project.build.sourceEncoding}</encoding>
+						<source>${jdk.version}</source>
+						<target>${jdk.version}</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${surefire.version}</version>
+					<configuration>
+						<!-- <parallel>methods</parallel> -->
+						<!-- <threadCount>10</threadCount> -->
+						<argLine>-Dfile.encoding=UTF-8</argLine>
+						<!-- <skip>true</skip> -->
+						<!-- <testFailureIgnore>true</testFailureIgnore> -->
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>maven</groupId>
+					<artifactId>maven-clover-plugin</artifactId>
+					<version>${clover.version}</version>
+					<configuration>
+						<encoding>${project.build.sourceEncoding}</encoding>
+					</configuration>
+				</plugin>
+
+				<!-- cobertura phase:test -->
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>cobertura-maven-plugin</artifactId>
+					<version>${cobertura.version}</version>
+					<configuration>
+						<instrumentation>
+						</instrumentation>
+						<formats>
+							<format>html</format>
+							<format>xml</format>
+						</formats>
+					</configuration>
+					<executions>
+						<execution>
+							<id>Coverage</id>
+							<phase>test</phase>
+							<goals>
+								<goal>cobertura</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+				<!-- checkstyle phase:test -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<version>${checkstyle.version}</version>
+					<configuration>
+						<configLocation>${style.rules}</configLocation>
+						<includeResources>false</includeResources>
+						<failOnViolation>false</failOnViolation>
+						<violationSeverity>info</violationSeverity>
+						<maxAllowedViolations>0</maxAllowedViolations>
+						<consoleOutput>true</consoleOutput>
+						<encoding>${project.build.sourceEncoding}</encoding>
+					</configuration>
+					<executions>
+						<execution>
+							<id>checkstyle-check</id>
+							<phase>test</phase>
+							<goals>
+								<goal>check</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+
+
+				<!-- findbugs phase:test -->
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>findbugs-maven-plugin</artifactId>
+					<version>${findbugs.version}</version>
+					<configuration>
+						<failOnError>true</failOnError>
+						<outputEncoding>${project.build.sourceEncoding}</outputEncoding>
+						<findbugsXmlOutput>true</findbugsXmlOutput>
+						<!-- findbugs xml输出路径 -->
+						<!-- <findbugsXmlOutputDirectory>target/site</findbugsXmlOutputDirectory> -->
+					</configuration>
+					<executions>
+						<execution>
+							<id>findbugs-check</id>
+							<phase>test</phase>
+							<goals>
+								<goal>findbugs</goal>
+							</goals>
+						</execution>
+					</executions>
+					<dependencies>
+						<dependency>
+							<groupId>org.apache.ant</groupId>
+							<artifactId>ant-launcher</artifactId>
+							<version>${ant.launcher.version}</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+				<!-- pmd phase:test -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-pmd-plugin</artifactId>
+					<version>${pmd.version}</version>
+					<configuration>
+						<failurePriority>5</failurePriority>
+						<failOnViolation>false</failOnViolation>
+						<targetJdk>${jdk.version}</targetJdk>
+						<verbose>true</verbose>
+						<outputEncoding>${project.build.sourceEncoding}</outputEncoding>
+						<!-- <rulesets> <ruleset>${pmd.rules}</ruleset> </rulesets> -->
+					</configuration>
+					<executions>
+						<execution>
+							<id>pmd-check</id>
+							<phase>test</phase>
+							<goals>
+								<goal>check</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>${war.version}</version>
+					<configuration>
+						<webResources>
+							<resource>
+								<directory>
+									src/main/webapp/WEB-INF
+								</directory>
+								<targetPath>WEB-INF</targetPath>
+								<filtering>true</filtering>
+								<includes>
+									<include>**/web.xml</include>
+								</includes>
+							</resource>
+						</webResources>
+					</configuration>
+				</plugin>
+
+
+
+			</plugins>
+		</pluginManagement>
+	</build>
+	<repositories>
+		<repository>
+			<id>公司外网仓库</id>
+			<url>http://192.168.1.219:8081/nexus/content/groups/public</url>
+			<releases><enabled>true</enabled><updatePolicy>always</updatePolicy></releases>
+		</repository>
+	</repositories>
+</project>

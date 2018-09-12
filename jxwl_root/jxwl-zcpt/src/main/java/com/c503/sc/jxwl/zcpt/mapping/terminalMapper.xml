@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.c503.sc.jxwl.zcpt.dao.ITerminalDao">
+	<resultMap id="BaseResultMap" type="com.c503.sc.jxwl.zcpt.bean.TerminalParamEntity" >
+      <id column="ID" property="id" jdbcType="VARCHAR" />
+      <result column="TERMINAL_SERIAL_ID" 	property="terminalSerialId" 		jdbcType="VARCHAR" />
+      <result column="MAIN_SERVER_ADDR" 	property="mainServerAddr" 	jdbcType="VARCHAR" />
+      <result column="BACKUP_SERVER_ADDR"   property="backupServerAddr" 	jdbcType="VARCHAR" />
+      <result column="MAIN_TCP_PORT"        property="mainServerTcpPort" 	jdbcType="VARCHAR" />
+      <result column="BACKUP_TCP_PORT" 	    property="backupServerTcpPort" 	jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <resultMap id="BaseResultMap2" type="com.c503.sc.jxwl.zcpt.bean.WayBillEntity" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DRIVER_ID" property="driverId" jdbcType="VARCHAR" />
+    <result column="ESCORT_ID" property="escortId" jdbcType="VARCHAR" />
+    <result column="CHEMICAL_ID" property="chemicalId" jdbcType="VARCHAR" />
+    <result column="LOGISTICS_ID" property="logisticsId" jdbcType="VARCHAR" />
+    <result column="VEHICLE_ID" property="vehicleId" jdbcType="VARCHAR" />
+    <result column="CHECKNO" property="checkno" jdbcType="VARCHAR" />
+    <result column="CONSUMERNO" property="consumerno" jdbcType="VARCHAR" />
+    <result column="STARTPOINT" property="startpoint" jdbcType="VARCHAR" />
+    <result column="ENDPOINT" property="endpoint" jdbcType="VARCHAR" />
+    <result column="DELIVERYUNIT" property="deliveryunit" jdbcType="VARCHAR" />
+    <result column="DELIVERYUNITPERSON" property="deliveryunitperson" jdbcType="VARCHAR" />
+    <result column="CHECKSTATUS" property="checkstatus" jdbcType="VARCHAR" />
+    <result column="DELIVERYUNITADDRESS" property="deliveryunitaddress" jdbcType="VARCHAR" />
+    <result column="DELIVERYUNITTIME" property="deliveryunittime" jdbcType="DATE" />
+    <result column="ACHIEVEUINT" property="achieveuint" jdbcType="VARCHAR" />
+    <result column="ACHIEVEPERSON" property="achieveperson" jdbcType="VARCHAR" />
+    <result column="ACHIEVEPHONE" property="achievephone" jdbcType="VARCHAR" />
+    <result column="DELIVERYUNITPHONE" property="deliveryunitphone" jdbcType="VARCHAR" />
+    <result column="ACHIEVEADDRESS" property="achieveaddress" jdbcType="VARCHAR" />
+    <result column="ACHIEVETIME" property="achievetime" jdbcType="DATE" />
+    <result column="DRIVER" property="driver" jdbcType="VARCHAR" />
+    <result column="DRIVERPHONE" property="driverphone" jdbcType="VARCHAR" />
+    <result column="DRIVERID" property="driverid" jdbcType="VARCHAR" />
+    <result column="DRIVERNO" property="driverno" jdbcType="VARCHAR" />
+    <result column="ESCORT" property="escort" jdbcType="VARCHAR" />
+    <result column="ESCORTPHONE" property="escortphone" jdbcType="VARCHAR" />
+    <result column="HANDCARNO" property="handcarno" jdbcType="VARCHAR" />
+    <result column="ESCORTNO" property="escortno" jdbcType="VARCHAR" />
+    <result column="ESCORTID" property="escortid" jdbcType="VARCHAR" />
+    <result column="CARNO" property="carno" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_BY" property="updateBy" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="REMOVE" property="remove" jdbcType="CHAR" />
+    <result column="ENTERPRIE_REMOVE" property="enterpriseRemove" jdbcType="CHAR" />
+    <result column="CAR_REMOVE" property="carRemove" jdbcType="CHAR" />
+    <result column="GOODSNAME" property="goodsname" jdbcType="VARCHAR" />
+    <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+    <result column="VEHICLE_COLOR" property="vehicleColor" jdbcType="VARCHAR" />
+    
+    <result column="START_LNG" property="startLng" jdbcType="VARCHAR" />
+    <result column="START_LAT" property="startLat" jdbcType="VARCHAR" />
+    <result column="END_LNG" property="endLng" jdbcType="VARCHAR" />
+    <result column="END_LAT" property="endLat" jdbcType="VARCHAR" />
+  </resultMap>
+    
+	<sql id="Base_Column_List">
+		id, terminal_serial_id, main_server_addr, backup_server_addr, main_tcp_port, backup_tcp_port
+    </sql>
+    
+	<select id="findTerminalParamById" parameterType="java.util.Map" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List" />
+		from t_terminal_param
+		where terminal_serial_id = #{id}
+	</select>
+	
+	
+	<update id="updateTerminalParam" parameterType="com.c503.sc.jxwl.zcpt.bean.TerminalParamEntity">
+		UPDATE T_TERMINAL_PARAM 
+		SET 
+		<trim suffixOverrides="," >
+		  <if test="mainServerAddr != null" >
+	        MAIN_SERVER_ADDR = #{mainServerAddr,jdbcType=VARCHAR},
+	      </if>
+	      <if test="backupServerAddr != null" >
+	        BACKUP_SERVER_ADDR = #{backupServerAddr,jdbcType=VARCHAR},
+	      </if>
+	      <if test="mainServerTcpPort != null" >
+	        MAIN_TCP_PORT = #{mainServerTcpPort,jdbcType=VARCHAR},
+	      </if>
+	      <if test="backupServerTcpPort != null" >
+	        BACKUP_TCP_PORT = #{backupServerTcpPort,jdbcType=VARCHAR},
+	      </if>
+	     </trim>
+	    WHERE TERMINAL_SERIAL_ID = #{terminalSerialId,jdbcType=VARCHAR}
+	</update>
+	
+	
+	<insert id="saveTerminalParam" parameterType="com.c503.sc.jxwl.zcpt.bean.TerminalParamEntity" >
+		insert into t_terminal_param
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+	      <if test="id != null" >
+	        id,
+	      </if>
+	      <if test="terminalSerialId != null" >
+	        terminal_serial_id,
+	      </if>
+	      <if test="mainServerAddr != null" >
+	        main_server_addr,
+	      </if>
+	      <if test="backupServerAddr != null" >
+	        backup_server_addr,
+	      </if>
+	      <if test="mainServerTcpPort != null" >
+	        main_tcp_port,
+	      </if>
+	      <if test="backupServerTcpPort != null" >
+	        backup_tcp_port,
+	      </if>
+    	</trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides="," >
+	      <if test="id != null" >
+	        #{id,jdbcType=VARCHAR},
+	      </if>
+	      <if test="terminalSerialId != null" >
+	        #{terminalSerialId,jdbcType=VARCHAR},
+	      </if>
+	      <if test="mainServerAddr != null" >
+	        #{mainServerAddr,jdbcType=VARCHAR},
+	      </if>
+	      <if test="backupServerAddr != null" >
+	        #{backupServerAddr,jdbcType=VARCHAR},
+	      </if>
+	      <if test="mainServerTcpPort != null" >
+	        #{mainServerTcpPort,jdbcType=VARCHAR},
+	      </if>
+	      <if test="backupServerTcpPort != null" >
+	        #{backupServerTcpPort,jdbcType=VARCHAR},
+	      </if>
+	    </trim>
+	</insert>
+	
+	
+	<select id="findCarrierNameByAccount" parameterType="String" resultMap="BaseResultMap2">
+		WITH TB AS(
+	          SELECT WAYBILL_ID,LISTAGG(GOODSNAME,',')
+	               WITHIN GROUP (ORDER BY WAYBILL_ID) 
+	               AS GOODSNAME FROM T_WAYBILL_GOODS WHERE REMOVE='0' 
+	               GROUP BY WAYBILL_ID
+	           )
+	    SELECT  distinct temp.*
+	    FROM ( select TC.*
+	        FROM T_WAYBILL TC LEFT JOIN TB 
+	        ON TC.ID = TB.WAYBILL_ID
+	        LEFT JOIN T_ENTERPRISE TE
+			ON TC.LOGISTICS_ID = TE.CORPORATE_NO
+			LEFT JOIN T_DANGER_VEHICLE TD
+			ON TD.LICENCE_PLATE_NO = TC.CARNO
+			JOIN T_OCCUPATION_PERSON TOP
+	        ON TOP.IDENTIFICATION_CARD_NO = TC.Driverid
+	        JOIN T_REGISTER_INFO TRI 
+	        ON TRI.OCCUPATION_ID = TOP.ID
+	    WHERE TC.REMOVE = '0'
+		  	   AND TC.CHECKSTATUS in ('111001002','111001003')
+		  	  AND TRI.ACCOUNT = #{account,jdbcType=VARCHAR}
+		      ORDER BY TC.CHECKSTATUS,
+		      		   TC.DELIVERYUNITTIME DESC) temp
+	</select>
+</mapper>
