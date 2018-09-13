@@ -16,7 +16,7 @@
 	<context:component-scan base-package="com.c503.sc.jxwl.pipelinemangnt.controller" />
 	<context:component-scan base-package="com.c503.sc.jxwl.common" />
 	<context:component-scan base-package="com.c503.sc.jxwl.zcpt.controller" />
-	<context:component-scan base-package="com.c503.sc.jxwl.zcpt.monitor" />
+	<context:component-scan base-package="com.c503.sc.jxwl.zcpt" />
 	<context:component-scan base-package="com.c503.sc.ggyypt" />
 	
 	<mvc:annotation-driven validator="validator" content-negotiation-manager="contentNegotiationManager" />
@@ -138,6 +138,7 @@
 		<property name="resolveLazily"   value="true" />
 	</bean>
 
+	<!--加入拦截器-->
 	<mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/**"/>
@@ -145,5 +146,7 @@
 		</mvc:interceptor>
 	</mvc:interceptors>
 
+	<!-- 引入redis属性配置文件 -->
+	<import resource="classpath:spring-redis.xml"/>
 	
 </beans>

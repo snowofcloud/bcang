@@ -2,7 +2,7 @@ package com.c503.sc.jxwl.common.uac;
 
 public class AuthConifg {
 
-    private static final String apiKeyName = "token";
+    private static final String apiKeyName = "token123";
 
     private static final String apiKeyUserId = "userInfo";
 

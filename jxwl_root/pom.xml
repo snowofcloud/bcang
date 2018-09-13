@@ -42,7 +42,7 @@
 		<!-- base -->
 		<c503base.version>0.1.0</c503base.version>
 		<!--auth-client -->
-		<auth.client.version>0.0.11</auth.client.version>
+		<auth.client.version>0.1.5-SNAPSHOT</auth.client.version>
 		<!--json-simple -->
 		<json.simple.version>1.1.1</json.simple.version>
 		<!--mipush-server -->
@@ -159,8 +159,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
-		<!--》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》-->
 		<dependency>
 			<groupId>com.c503.sc.utils</groupId>
 			<artifactId>c503-sc-utils</artifactId>
@@ -172,8 +170,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!--》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》-->
-
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
@@ -193,19 +189,19 @@
 		</dependency>
 
 		<!-- redis start -->
-		<dependency>
+		<!--<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
 			<version>2.7.0</version>
-		</dependency>
+		</dependency>-->
 		<!-- redis end -->
 
 		<!-- apache common start -->
-		<dependency>
+		<!--<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-pool2</artifactId>
 			<version>2.3</version>
-		</dependency>
+		</dependency>-->
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -349,11 +345,11 @@
 
 		<!-- EHcache start -->
 		<!-- https://mvnrepository.com/artifact/net.sf.ehcache/ehcache -->
-		<dependency>
+		<!--<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
 			<version>${ehcache.version}</version>
-		</dependency>
+		</dependency>-->
 		<!--EHcache end -->
 
 		<dependency>
@@ -374,12 +370,14 @@
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
-			<version>1.0.0.GA</version>
+			<version>1.1.0.Final</version>
+			<!--<version>1.0.0.GA</version>-->
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>4.3.0.Final</version>
+			<version>5.0.1.Final</version>
+			<!--<version>5.0.1.Final</version>-->
 		</dependency>
 		<!-- form Jar end -->
 
@@ -474,6 +472,29 @@
 			<version>1.6.2</version>
 			<scope>test</scope>
 		</dependency>
+		<!--新增加缓存依赖  》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》-->
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-redis</artifactId>
+			<!--<version>${spring.redis.version}</version>-->
+			<version>1.6.0.RELEASE</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-pool2 -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-pool2</artifactId>
+			<!--<version>${commons.version}</version>-->
+			<version>2.4.2</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<!--<version>${jedis.version}</version>-->
+			<version>2.7.2</version>
+		</dependency>
+
+
 
 	</dependencies>
 

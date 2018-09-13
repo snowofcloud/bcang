@@ -487,7 +487,9 @@ public class EnterpriseServiceImpl implements IEnterpriseService {
         // authclientDelete(map);
         
         IAuthService authService = AuthFactory.getAuthService();
-        int result = authService.deleteOrgUserByOrgId((String) map.get("id"));
+
+        //int result = authService.deleteOrgUserByOrgId((String) map.get("id"));
+        //int result = authService.deleteOrgUserByOrgId((String) map.get("id"));
         
         LOGGER.debug(SystemContants.DEBUG_END, map);
         return delLine;

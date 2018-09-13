@@ -14,6 +14,7 @@ public class AuthInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         String token = request.getHeader(AuthConifg.keyName());
+        System.out.println(AuthConifg.keyName());
         System.out.println(token);
 //        String token = request.getHeader("token");
 //        token = (token == null) ? request.getParameter("token") : token;
