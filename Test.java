@@ -12,10 +12,9 @@ public class Test {
     public static void main(String[] args) {
 
         Long id = 1L;
-        //
+        //实现高位补0;
         DecimalFormat df=new DecimalFormat("00000");
         String str2=df.format(id);
-
         //获取系统时间
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
         Date date1 = new Date();
