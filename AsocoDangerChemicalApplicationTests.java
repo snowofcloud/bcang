@@ -11,6 +11,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Scanner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -62,20 +63,59 @@ public class AsocoDangerChemicalApplicationTests {
 //		System.out.println(str2);
 
 		//取百分数
-		double d=0.21343254;
-		//获取格式化对象
-		NumberFormat nt = NumberFormat.getPercentInstance();
-		//设置百分数精确度2即保留两位小数
-		nt.setMinimumFractionDigits(2);
+//		double d=0.21343254;
+//		//获取格式化对象
+//		NumberFormat nt = NumberFormat.getPercentInstance();
+//		//设置百分数精确度2即保留两位小数
+//		nt.setMinimumFractionDigits(2);
+//
+//		String format = nt.format(d);
+//		System.out.println(format);
 
-		String format = nt.format(d);
-		System.out.println(format);
-		
 		//取小数
-		int a = 1;
-		int b = 100;
-		double percent = (double)a/b;
-		System.out.println(percent);
+//		int a = 1;
+//		int b = 100;
+//		double percent = (double)a/b;
+//		System.out.println(percent);
+
+
+		// BigDecimal相除取小数
+//		BigDecimal a = BigDecimal.valueOf(1).divide(BigDecimal.valueOf(3),6,BigDecimal.ROUND_HALF_UP);
+//		double v = a.doubleValue();
+//		System.out.println(v);
+
+
+		//String 转BigDecimal
+//		String str1="2.30";
+//		BigDecimal bd=new BigDecimal(str1);
+//		System.out.println(bd);
+
+		Scanner sc = new Scanner(System.in);
+		int month = sc.nextInt();
+		switch(month) {
+			case 1://case穿透作用
+			case 2:
+			case 12:
+				System.out.println("冬季");
+				break;
+			case 3:
+			case 4:
+			case 5:
+				System.out.println("春季");
+				break;
+			case 6:
+			case 7:
+			case 8:
+				System.out.println("夏季");
+				break;
+			case 9:
+			case 10:
+			case 11:
+				System.out.println("秋季");
+				break;
+			default:
+				System.out.println("你输入的月份有误");
+		}
 
 
 	}
