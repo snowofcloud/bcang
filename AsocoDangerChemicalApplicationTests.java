@@ -1,0 +1,90 @@
+package com.c503.hthj.asoco.dangerchemical.waste;
+
+import com.c503.hthj.asoco.dangerchemical.waste.entity.SludgeRecord;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Scanner;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class AsocoDangerChemicalApplicationTests {
+
+	@Test
+	public void contextLoads() throws Exception {
+
+	//日期转换:Date --> String 	//获取当前系统时间
+		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");//设置日期格式
+		Date date1 = new Date();
+		String format = df.format(date1);
+		System.out.println("此刻时间："+format);// new Date()为获取当前系统时间
+		result:	20181029201410
+
+	//日期转换:String --> Date
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+		Date date1 = new Date();
+		String format = df.format(date1);
+		Date utilDate = df.parse(format);
+		eco.setTransferTime(utilDate);	
+		result:	Mon Nov 05 13:51:10 CST 2018	
+				
+				
+	//位数不够 高位自动补0
+		int str1=102;
+		DecimalFormat df=new DecimalFormat("00000");
+		String str2=df.format(str1);
+				
+	//取百分数
+		double d=0.21343254;
+		NumberFormat nt = NumberFormat.getPercentInstance();//获取格式化对象
+		nt.setMinimumFractionDigits(2);//设置百分数精确度2即保留两位小数
+		String format = nt.format(d);
+				
+	//整型相除取小数
+		int a = 1;
+		int b = 100;
+		double percent = (double)a/b;													
+														
+	//String 转BigDecimal
+		String str1="2.30";
+		BigDecimal bd=new BigDecimal(str1);	
+	//BigDecimal相除取小数
+		BigDecimal a = BigDecimal.valueOf(1).divide(BigDecimal.valueOf(3),6,BigDecimal.ROUND_HALF_UP);
+		double v = a.doubleValue();
+	//BigDecimal加法应用
+		BigDecimal AAA = new BigDecimal("36.21202" );
+		AAA=AAA.add(new BigDecimal("45.14456"));
+		
+	//数组方法及实现功能
+		int[] i = new int[8];
+		int[] j = new int[10];
+		Arrays.fill(i,11);
+		System.out.println("i="+i.toString());//方法不对
+		System.out.println("ii="+Arrays.toString(i));
+		Arrays.fill(j,88);
+		System.out.println("j="+j.toString());
+		System.out.println("jj="+Arrays.toString(j));
+		//复制数组
+		System.arraycopy(i,0,j,0,i.length);
+		System.out.println("jjj="+Arrays.toString(j));
+		int[] k = new int[12];
+		Arrays.fill(k,122);
+		System.out.println("k="+Arrays.toString(k));
+		System.arraycopy(i,0,k,1,5);
+		System.out.println("k="+Arrays.toString(k));
+
+
+
+
+	}
+
+
+}
