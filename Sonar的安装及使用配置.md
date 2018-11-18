@@ -9,14 +9,15 @@
 根据不同系统进行下载；
 4.mysql5.7；
 5.本人window10本地安装配置，亲测可用。
+注意事项：
+	先安装并启动SonarQube 7.4，再SonarQube Scanner3.2的配置环境变量，最后配置分析项目文件sonar-project.properties。
 ```
 
 安装SonarQube 7.4：
 
 ```
-1.解压SonarQube 7.4，进入bin目录，根据不同系统选择不同的版本，在D:\...\sonarqube-7.4\bin\windows-x86-64里面启动StartSonar.bat，访问http://localhost:9000即可，如出现SonarQube页面，则表示安装成功。
-2.
-
+1.解压SonarQube 7.4，进入bin目录，根据不同系统选择不同的版本，在D:\...\sonarqube-7.4\bin\windows-x86-64里面启动StartSonar.bat，访问http://localhost:9000即可，如出现SonarQube页面， dos命令窗口出现SonarQube is up，则表示安装成功。
+2.关闭SonarQube 7.4后，遇到重启闪退现象，查看web.log和sonar.log日期错误信息，自行排查解决。
 ```
 
 SonarQube 7.4 配置：
