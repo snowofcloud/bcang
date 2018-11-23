@@ -66,8 +66,10 @@ public class SwaggerConfiguration {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("智慧化工园区安监领域")
-                .description("危化品全生命周期-危废监管服务")
+                //.title("智慧化工园区安监领域")
+                //.description("危化品全生命周期-危废监管服务")
+                .title("springboot整合mybatis-plus")
+                .description("springboot加mybatis-plus应用")
                 .version("0.0.1")
                 .build();
     }
