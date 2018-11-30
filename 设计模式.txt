@@ -1,5 +1,8 @@
 
 
+单例：{
+
+单例模式确保某个类只有一个实例，而且自行实例化并向整个系统提供这个实例。
 单例的三大要点：线程安全、延迟加载、序列化与反序列化
 饿汉式：{
 	/**单利模式  饿汉式
@@ -183,10 +186,39 @@ Volatile-Double-Check：{
 	}
 	枚举类型不许允被继承，同样线程安全且只能被实例化一次，但是枚举不能懒加载，对于Student7主动使用，如调用其中的静态方法则INSTANCE会立即得到实例化。
 	
+	也可以对其进行稍作改造，增加懒加载的特性。如Holder。
+	/**
+	 * @auther xuxq
+	 * @date 2018/11/30 23:59
+	 */
+	public class Student8 {
+
+		private Student8(){
+
+		}
+
+		private enum EnumHolder{
+			INSTANCE;
+			private Student8 student8;
+
+			EnumHolder(){
+				this.student8 = new Student8();
+			}
+
+			public Student8 getInstance(){
+				return student8;
+			}
+		}
+
+		public static Student8 getInstance(){
+			return EnumHolder.INSTANCE.getInstance();
+		}
+
+	}
 	
 }
 
-
+}
 
 
 
