@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<c3p0-config>
+
+    <default-config>
+        <property name="driverClass">com.mysql.jdbc.Driver</property>
+        <!--本地数据库-->
+        <property name="jdbcUrl">jdbc:mysql://localhost:3306/weifeipin?useUnicode=true&amp;characterEncoding=UTF8</property>
+        <property name="user">root2</property>
+        <property name="password">123456</property>
+        <!--<property name="jdbcUrl">jdbc:mysql://192.168.2.107:3306/weifeipin?useUnicode=true&amp;characterEncoding=UTF8
+        </property>
+        <property name="user">root</property>
+        <property name="password">password</property>-->
+        <property name="initialPoolSize">10</property>
+        <property name="maxPoolSize">20</property>
+    </default-config>
+
+</c3p0-config>
