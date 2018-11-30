@@ -1,0 +1,194 @@
+
+
+单例的三大要点：线程安全、延迟加载、序列化与反序列化
+饿汉式：{
+	/**单利模式  饿汉式
+	 * @auther xuxq
+	 * @date 2018/11/30 15:24
+	 */
+	public final(加不加无所谓) class Student {
+
+		//此处定义类变量并直接实例化，在类加载时即创建该实例并保存在类中；
+		private static Student student = new Student();
+
+		//私有构造器  不允许外部new
+		private Student(){
+		}
+
+		//定义公开方法，返回创建的单例
+		public static Student getInstance(){
+
+			return student;
+		}
+
+	}
+	饿汉式关键在于student作为类变量直接得到初始化，该方法能保证同步，也就是说student在多线程下也不可能被实例化两次，
+		但是student被ClassLoader加载后可能很长时间才被使用，那就意味着student实例所开辟的空间的堆内存会驻留更久的时间。
+	如果一个类中的成员属性较少，所占用的内存资源不多，饿汉式未尝不可。
+	总结：饿汉式可以保证多线程下唯一的实例，getInstance性能也比较高，但无法进行懒加载；
+	
+	
+}
+
+懒汉式：{
+	/**
+	 * 懒汉式
+	 * @auther xuxq
+	 * @date 2018/11/30 22:39
+	 */
+	public class Student2 {
+		private static Student2 student2 = null;
+		private Student2(){
+
+		}
+		public static Student2 getInstance(){
+			if (student2 == null){
+				student2 = new Student2();
+			}
+			return student2;
+		}
+	}
+	类变量student2为null时，当Student2.class被初始化的时候student2不会被实例化，在getInstance方法中会判断student2是否被实例化，看似没有问题，但在多线程环境下student2会被实例化两次，
+		线程1判断student2为null时，还没来得及实例化，线程2进来又开始判断student2为null，就会被实例化多次；
+	
+}
+
+懒汉式加同步方法：{
+	/**
+	 * 懒汉式加同步方法
+	 * @auther xuxq
+	 * @date 2018/11/30 22:59
+	 */
+	public class Student3 {
+		private static Student3 student3 = null;
+		private Student3(){ }
+
+		public static synchronized Student3 getInstance(){
+			if (student3 == null){
+				student3 = new Student3();
+			}
+			return student3;
+		}
+
+	}
+	懒加载加同步方法既满足懒加载又满足保证student3实例的唯一性，
+		但是synchronized关键字天生的排他性导致getInstance方法只能在同一时刻被一个线程访问，性能低下。
+	
+}
+
+Double-Check：{
+	/**
+	 * Double-Check
+	 * @auther xuxq
+	 * @date 2018/11/30 23:13
+	 */
+	public class Student4 {
+		private static Student4 student4 = null;
+		private String age;
+		private Student4(){
+			this.age = "12";
+		}
+
+		public static Student4 getInstance(){
+			if (student4 == null){
+				synchronized (Student4.class){
+					if (student4 == null){
+						student4 = new Student4();
+					}
+				}
+			}
+			return student4;
+		}
+	}
+	当两个线程发现student4 == null成立时，只有一个线程有资格进入同步代码块，完成对student4的实例化，随后的线程发现条件不成立则无需进行任何操作，以后对getInstance的访问就不需要数据同步的保护了；
+	这种方式看似完美，既满足懒加载，又保证student4的唯一性。Double-Check的方式提供了高效的数据同策略，可以允许在多个线程同时对getInstance的访问。但这种方式有可能引起空指针异常；
+	Student4构造函数中，初始化age还有Student4自身，根据JVM指令重排序和Happens-Before规则，这两者的实例化并无顺序先后的约束，那么极有可能student4最先被实例化，而age并未实例化，未完成初始化的实例调用其他方法将会抛出空指针异常。
+}
+
+Volatile-Double-Check：{
+	/**
+	 * Volatile-Double-Check
+	 * @auther xuxq
+	 * @date 2018/11/30 23:30
+	 */
+	public class Student5 {
+		private volatile static Student5 student5 = null;
+		private String age;
+		private Student5(){
+			this.age = "12";
+		}
+
+		public static Student5 getInstance(){
+			if (student5 == null){
+				synchronized (Student5.class){
+					if (student5 == null){
+						student5 = new Student5();
+					}
+				}
+			}
+			return student5;
+		}
+	}
+	student5前加volatile关键字可以防止重排序的发生。
+}
+
+静态内部类法/Holder 方式：{
+	/**
+	 * Holder 方式  静态内部类法
+	 * @auther xuxq
+	 * @date 2018/11/30 23:37
+	 */
+	public class Student6 {
+		private Student6(){
+
+		}
+
+		private static class Student6Holder{
+			private final static Student6 student6 = new Student6();
+		}
+
+		public static Student6 getInstance(){
+			return Student6Holder.student6;
+		}
+
+	}
+	在Student6中并没有student6的静态变量，而是将其放入了静态内部类Student6Holder类中，因此Student6的初始化过程并不会创建Student6的实例，
+		Student6Holder类中定义了Student6的静态变量，并且直接进行实例化，当Student6Holder被直接引用时会创建Student6的实例，
+		该方法又是同步方法，保证了内存的可见性，JVM的顺序性和原子性。
+		Holder 方式是单例设计最好的设计之一。
+	
+	
+}
+
+枚举方式：{
+	/**
+	 * 枚举方式实现单例
+	 * @auther xuxq
+	 * @date 2018/11/30 23:48
+	 */
+	public enum Student7 {
+
+		INSTANCE;
+		Student7(){
+
+		}
+		//调用method方法会主动使用Student7，INSTANCE将会被实例化，
+		public static void method(){
+
+		}
+
+		public static Student7 getInstance(){
+			return INSTANCE;
+		}
+	}
+	枚举类型不许允被继承，同样线程安全且只能被实例化一次，但是枚举不能懒加载，对于Student7主动使用，如调用其中的静态方法则INSTANCE会立即得到实例化。
+	
+	
+}
+
+
+
+
+
+
+
