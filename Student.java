@@ -6,20 +6,24 @@ package com.c503.hthj.asoco.dangerchemical.waste.controller;
  */
 public class Student {
 
-    private String username;
-
     public Student(){
-        //构造方法用this关键字可以相互调用，但this的调用必须放在构造方法第一行，否则编译报错；
-        this("王小明");
+        System.out.println("构造方法");
     }
 
-    public Student(String name){
-        this.username = name;
+    {
+        System.out.println("普通代码块");
     }
 
+    static {
+        System.out.println("静态代码块");
+    }
+    //创建一个对象，方法的执行顺序？
     public static void main(String[] args) {
-        System.out.println(new Student());
-        System.out.println(new Student("王小明"));
+        new Student();//第一个对象
+        System.out.println("-----------------------------------");
+        new Student();//第二个对象
+
+        //类只会初始化一次，而对象各自初始化一次
 
     }
 
