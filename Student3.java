@@ -20,7 +20,7 @@ public class Student3 extends Teacher {
 
     public static void main(String[] args) {
         Student3 student3 = new Student3();
-        student3.speak();
+        student3.speak();//learning to speak English
         //private和final修饰的方法是不能被重写的；
     }
 
