@@ -1,5 +1,6 @@
 package com.spring.boot.mybatis.server.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -13,16 +14,17 @@ import java.util.Scanner;
 public class Student3 {
 
     public static void main(String[] args) {
-        int dum = Student3.dum(10);
-        System.out.println(dum);
+        int number = 100;
+        BigDecimal dum = Student3.dum(new BigDecimal(number));
+        System.out.println(dum.toString());
     }
 
 
-    public static int dum( int number){
-        if (1 == number){
+    public static BigDecimal dum(BigDecimal number){
+        if ( number.toString().equals(new BigDecimal("1").toString())){
             return number;
         }
-        return number*dum(number-1);
+        return number.multiply(dum(number.subtract(new BigDecimal("1"))));
     }
 
 }
