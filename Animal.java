@@ -31,4 +31,12 @@ class Dog extends Animal{
         new Dog();
         //先静后对象，先父后子
     }
+
+//    执行结果：
+//    Animal静态方法
+//    Dog静态方法
+//    Animal普通方法方法
+//    Animal构造方法
+//    Dog普通方法
+//    Dog构造方法
 }
